@@ -30,7 +30,7 @@ void setup() {
   slider("threshold", 0, 200, 86);
   nextControlY += 15;
   slider("minArea",0, 500, 155);
-  slider("maxArea",100,10000,9010);
+  slider("maxArea",100,100000,9010);
   slider("maxBlobs",1,50,35);
   slider("maxVertices",4,200,100);
   controlWindow.setTitle("controls");
@@ -50,8 +50,10 @@ void draw() {
   background(192);
   
   opencv.read();           // grab frame from camera
-  opencv.threshold(threshold);    // set black & white threshold 
   opencv.convert(OpenCV.GRAY);
+  opencv.threshold(threshold);    // set black & white threshold 
+
+//  opencv.invert();
   opencv.brightness(brightness);
   opencv.contrast(contrast);
 
@@ -62,14 +64,20 @@ void draw() {
 
 void drawBlobs() {
   // find blobs
-  Blob[] blobs = opencv.blobs( minArea, maxArea, maxBlobs, true, maxVertices );
+  Blob[] blobs = opencv.blobs( minArea, maxArea, maxBlobs, false, maxVertices );
   // draw blob results
-  fill(0,124,157);
+//  fill(0,124,157);
+//  for( int i=0; i<blobs.length; i++ ) {
+//    beginShape();
+//    for( int j=0; j<blobs[i].points.length; j++ ) {
+//      vertex( blobs[i].points[j].x, blobs[i].points[j].y );
+//    }
+//    endShape(CLOSE);
+//  }
   for( int i=0; i<blobs.length; i++ ) {
-    beginShape();
-    for( int j=0; j<blobs[i].points.length; j++ ) {
-      vertex( blobs[i].points[j].x, blobs[i].points[j].y );
-    }
-    endShape(CLOSE);
+    Rectangle r = blobs[i].rectangle;
+    noFill();
+    stroke(100,0,0);
+    rect(r.x,r.y,r.width,r.height);
   }
 }

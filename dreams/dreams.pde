@@ -9,6 +9,11 @@ public int contrast = 60;
 public int brightness = 80;
 public int threshold = 80;
 
+public int minArea = 10;
+public int maxArea = 50;
+public int maxBlobs = 5;
+public int maxVertices = 200;
+
 public int nextControlY = 10;
 
 void setup() {
@@ -17,11 +22,17 @@ void setup() {
   // set up control panel
   controls = new ControlP5(this);
   controls.setAutoDraw(false);
-  controlWindow = controls.addControlWindow("controlP5window",200,100);
+  controls.setAutoInitialization(true);
+  controlWindow = controls.addControlWindow("controlP5window",200,300);
   controlWindow.hideCoordinates();
-  slider("contrast", 0, 200, 10);
-  slider("brightness", 0, 200, 10);
-  slider("threshold", 0, 200, 10);
+  slider("contrast", 0, 200, 32);
+  slider("brightness", 0, 200, 20);
+  slider("threshold", 0, 200, 86);
+  nextControlY += 15;
+  slider("minArea",0, 500, 155);
+  slider("maxArea",100,10000,9010);
+  slider("maxBlobs",1,50,35);
+  slider("maxVertices",4,200,100);
   controlWindow.setTitle("controls");
   // open video stream
   opencv = new OpenCV( this );
@@ -30,7 +41,7 @@ void setup() {
 
 void slider(String name, int min, int max, int defaultValue) {
 //  Controller slider = controls.addSlider(name,min,max,defaultValue,10,nextControlY,100,10);
-  Controller slider = controls.addSlider(name,min,max,defaultValue,nextControlY,100,10);
+  Controller slider = controls.addSlider(name,min,max,defaultValue,10,nextControlY,100,10);
   slider.setWindow(controlWindow);
   nextControlY += 15;
 }
@@ -51,7 +62,7 @@ void draw() {
 
 void drawBlobs() {
   // find blobs
-  Blob[] blobs = opencv.blobs( 10, width*height/2, 100, true, OpenCV.MAX_VERTICES*4 );
+  Blob[] blobs = opencv.blobs( minArea, maxArea, maxBlobs, true, maxVertices );
   // draw blob results
   fill(0,124,157);
   for( int i=0; i<blobs.length; i++ ) {

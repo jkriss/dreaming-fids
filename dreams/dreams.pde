@@ -34,9 +34,11 @@ void setup() {
   slider("maxBlobs",1,50,35);
   slider("maxVertices",4,200,100);
   controlWindow.setTitle("controls");
+
   // open video stream
   opencv = new OpenCV( this );
-  opencv.capture( 640, 480 );
+  opencv.movie( "1.mp4", width, height );
+  // opencv.capture( 640, 480 );
 }
 
 void slider(String name, int min, int max, int defaultValue) {
@@ -50,14 +52,14 @@ void draw() {
   background(192);
   
   opencv.read();           // grab frame from camera
+  background(opencv.image());
   opencv.convert(OpenCV.GRAY);
   opencv.threshold(threshold);    // set black & white threshold 
 
-//  opencv.invert();
+  opencv.invert();
   opencv.brightness(brightness);
   opencv.contrast(contrast);
 
-  background(opencv.image());
 
   drawBlobs();
 }
@@ -74,10 +76,11 @@ void drawBlobs() {
 //    }
 //    endShape(CLOSE);
 //  }
+  int margin = 5;
   for( int i=0; i<blobs.length; i++ ) {
     Rectangle r = blobs[i].rectangle;
     noFill();
     stroke(100,0,0);
-    rect(r.x,r.y,r.width,r.height);
+    rect(r.x-margin,r.y-margin,r.width+(2*margin),r.height+(2*margin));
   }
 }

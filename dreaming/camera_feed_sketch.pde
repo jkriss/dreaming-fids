@@ -22,6 +22,6 @@ class CameraFeedSketch extends Behavior {
   
   void resetMappings() {
     for (int i=0; i<cameraMappings.length; i++)
-      cameraMappings[i] = round(random(3)); 
+      cameraMappings[i] = round(random(5)); 
   }
 }

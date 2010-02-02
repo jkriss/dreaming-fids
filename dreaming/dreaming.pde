@@ -2,7 +2,8 @@ import hypermedia.video.*;
 
 VideoStreamer cam;
 PImage[] cams = new PImage[6];
-int camW = 640;
+//int camW = 640;
+int camW = 800;
 int camH = 480;
 int camW2 = camW/2;
 int camH2 = camH/2;
@@ -13,10 +14,10 @@ Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
 int numScreens = 4;
-int border = 5;
+int border = 10;
 
 void setup() {
-  float scale = .4;
+  float scale = .45;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   activeBehavior = behaviors[0];

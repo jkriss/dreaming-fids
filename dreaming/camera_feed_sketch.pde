@@ -3,8 +3,8 @@ int[] cameraMappings = { 1, 0, 2, 1 };
 
 class CameraFeedSketch extends Behavior {
   
-  CameraFeedSketch(PApplet parent, int numScreens) {
-    super(parent, numScreens); 
+  CameraFeedSketch(PApplet parent, int numScreens, int border) {
+    super(parent, numScreens, border); 
   }
   
   void setup() {
@@ -15,7 +15,7 @@ class CameraFeedSketch extends Behavior {
   }
   
   void drawScreen(int i) {
-    if (millis() / 800 % 7 == 0) resetMappings();
+    if (frameCount % 70 == 0) resetMappings();
     if (cams[cameraMappings[i]] != null)
       image(cams[cameraMappings[i]],0,0,w,h);
   }

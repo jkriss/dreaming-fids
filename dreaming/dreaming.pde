@@ -13,11 +13,12 @@ Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
 int numScreens = 4;
+int border = 5;
 
 void setup() {
-  float scale = .5;
-  size((int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
-  behaviors[0] = new CameraFeedSketch(this, numScreens);
+  float scale = .4;
+  size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
+  behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   activeBehavior = behaviors[0];
   for (int i=0; i<behaviors.length; i++) {
    behaviors[i].setup(); 

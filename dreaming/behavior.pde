@@ -3,10 +3,12 @@ class Behavior {
  PApplet parent;
  int w,h;
  int numScreens;
+ int border;
 
- Behavior(PApplet parent, int numScreens) {
+ Behavior(PApplet parent, int numScreens, int border) {
    this.parent = parent;
    this.numScreens = numScreens;
+   this.border = border;
    w = parent.width;
    h = parent.height;
  }
@@ -27,7 +29,7 @@ class Behavior {
    
    for (int i=0; i<numScreens; i++) {
      drawScreen(i);
-     translate(w,0);
+     translate(w+border,0);
    }
    
    popMatrix();

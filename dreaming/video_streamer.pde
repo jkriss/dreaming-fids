@@ -47,7 +47,7 @@ class VideoStreamer {
     try{ 
       JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out); 
       JPEGEncodeParam encpar = encoder.getDefaultJPEGEncodeParam(img); 
-      encpar.setQuality(0.9,true); // 0.0-1.0, force baseline 
+      encpar.setQuality(0.6,true); // 0.0-1.0, force baseline 
       encoder.setJPEGEncodeParam(encpar); 
       encoder.encode(img); 
     }catch(FileNotFoundException e){ 

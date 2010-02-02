@@ -2,8 +2,8 @@ import hypermedia.video.*;
 
 VideoStreamer cam;
 PImage[] cams = new PImage[6];
-//int camW = 640;
-int camW = 800;
+int camW = 640;
+//int camW = 800;
 int camH = 480;
 int camW2 = camW/2;
 int camH2 = camH/2;

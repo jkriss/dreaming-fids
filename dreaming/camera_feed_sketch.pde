@@ -11,17 +11,23 @@ class CameraFeedSketch extends Behavior {
   }
   
   void draw() {
+    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
   }
   
   void drawScreen(int i) {
-    if (frameCount % 70 == 0) resetMappings();
     if (cams[cameraMappings[i]] != null)
       image(cams[cameraMappings[i]],0,0,w,h);
   }
   
   void resetMappings() {
-    for (int i=0; i<cameraMappings.length; i++)
-      cameraMappings[i] = round(random(5)); 
+    int[] choices = {0,1,2,3,4,5};
+    for (int i=0; i<cameraMappings.length;) {
+      int r = round(random(choices.length-1));
+      cameraMappings[i] = choices[r];
+      if (choices[r] == -1) continue;
+      choices[r] = -1; 
+      i++;
+    }
   }
 }

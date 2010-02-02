@@ -23,6 +23,10 @@ class VideoStreamer {
   //http://processing.org/discourse/yabb_beta/YaBB.cgi?board=Syntax;action=display;num=1138221586 
   
   byte[] jpgFromPImage(PImage srcimg){ 
+    if (srcimg == null) {
+      println("src image null, returning");
+      return null; 
+    }
     ByteArrayOutputStream out = new ByteArrayOutputStream(); 
     if (img == null) {
       println("creating image");

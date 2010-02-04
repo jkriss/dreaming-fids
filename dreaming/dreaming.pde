@@ -14,7 +14,12 @@ Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
 int numScreens = 4;
+int numCameras = 6;
 int border = 10;
+int motionLevel;
+
+Detector[] detectors = new Detector[numCameras];
+DetectionResult[] motion = new DetectionResult[numCameras];
 
 void setup() {
   float scale = .45;
@@ -23,6 +28,9 @@ void setup() {
   activeBehavior = behaviors[0];
   for (int i=0; i<behaviors.length; i++) {
    behaviors[i].setup(); 
+  }
+  for (int i=0; i<detectors.length; i++) {
+    detectors[i] = new Detector();
   }
   opencv = new OpenCV(this);
   opencv.capture(camW, camH);
@@ -51,11 +59,15 @@ void receive( byte[] data, String ip, int port ) {
   cams[0] = img.get(0,0,camW2,camH2);
   cams[1] = img.get(camW2,0,camW2,camH2);
   cams[2] = img.get(0,camH2,camW2,camH2);
-  
+    
   // for now
   cams[3] = cams[0];
   cams[4] = cams[1];
   cams[5] = cams[2];
+  
+  for (int i=0; i<numCameras; i++)
+    motion[i] = detectors[i].motion(cams[i]);
+
 } 
 
 PImage loadPImageFromBytes(byte[] b, PApplet p){ 

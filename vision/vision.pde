@@ -3,6 +3,8 @@ import hypermedia.video.*;
 OpenCV opencv;
 Detector detector = new Detector();
 
+PImage blank;
+
 void setup() {
 
     size( 640, 480 );
@@ -10,6 +12,9 @@ void setup() {
     // open video stream
     opencv = new OpenCV( this );
     opencv.capture( 640, 480 );
+    
+    blank = createImage(width, height, ALPHA);
+    
 }
 
 void keyPressed() {
@@ -28,31 +33,42 @@ void draw() {
 //    opencv.threshold(80);    // set black & white threshold 
     
 //    DetectionResult motion = detector.motion(opencv.image());
-    DetectionResult presence = detector.presence(opencv.image());
+//    DetectionResult presence = detector.presence(opencv.image());
+    DetectionResult detect = detector.objects(opencv.image(), 0.2);
 //    opencv.copy(motion.image);
 //    opencv.copy(presence.image);
-    if (presence != null) {
-      opencv.copy(presence.image);
-      opencv.threshold(10, 255, OpenCV.THRESH_BINARY);
+    if (detect != null) {
+      println(detect.activity);
+      
+      // set it to black if not enough is happening
+//      int activityThreshold = 4000000;
+      int activityThreshold = 0;
+      if (detect.activity < activityThreshold) {
+        opencv.copy(blank);
+      } else {
+        opencv.copy(detect.image);
+      }
+      
+      opencv.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
 //      opencv.blur( OpenCV.BLUR, 13 );
 //      opencv.invert();
       image(opencv.image(), 0, 0);
     }
    
     // find blobs
-    Blob[] blobs = opencv.blobs( 10, width*height/2, 100, false, OpenCV.MAX_VERTICES*4 );
-//    opencv.restore();
-
-    // draw blob results
-    stroke(200,0,0);
-    fill(200,0,0,150);
-    for( int i=0; i<blobs.length; i++ ) {
-        beginShape();
-        for( int j=0; j<blobs[i].points.length; j++ ) {
-            vertex( blobs[i].points[j].x, blobs[i].points[j].y );
-        }
-        endShape(CLOSE);
-    }
+//    Blob[] blobs = opencv.blobs( 100, width*height/2, 100, false, OpenCV.MAX_VERTICES*4 );
+////    opencv.restore();
+//
+//    // draw blob results
+//    stroke(200,0,0);
+//    fill(200,0,0,150);
+//    for( int i=0; i<blobs.length; i++ ) {
+//        beginShape();
+//        for( int j=0; j<blobs[i].points.length; j++ ) {
+//            vertex( blobs[i].points[j].x, blobs[i].points[j].y );
+//        }
+//        endShape(CLOSE);
+//    }
 
 }
 
@@ -61,94 +77,76 @@ class Detector {
  
   int numPixels;
   PImage backgroundImage = null;
-  PImage workingImage = null;
+  PImage motionImage = null;
+  PImage presenceImage = null;
+  PImage objectImage = null;
   int[] previousFrame;
   
   void initImage(PImage img) {
-    if (workingImage == null) {
-      workingImage = createImage(img.width, img.height, RGB);
+    if (motionImage == null) {
+      motionImage = createImage(img.width, img.height, ALPHA);
+      presenceImage = createImage(img.width, img.height, ALPHA);
+      objectImage = createImage(img.width, img.height, ALPHA);
       numPixels = img.width * img.height;
       previousFrame = new int[numPixels];
     }
-    workingImage.loadPixels();
   }
   
   void setBackground(PImage backgroundImage) {
     this.backgroundImage = backgroundImage;
   }
   
+  DetectionResult objects(PImage img, float motionWeight) {
+    DetectionResult presence = presence(img);
+    if (presence == null) return null;
+    DetectionResult motion = motion(img);
+    float presenceWeight = 1.0-motionWeight;
+    for (int i=0; i<numPixels; i++) {
+     //objectImage.pixels[i] = (int)((presence.image.pixels[i]*presenceWeight) + (motion.image.pixels[i]*motionWeight));
+      int pB = presenceImage.pixels[i] & 0xFF;
+      int mB = motionImage.pixels[i] & 0xFF;
+      int cB = (int)((pB*presenceWeight)+(mB*motionWeight));
+      objectImage.pixels[i] = 0xFF000000 | (cB << 16) | (cB << 8) | cB;
+    }
+    objectImage.updatePixels();
+    return new DetectionResult(objectImage, presence.activity + motion.activity);
+  }
+  
   // from golan
   DetectionResult presence(PImage img) {
     if (backgroundImage == null) return null;
     initImage(img);
-    arraycopy(img.pixels, workingImage.pixels);
+    arraycopy(img.pixels, presenceImage.pixels);
 //    loadPixels();
     int presenceSum = 0;
     for (int i = 0; i < numPixels; i++) { // For each pixel in the video frame...
-      // Fetch the current color in that location, and also the color
-      // of the background in that spot
-      color currColor = workingImage.pixels[i];
-      color bkgdColor = backgroundImage.pixels[i];
-      // Extract the red, green, and blue components of the current pixelÕs color
-      int currR = (currColor >> 16) & 0xFF;
-      int currG = (currColor >> 8) & 0xFF;
-      int currB = currColor & 0xFF;
-      // Extract the red, green, and blue components of the background pixelÕs color
-      int bkgdR = (bkgdColor >> 16) & 0xFF;
-      int bkgdG = (bkgdColor >> 8) & 0xFF;
-      int bkgdB = bkgdColor & 0xFF;
-      // Compute the difference of the red, green, and blue values
-      int diffR = abs(currR - bkgdR);
-      int diffG = abs(currG - bkgdG);
+      int currB = presenceImage.pixels[i] & 0xFF;
+      int bkgdB = backgroundImage.pixels[i] & 0xFF;
       int diffB = abs(currB - bkgdB);
-      // Add these differences to the running tally
-      presenceSum += diffR + diffG + diffB;
-      // Render the difference image to the screen
-//      workingImage.pixels[i] = color(diffR, diffG, diffB);
-      // The following line does the same thing much faster, but is more technical
-      workingImage.pixels[i] = 0xFF000000 | (diffR << 16) | (diffG << 8) | diffB;
-//      pixels[i] = 0xFF000000 | (diffR << 16) | (diffG << 8) | diffB;
+      presenceSum += diffB;
+      presenceImage.pixels[i] = 0xFF000000 | (diffB << 16) | (diffB << 8) | diffB;
     }
-    workingImage.updatePixels();
-    return new DetectionResult(workingImage, presenceSum);
+    presenceImage.updatePixels();
+    return new DetectionResult(presenceImage, presenceSum);
   }
   
   DetectionResult motion(PImage img) {
     initImage(img);
-    arraycopy(img.pixels, workingImage.pixels);
+    arraycopy(img.pixels, motionImage.pixels);
     int movementSum = 0; // Amount of movement in the frame
     for (int i = 0; i < numPixels; i++) { // For each pixel in the video frame...
-      color currColor = workingImage.pixels[i];
+      color currColor = motionImage.pixels[i];
       color prevColor = previousFrame[i];
-      // Extract the red, green, and blue components from current pixel
-      int currR = (currColor >> 16) & 0xFF; // Like red(), but faster
-      int currG = (currColor >> 8) & 0xFF;
       int currB = currColor & 0xFF;
-      // Extract red, green, and blue components from previous pixel
-      int prevR = (prevColor >> 16) & 0xFF;
-      int prevG = (prevColor >> 8) & 0xFF;
       int prevB = prevColor & 0xFF;
-      // Compute the difference of the red, green, and blue values
-      int diffR = abs(currR - prevR);
-      int diffG = abs(currG - prevG);
       int diffB = abs(currB - prevB);
       // Add these differences to the running tally
-      movementSum += diffR + diffG + diffB;
-      // Render the difference image to the screen
-      // pixels[i] = color(diffR, diffG, diffB);
-      // The following line is much faster, but more confusing to read
-      // pixels[i] = 0xff000000 | (diffR << 16) | (diffG << 8) | diffB;
-      workingImage.pixels[i] = 0xff000000 | (diffR << 16) | (diffG << 8) | diffB;
+      movementSum += diffB;
+      motionImage.pixels[i] = 0xff000000 | (diffB << 16) | (diffB << 8) | diffB;
       // Save the current color into the 'previous' buffer
       previousFrame[i] = currColor;
     }
-    // To prevent flicker from frames that are all black (no movement),
-    // only update the screen if the image has changed.
-//    if (movementSum > 0) {
-      // updatePixels();
-      // println(movementSum); // Print the total amount of movement to the console     
-//    }
-    return new DetectionResult(workingImage, movementSum);
+    return new DetectionResult(motionImage, movementSum);
   }
   
 }

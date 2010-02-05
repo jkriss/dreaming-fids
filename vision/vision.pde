@@ -56,20 +56,27 @@ void draw() {
     }
    
     // find blobs
-//    Blob[] blobs = opencv.blobs( 100, width*height/2, 100, false, OpenCV.MAX_VERTICES*4 );
-////    opencv.restore();
-//
-//    // draw blob results
-//    stroke(200,0,0);
-//    fill(200,0,0,150);
-//    for( int i=0; i<blobs.length; i++ ) {
-//        beginShape();
-//        for( int j=0; j<blobs[i].points.length; j++ ) {
-//            vertex( blobs[i].points[j].x, blobs[i].points[j].y );
-//        }
-//        endShape(CLOSE);
-//    }
+    Blob[] blobs = opencv.blobs( 100, width*height/2, 100, false);
+//    opencv.restore();
 
+    // draw blob results
+    stroke(200,0,0);
+    fill(200,0,0,150);
+    for( int i=0; i<blobs.length; i++ ) {
+        beginShape();
+        for( int j=0; j<blobs[i].points.length; j++ ) {
+            vertex( blobs[i].points[j].x, blobs[i].points[j].y );
+        }
+        endShape(CLOSE);
+    }
+
+    // draw blob rects
+    stroke(0,200,0);
+    noFill();
+    for( int i=0; i<blobs.length; i++ ) {
+      Rectangle r = blobs[i].rectangle;
+      rect(r.x, r.y, r.width, r.height);
+    }
 }
 
 

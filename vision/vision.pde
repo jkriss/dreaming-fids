@@ -5,16 +5,37 @@ Detector detector = new Detector();
 
 PImage blank;
 
+PImage[] samples = new PImage[3];
+
 void setup() {
 
     size( 640, 480 );
 
     // open video stream
     opencv = new OpenCV( this );
-    opencv.capture( 640, 480 );
+//    opencv.capture( 640, 480 );
+    opencv.movie( "Fish Comp 3.mov", width, height );
     
     blank = createImage(width, height, ALPHA);
     
+}
+
+void mousePressed() {
+  if (samples[samples.length-1] != null) {
+    Arrays.fill(samples, null);
+  }
+  int i=0;
+  while (samples[i] != null) i++;
+  println("taking sample " + i);
+  opencv.read();
+  samples[i] = opencv.image();
+  background(255);
+  
+  if (i == 2) {
+    PImage bg = detector.subtractForeground(samples[0], samples[1], samples[2]);
+    detector.setBackground(bg);
+    println("set background");
+  }
 }
 
 void keyPressed() {
@@ -30,18 +51,20 @@ void draw() {
 
     opencv.read();           // grab frame from camera
     opencv.convert(OpenCV.GRAY);
+    image(opencv.image(), 0, 0);
+
 //    opencv.threshold(80);    // set black & white threshold 
     
 //    DetectionResult motion = detector.motion(opencv.image());
 //    DetectionResult presence = detector.presence(opencv.image());
-    DetectionResult detect = detector.objects(opencv.image(), 0.2);
+    DetectionResult detect = detector.objects(opencv.image(), 0.3);
 //    opencv.copy(motion.image);
 //    opencv.copy(presence.image);
     if (detect != null) {
       println(detect.activity);
       
       // set it to black if not enough is happening
-//      int activityThreshold = 4000000;
+//      int activityThreshold = 1000000;
       int activityThreshold = 0;
       if (detect.activity < activityThreshold) {
         opencv.copy(blank);
@@ -52,7 +75,7 @@ void draw() {
       opencv.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
 //      opencv.blur( OpenCV.BLUR, 13 );
 //      opencv.invert();
-      image(opencv.image(), 0, 0);
+//      image(opencv.image(), 0, 0);
     }
    
     // find blobs
@@ -61,7 +84,7 @@ void draw() {
 
     // draw blob results
     stroke(200,0,0);
-    fill(200,0,0,150);
+    fill(200,0,0,50);
     for( int i=0; i<blobs.length; i++ ) {
         beginShape();
         for( int j=0; j<blobs[i].points.length; j++ ) {
@@ -101,6 +124,32 @@ class Detector {
   
   void setBackground(PImage backgroundImage) {
     this.backgroundImage = backgroundImage;
+  }
+  
+  PImage subtractForeground(PImage a, PImage b, PImage c) {
+     int numPixels = a.width * b.height;
+     PImage result = createImage(a.width, a.height, RGB);
+     for (int i=0; i<numPixels; i++) {
+       int aVal = a.pixels[i] & 0xFF; 
+       int bVal = b.pixels[i] & 0xFF; 
+       int cVal = c.pixels[i] & 0xFF;
+      
+       int diffAB = abs(aVal - bVal);
+       int diffAC = abs(aVal - cVal);
+       int diffBC = abs(bVal - cVal);
+       
+       int p;
+       int bestMatch = min(diffAB, diffAC, diffBC);
+       
+       if (bestMatch == diffAB || bestMatch == diffAC)
+         p = aVal;
+       else
+         p = cVal;
+       
+       result.pixels[i] = 0xFF000000 | (p << 16) | (p << 8) | p;
+     }
+     result.updatePixels();
+     return result;
   }
   
   DetectionResult objects(PImage img, float motionWeight) {

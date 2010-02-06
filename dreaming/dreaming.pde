@@ -1,4 +1,5 @@
 import hypermedia.video.*;
+import processing.video.*;
 
 VideoStreamer streamer;
 PImage[] cams = new PImage[6];
@@ -7,7 +8,7 @@ int camW = 640;
 int camH = 480;
 int camW2 = camW/2;
 int camH2 = camH/2;
-OpenCV localVideo;
+Capture localVideo;
 UDP udp;
 
 Behavior[] behaviors = new Behavior[1];
@@ -36,9 +37,9 @@ void setup() {
   for (int i=0; i<fish.length; i++) {
     fish[i] = new FishInfo(); 
   }
-  localVideo = new OpenCV(this);
+  localVideo = new Capture(this, camW, camH, 24);
 //  opencv.capture(camW, camH);
-  localVideo.movie("Fish Comp 3.mov", camW, camH);
+//  localVideo.movie("Fish Comp 3.mov", camW, camH);
   streamer = new VideoStreamer(this, "224.0.0.0", 9091);
   udp = new UDP( this, 9091, "224.0.0.0"); // this, port, ip address
   udp.listen(true);
@@ -55,14 +56,15 @@ void draw() {
  background(0);
  streamVideo();
  activeBehavior.draw();
-  if (cams[1] != null)
-    image(cams[1],0,0);
 }
 
 void streamVideo() {
-  localVideo.read();
-//  opencv.convert(OpenCV.GRAY);
-  streamer.send(localVideo.image());
+  if (localVideo.available()) {
+    localVideo.read();
+    localVideo.loadPixels();
+  //  opencv.convert(OpenCV.GRAY);
+    streamer.send(localVideo);
+  }
 }
 
 void receive( byte[] data, String ip, int port ) {

@@ -1,21 +1,21 @@
 class Detector {
  
   int numPixels;
-  PImage backgroundImage = null;
-  PImage motionImage = null;
-  PImage presenceImage = null;
-  PImage objectImage = null;
-  int[] previousFrame;
+  private PImage backgroundImage = null;
+  private PImage motionImage = null;
+  private PImage presenceImage = null;
+  private PImage objectImage = null;
+  private int[] previousFrame;
   
-  PImage blank;
-  PImage[] samples = new PImage[3];
+  private PImage blank;
+  private PImage[] samples = new PImage[3];
   
   int activity;
   
-  OpenCV opencv;
+  private OpenCV vision;
   
   Detector(PApplet parent) {
-    this.opencv = new OpenCV(parent); 
+    vision = new OpenCV(parent); 
   }
   
   Blob[] findBlobs(PImage img) {
@@ -23,20 +23,19 @@ class Detector {
     DetectionResult detect = objects(img, 0.3);
     if (detect != null) {
       activity = detect.activity;
-      if (true) return null;
       // set it to black if not enough is happening
 //      int activityThreshold = 1000000;
       int activityThreshold = 0;
       if (detect.activity < activityThreshold) {
-        opencv.copy(blank);
+        vision.copy(blank);
       } else {
-        opencv.copy(detect.image);
+        vision.copy(detect.image);
       }
-      opencv.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
+      vision.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
     }
    
     // find blobs
-    return opencv.blobs( 100, width*height/2, 100, false);
+    return vision.blobs( 100, width*height/2, 100, false);
   }
   
   PImage sampleBackground(PImage img) {
@@ -56,7 +55,7 @@ class Detector {
   
   void initImage(PImage img) {
     if (motionImage == null) {
-      opencv.allocate(img.width, img.height);
+      vision.allocate(img.width, img.height);
       motionImage = createImage(img.width, img.height, ALPHA);
       presenceImage = createImage(img.width, img.height, ALPHA);
       objectImage = createImage(img.width, img.height, ALPHA);
@@ -97,9 +96,11 @@ class Detector {
   }
   
   DetectionResult objects(PImage img, float motionWeight) {
+    initImage(img);
     DetectionResult presence = presence(img);
     if (presence == null) return null;
     DetectionResult motion = motion(img);
+    //return motion;
     float presenceWeight = 1.0-motionWeight;
     for (int i=0; i<numPixels; i++) {
      //objectImage.pixels[i] = (int)((presence.image.pixels[i]*presenceWeight) + (motion.image.pixels[i]*motionWeight));
@@ -113,8 +114,8 @@ class Detector {
   }
   
   DetectionResult presence(PImage img) {
-    if (backgroundImage == null) return null;
     initImage(img);
+    if (backgroundImage == null) return null;
     arraycopy(img.pixels, presenceImage.pixels);
 //    loadPixels();
     int presenceSum = 0;

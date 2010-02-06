@@ -29,7 +29,6 @@ class VideoStreamer {
     }
     ByteArrayOutputStream out = new ByteArrayOutputStream(); 
     if (img == null) {
-      println("creating image");
 //      img = (BufferedImage)createImage(srcimg.width, srcimg.height); 
       img = new BufferedImage(srcimg.width, srcimg.height, BufferedImage.TYPE_USHORT_GRAY);
     }

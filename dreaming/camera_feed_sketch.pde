@@ -15,12 +15,38 @@ class CameraFeedSketch extends Behavior {
     splitScreens();
   }
   
-  void drawScreen(int i) {
-    int camIndex = cameraMappings[i];
+  void drawScreen(int screenIndex) {
+    int camIndex = cameraMappings[screenIndex];
+    
+    // show video
     PImage c = cams[camIndex];
     if (c != null) {
-      image(c,0,0,w,h);
+      image(c,0,0);
     }
+    
+    // draw blobs
+    Blob[] blobs = fish[camIndex].blobs;
+    if (blobs != null) {
+      stroke(200,0,0);
+      fill(200,0,0,50);
+      for( int i=0; i<blobs.length; i++ ) {
+          beginShape();
+          for( int j=0; j<blobs[i].points.length; j++ ) {
+              vertex( blobs[i].points[j].x, blobs[i].points[j].y );
+          }
+          endShape(CLOSE);
+      }
+  
+      // draw blob rects
+      stroke(0,200,0);
+      noFill();
+      for( int i=0; i<blobs.length; i++ ) {
+        Rectangle r = blobs[i].rectangle;
+        rect(r.x, r.y, r.width, r.height);
+      }
+    }
+    
+    // draw activity meter
     fill(45,99,137);
     noStroke();
     rect(5,5,fish[camIndex].activity/10000,10);

@@ -15,7 +15,7 @@ class Detector {
   OpenCV opencv;
   
   Detector(PApplet parent) {
-    opencv = new OpenCV(parent); 
+    this.opencv = new OpenCV(parent); 
   }
   
   Blob[] findBlobs(PImage img) {
@@ -112,7 +112,6 @@ class Detector {
     return new DetectionResult(objectImage, presence.activity + motion.activity);
   }
   
-  // from golan
   DetectionResult presence(PImage img) {
     if (backgroundImage == null) return null;
     initImage(img);

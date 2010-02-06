@@ -1,13 +1,13 @@
 import hypermedia.video.*;
 
-VideoStreamer cam;
+VideoStreamer streamer;
 PImage[] cams = new PImage[6];
 int camW = 640;
 //int camW = 800;
 int camH = 480;
 int camW2 = camW/2;
 int camH2 = camH/2;
-OpenCV opencv;
+OpenCV localVideo;
 UDP udp;
 
 Behavior[] behaviors = new Behavior[1];
@@ -36,10 +36,10 @@ void setup() {
   for (int i=0; i<fish.length; i++) {
     fish[i] = new FishInfo(); 
   }
-  opencv = new OpenCV(this);
+  localVideo = new OpenCV(this);
 //  opencv.capture(camW, camH);
-  opencv.movie("Fish Comp 2.mov", camW, camH);
-  cam = new VideoStreamer(this, "224.0.0.0", 9091);
+  localVideo.movie("Fish Comp 3.mov", camW, camH);
+  streamer = new VideoStreamer(this, "224.0.0.0", 9091);
   udp = new UDP( this, 9091, "224.0.0.0"); // this, port, ip address
   udp.listen(true);
 }
@@ -55,17 +55,14 @@ void draw() {
  background(0);
  streamVideo();
  activeBehavior.draw();
+  if (cams[1] != null)
+    image(cams[1],0,0);
 }
 
 void streamVideo() {
-  opencv.read();
-  opencv.convert(OpenCV.GRAY);
-//  opencv.brightness(45);
-//  opencv.contrast(5);
-  PImage img = opencv.image();
-  cam.send(img);
-  
-//  cam.send(cams[1]);
+  localVideo.read();
+//  opencv.convert(OpenCV.GRAY);
+  streamer.send(localVideo.image());
 }
 
 void receive( byte[] data, String ip, int port ) {
@@ -80,7 +77,7 @@ void receive( byte[] data, String ip, int port ) {
   cams[4] = cams[1];
   cams[5] = cams[2];
   
-  for (int i=0; i<fish.length; i++) {
+  for (int i=0; i<cams.length; i++) {
     fish[i].blobs = detectors[i].findBlobs(cams[i]);
     fish[i].activity = detectors[i].activity;
   }

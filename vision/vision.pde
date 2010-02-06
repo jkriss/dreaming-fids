@@ -29,7 +29,7 @@ void mousePressed() {
   println("taking sample " + i);
   opencv.read();
   samples[i] = opencv.image();
-  background(255);
+  background(i == 2 ? 255 : 100);
   
   if (i == 2) {
     PImage bg = detector.subtractForeground(samples[0], samples[1], samples[2]);
@@ -38,12 +38,12 @@ void mousePressed() {
   }
 }
 
-void keyPressed() {
-  println("saving background");
-  opencv.read();
-  opencv.convert(OpenCV.GRAY);
-  detector.setBackground(opencv.image()); 
-}
+//void keyPressed() {
+//  println("saving background");
+//  opencv.read();
+//  opencv.convert(OpenCV.GRAY);
+//  detector.setBackground(opencv.image()); 
+//}
 
 void draw() {
 

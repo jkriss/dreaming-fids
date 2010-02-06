@@ -41,13 +41,13 @@ class VideoStreamer {
     }
     
     try {
-      img.setRGB(0,0, srcimg.width, srcimg.height, srcimg.pixels, 0, srcimg.width);
+      img.getRaster().setPixels(0,0,srcimg.width, srcimg.height, srcimg.pixels);
     }catch (Exception e) {}   
     
     try{ 
       JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out); 
       JPEGEncodeParam encpar = encoder.getDefaultJPEGEncodeParam(img); 
-      encpar.setQuality(0.6,true); // 0.0-1.0, force baseline 
+      encpar.setQuality(0.8,true); // 0.0-1.0, force baseline 
       encoder.setJPEGEncodeParam(encpar); 
       encoder.encode(img); 
     }catch(FileNotFoundException e){ 

@@ -17,7 +17,6 @@ void setup() {
     opencv.movie( "Fish Comp 3.mov", width, height );
     
     blank = createImage(width, height, ALPHA);
-    
 }
 
 void mousePressed() {
@@ -34,6 +33,8 @@ void mousePressed() {
   if (i == 2) {
     PImage bg = detector.subtractForeground(samples[0], samples[1], samples[2]);
     detector.setBackground(bg);
+    image(bg,0,0);
+    saveFrame("background.jpeg");
     println("set background");
   }
 }

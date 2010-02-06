@@ -15,18 +15,39 @@ class CameraFeedSketch extends Behavior {
     splitScreens();
   }
   
+  void scaleBlobs(Blob[] blobs, int w, int h, int targetW, int targetH) {
+    float wScale = targetW / (float)w;
+    float hScale = targetH / (float)h;
+    for (int i=0; i<blobs.length; i++) {
+      Blob b = blobs[i];
+      for (int j=0; j<b.points.length; j++) {
+        b.points[j].x *= wScale;
+        b.points[j].y *= hScale;
+      }
+//      println("old x: " + b.rectangle.x);
+      b.rectangle.x *= wScale;
+//      println("new x: " + b.rectangle.x);
+      b.rectangle.y *= hScale;
+      b.rectangle.width *= wScale;
+      b.rectangle.height *= hScale;
+      b.centroid.x *= wScale;
+      b.centroid.y *= hScale;
+    } 
+  }
+  
   void drawScreen(int screenIndex) {
     int camIndex = cameraMappings[screenIndex];
     
     // show video
     PImage c = cams[camIndex];
-    if (c != null) {
-      image(c,0,0);
-    }
+    if (c == null) return;
+
+    image(c,0,0,w,h);
     
     // draw blobs
     Blob[] blobs = fish[camIndex].blobs;
     if (blobs != null) {
+      scaleBlobs(blobs, c.width, c.height, w, h);
       stroke(200,0,0);
       fill(200,0,0,50);
       for( int i=0; i<blobs.length; i++ ) {

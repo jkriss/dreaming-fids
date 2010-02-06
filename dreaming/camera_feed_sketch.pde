@@ -14,27 +14,7 @@ class CameraFeedSketch extends Behavior {
 //    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
   }
-  
-  void scaleBlobs(Blob[] blobs, int w, int h, int targetW, int targetH) {
-    float wScale = targetW / (float)w;
-    float hScale = targetH / (float)h;
-    for (int i=0; i<blobs.length; i++) {
-      Blob b = blobs[i];
-      for (int j=0; j<b.points.length; j++) {
-        b.points[j].x *= wScale;
-        b.points[j].y *= hScale;
-      }
-//      println("old x: " + b.rectangle.x);
-      b.rectangle.x *= wScale;
-//      println("new x: " + b.rectangle.x);
-      b.rectangle.y *= hScale;
-      b.rectangle.width *= wScale;
-      b.rectangle.height *= hScale;
-      b.centroid.x *= wScale;
-      b.centroid.y *= hScale;
-    } 
-  }
-  
+    
   void drawScreen(int screenIndex) {
     int camIndex = cameraMappings[screenIndex];
     

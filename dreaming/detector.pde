@@ -100,17 +100,19 @@ class Detector {
     DetectionResult presence = presence(img);
     if (presence == null) return null;
     DetectionResult motion = motion(img);
-    //return motion;
-    float presenceWeight = 1.0-motionWeight;
-    for (int i=0; i<numPixels; i++) {
-     //objectImage.pixels[i] = (int)((presence.image.pixels[i]*presenceWeight) + (motion.image.pixels[i]*motionWeight));
-      int pB = presenceImage.pixels[i] & 0xFF;
-      int mB = motionImage.pixels[i] & 0xFF;
-      int cB = (int)((pB*presenceWeight)+(mB*motionWeight));
-      objectImage.pixels[i] = 0xFF000000 | (cB << 16) | (cB << 8) | cB;
-    }
-    objectImage.updatePixels();
+    combine(motionImage, presenceImage, objectImage, motionWeight);
     return new DetectionResult(objectImage, presence.activity + motion.activity);
+  }
+  
+  void combine(PImage a, PImage b, PImage target, float aWeight) {
+    float bWeight = 1.0 - aWeight;
+    for (int i=0; i<numPixels; i++) {
+      int ap = a.pixels[i] & 0xFF;
+      int bp = b.pixels[i] & 0xFF;
+      int cp = (int)((ap*aWeight)+(bp*bWeight));
+      target.pixels[i] = 0xFF000000 | (cp << 16) | (cp << 8) | cp;
+    }
+    target.updatePixels();
   }
   
   DetectionResult presence(PImage img) {

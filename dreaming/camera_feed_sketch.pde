@@ -11,7 +11,7 @@ class CameraFeedSketch extends Behavior {
   }
   
   void draw() {
-//    if (frameCount % 80 == 0) resetMappings();
+    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
   }
     

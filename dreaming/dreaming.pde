@@ -18,12 +18,9 @@ int numCameras = 6;
 int border = 10;
 int motionLevel;
 
-FishInfo[] fish = new FishInfo[3];
+FishInfo[] fish = new FishInfo[numCameras];
 
-PImage blank;
-PImage[] samples = new PImage[3];
-
-Detector detector = new Detector();
+Detector[] detectors = new Detector[numCameras];
 
 void setup() {
   float scale = .45;
@@ -33,7 +30,12 @@ void setup() {
   for (int i=0; i<behaviors.length; i++) {
    behaviors[i].setup(); 
   }
-  blank = createImage(width, height, ALPHA);
+  for (int i=0; i<detectors.length; i++) {
+   detectors[i] = new Detector(this); 
+  }
+  for (int i=0; i<fish.length; i++) {
+    fish[i] = new FishInfo(); 
+  }
   opencv = new OpenCV(this);
 //  opencv.capture(camW, camH);
   opencv.movie("Fish Comp 2.mov", camW, camH);
@@ -43,48 +45,16 @@ void setup() {
 }
 
 void mousePressed() {
-  if (samples[samples.length-1] != null) {
-    Arrays.fill(samples, null);
-  }
-  int i=0;
-  while (samples[i] != null) i++;
-  println("taking sample " + i);
-  opencv.read();
-  samples[i] = opencv.image();
-  background(i == 2 ? 255 : 100);
-  
-  if (i == 2) {
-    PImage bg = detector.subtractForeground(samples[0], samples[1], samples[2]);
-    detector.setBackground(bg);
-    image(bg,0,0);
-    saveFrame("background.jpeg");
-    println("set background");
+  for (int i=0; i<detectors.length; i++) {
+    detectors[i].sampleBackground(cams[i]);
+    background(255);
   }
 }
 
 void draw() {
  background(0);
  streamVideo();
- findFish();
  activeBehavior.draw();
-}
-
-void findFish() {
- DetectionResult detect = detector.objects(opencv.image(), 0.3);
- if (detect != null) {
-   println(detect.activity);
-//      int activityThreshold = 1000000;
-   int activityThreshold = 0;
-    if (detect.activity < activityThreshold) {
-      opencv.copy(blank);
-    } else {
-      opencv.copy(detect.image);
-    }
-  
-    opencv.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
-  }
-  Blob[] blobs = opencv.blobs( 100, width*height/2, 100, false);
-  // split by camera
 }
 
 void streamVideo() {
@@ -108,7 +78,12 @@ void receive( byte[] data, String ip, int port ) {
   // for now
   cams[3] = cams[0];
   cams[4] = cams[1];
-  cams[5] = cams[2];  
+  cams[5] = cams[2];
+  
+  for (int i=0; i<fish.length; i++) {
+    fish[i].blobs = detectors[i].findBlobs(cams[i]);
+    fish[i].activity = detectors[i].activity;
+  }
 } 
 
 PImage loadPImageFromBytes(byte[] b, PApplet p){ 
@@ -126,7 +101,5 @@ PImage loadPImageFromBytes(byte[] b, PApplet p){
 
 class FishInfo {
   Blob[] blobs;
-  FishInfo(Blob[] blobs) {
-    this.blobs = blobs;
-  } 
+  int activity;
 }

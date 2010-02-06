@@ -16,10 +16,14 @@ class CameraFeedSketch extends Behavior {
   }
   
   void drawScreen(int i) {
-    PImage c = cams[cameraMappings[i]];
+    int camIndex = cameraMappings[i];
+    PImage c = cams[camIndex];
     if (c != null) {
       image(c,0,0,w,h);
     }
+    fill(45,99,137);
+    noStroke();
+    rect(5,5,fish[camIndex].activity/10000,10);
   }
     
   void resetMappings() {

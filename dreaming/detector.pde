@@ -7,13 +7,62 @@ class Detector {
   PImage objectImage = null;
   int[] previousFrame;
   
+  PImage blank;
+  PImage[] samples = new PImage[3];
+  
+  int activity;
+  
+  OpenCV opencv;
+  
+  Detector(PApplet parent) {
+    opencv = new OpenCV(parent); 
+  }
+  
+  Blob[] findBlobs(PImage img) {
+    if (backgroundImage == null) return null;
+    DetectionResult detect = objects(img, 0.3);
+    if (detect != null) {
+      activity = detect.activity;
+      if (true) return null;
+      // set it to black if not enough is happening
+//      int activityThreshold = 1000000;
+      int activityThreshold = 0;
+      if (detect.activity < activityThreshold) {
+        opencv.copy(blank);
+      } else {
+        opencv.copy(detect.image);
+      }
+      opencv.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
+    }
+   
+    // find blobs
+    return opencv.blobs( 100, width*height/2, 100, false);
+  }
+  
+  PImage sampleBackground(PImage img) {
+    if (samples[samples.length-1] != null) {
+      Arrays.fill(samples, null);
+    }
+    int i=0;
+    while (samples[i] != null) i++;
+    samples[i] = img;
+    if (i == 2) {
+      PImage bg = subtractForeground(samples[0], samples[1], samples[2]);
+      setBackground(bg);
+      return bg;
+    }
+    return null;
+  }
+  
   void initImage(PImage img) {
     if (motionImage == null) {
+      opencv.allocate(img.width, img.height);
       motionImage = createImage(img.width, img.height, ALPHA);
       presenceImage = createImage(img.width, img.height, ALPHA);
       objectImage = createImage(img.width, img.height, ALPHA);
       numPixels = img.width * img.height;
       previousFrame = new int[numPixels];
+      blank = createImage(width, height, ALPHA);
     }
   }
   

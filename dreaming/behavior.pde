@@ -39,11 +39,11 @@ class Behavior {
    // overridden by child classes
  }
  
- void scaleBlobs(Blob[] blobs, int w, int h, int targetW, int targetH) {
+ void scaleBlobs(MotionBlob[] blobs, int w, int h, int targetW, int targetH) {
     float wScale = targetW / (float)w;
     float hScale = targetH / (float)h;
     for (int i=0; i<blobs.length; i++) {
-      Blob b = blobs[i];
+      Blob b = blobs[i].blob;
       for (int j=0; j<b.points.length; j++) {
         b.points[j].x *= wScale;
         b.points[j].y *= hScale;

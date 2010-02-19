@@ -34,6 +34,10 @@ public int threshold = 16;
 public int maxThreshold = 500;
 
 void setup() {
+  
+  PFont font = loadFont("Helvetica-Bold-16.vlw");
+  textFont(font);
+  
   float scale = .45;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
@@ -133,6 +137,6 @@ PImage loadPImageFromBytes(byte[] b, PApplet p){
 }
 
 class FishInfo {
-  Blob[] blobs;
+  MotionBlob[] blobs;
   int activity;
 }

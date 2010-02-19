@@ -24,26 +24,31 @@ class CameraFeedSketch extends Behavior {
 
     image(c,0,0,w,h);
     
+    textAlign(CENTER, CENTER);
+    
     // draw blobs
-    Blob[] blobs = fish[camIndex].blobs;
-    if (blobs != null) {
-      scaleBlobs(blobs, c.width, c.height, w, h);
+    MotionBlob[] mblobs = fish[camIndex].blobs;
+    if (mblobs != null) {
+      scaleBlobs(mblobs, c.width, c.height, w, h);
       stroke(200,0,0);
       fill(200,0,0,50);
-      for( int i=0; i<blobs.length; i++ ) {
+      for( int i=0; i<mblobs.length; i++ ) {
           beginShape();
-          for( int j=0; j<blobs[i].points.length; j++ ) {
-              vertex( blobs[i].points[j].x, blobs[i].points[j].y );
+          for( int j=0; j<mblobs[i].blob.points.length; j++ ) {
+              vertex( mblobs[i].blob.points[j].x, mblobs[i].blob.points[j].y );
           }
           endShape(CLOSE);
       }
   
       // draw blob rects
       stroke(0,200,0);
-      noFill();
-      for( int i=0; i<blobs.length; i++ ) {
-        Rectangle r = blobs[i].rectangle;
+      for( int i=0; i<mblobs.length; i++ ) {
+        Rectangle r = mblobs[i].blob.rectangle;
+        noFill();
         rect(r.x, r.y, r.width, r.height);
+        // show activity level
+        fill(0);
+        text(mblobs[i].motion, r.x + (r.width/2), r.y + (r.height/2));
       }
     }
     

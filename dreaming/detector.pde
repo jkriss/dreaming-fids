@@ -6,7 +6,10 @@ class Detector {
   private PImage presenceImage = null;
   private PImage objectImage = null;
   private PImage prethresholdImage = null;
-  private int[] previousFrame;
+  private PImage previousFrame;
+  
+  private PImage currentMotionFrame;
+  private PImage previousMotionFrame;
   
   private PImage blank;
   private PImage[] samples = new PImage[3];
@@ -19,8 +22,10 @@ class Detector {
     vision = new OpenCV(parent); 
   }
   
-  Blob[] findBlobs(PImage img) {
+  MotionBlob[] findBlobs(PImage img) {
     if (backgroundImage == null) return null;
+    initImage(img);
+    arraycopy(img.pixels, currentMotionFrame.pixels);
     DetectionResult detect = objects(img, 0.3);
     if (detect != null) {
       activity = detect.activity;
@@ -39,7 +44,35 @@ class Detector {
     }
    
     // find blobs
-    return vision.blobs( 100, width*height/2, 100, false);
+    Blob[] blobs = vision.blobs( 100, width*height/2, 100, false);
+    
+    // get motion amount for each blob
+    MotionBlob[] mblobs = new MotionBlob[blobs.length];
+    Blob b;
+    for (int i=0; i<blobs.length; i++) {
+      b = blobs[i];
+      mblobs[i] = new MotionBlob(b, movement(b.rectangle.x, b.rectangle.y, b.rectangle.width, b.rectangle.height));
+    }
+    
+    arraycopy(currentMotionFrame.pixels, previousMotionFrame.pixels);
+    
+    return mblobs;
+  }
+  
+  int movement(int x, int y, int w, int h) {
+    return difference(currentMotionFrame.get(x,y,w,h), previousMotionFrame.get(x,y,w,h));
+  }
+  
+  int difference(PImage a, PImage b) {
+    int totalDifference = 0;
+    int numPixels = a.height * a.width;
+    for (int i=0; i<numPixels; i++) {
+      int ap = a.pixels[i] & 0xFF;
+      int bp = b.pixels[i] & 0xFF;
+      int diff = abs(ap - bp);
+      totalDifference += diff;
+    }
+    return totalDifference;
   }
   
   PImage sampleBackground(PImage img) {
@@ -65,7 +98,9 @@ class Detector {
       objectImage = createImage(img.width, img.height, ALPHA);
       prethresholdImage = createImage(img.width, img.height, ALPHA);
       numPixels = img.width * img.height;
-      previousFrame = new int[numPixels];
+      previousFrame = createImage(img.width, img.height, ALPHA);
+      previousMotionFrame = createImage(img.width, img.height, ALPHA);
+      currentMotionFrame = createImage(img.width, img.height, ALPHA);
       blank = createImage(width, height, ALPHA);
     }
   }
@@ -144,7 +179,7 @@ class Detector {
     int movementSum = 0; // Amount of movement in the frame
     for (int i = 0; i < numPixels; i++) { // For each pixel in the video frame...
       color currColor = motionImage.pixels[i];
-      color prevColor = previousFrame[i];
+      color prevColor = previousFrame.pixels[i];
       int currB = currColor & 0xFF;
       int prevB = prevColor & 0xFF;
       int diffB = abs(currB - prevB);
@@ -152,11 +187,21 @@ class Detector {
       movementSum += diffB;
       motionImage.pixels[i] = 0xff000000 | (diffB << 16) | (diffB << 8) | diffB;
       // Save the current color into the 'previous' buffer
-      previousFrame[i] = currColor;
+      previousFrame.pixels[i] = currColor;
     }
+    previousFrame.updatePixels();
     return new DetectionResult(motionImage, movementSum);
   }
   
+}
+
+class MotionBlob {
+ Blob blob;
+ int motion;
+ MotionBlob(Blob blob, int motion) {
+   this.blob = blob;
+   this.motion = motion;
+ }
 }
 
 class DetectionResult {

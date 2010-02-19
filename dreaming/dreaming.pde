@@ -1,5 +1,6 @@
 import hypermedia.video.*;
 import processing.video.*;
+import controlP5.*;
 
 VideoStreamer streamer;
 PImage[] cams = new PImage[6];
@@ -25,6 +26,13 @@ FishInfo[] fish = new FishInfo[numCameras];
 
 Detector[] detectors = new Detector[numCameras];
 
+ControlP5 controls;
+ControlWindow controlWindow;
+int nextControlY = 10;
+
+public int threshold = 16;
+public int maxThreshold = 500;
+
 void setup() {
   float scale = .45;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
@@ -47,12 +55,28 @@ void setup() {
   streamer = new VideoStreamer(this, "224.0.0.0", 9091);
   udp = new UDP( this, 9091, "224.0.0.0"); // this, port, ip address
   udp.listen(true);
+  
+  // set up control panel
+//  controls = new ControlP5(this);
+//  controls.setAutoDraw(false);
+//  controls.setAutoInitialization(true);
+//  controlWindow = controls.addControlWindow("controlP5window",200,300);
+//  controlWindow.hideCoordinates();
+//  slider("threshold", 0, 200, 16);
+//  slider("maxThreshold", 0, 500, 500);
+}
+
+void slider(String name, int min, int max, int defaultValue) {
+//  Controller slider = controls.addSlider(name,min,max,defaultValue,10,nextControlY,100,10);
+  Controller slider = controls.addSlider(name,min,max,defaultValue,10,nextControlY,100,10);
+  slider.setWindow(controlWindow);
+  nextControlY += 15;
 }
 
 void mousePressed() {
   for (int i=0; i<detectors.length; i++) {
     detectors[i].sampleBackground(cams[i]);
-    background(255);
+    background(150);
   }
 }
 

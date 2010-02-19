@@ -5,6 +5,7 @@ class Detector {
   private PImage motionImage = null;
   private PImage presenceImage = null;
   private PImage objectImage = null;
+  private PImage prethresholdImage = null;
   private int[] previousFrame;
   
   private PImage blank;
@@ -24,14 +25,17 @@ class Detector {
     if (detect != null) {
       activity = detect.activity;
       // set it to black if not enough is happening
-//      int activityThreshold = 1000000;
+//      int activityThreshold = 120000;
       int activityThreshold = 0;
       if (detect.activity < activityThreshold) {
         vision.copy(blank);
       } else {
+//        combine(prethresholdImage, detect.image, prethresholdImage, 0.95);
         vision.copy(detect.image);
+//        vision.copy(prethresholdImage);
       }
-      vision.threshold(5, 255, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
+//      vision.threshold(threshold, maxThreshold, OpenCV.THRESH_BINARY + OpenCV.THRESH_OTSU);
+      vision.threshold(threshold, maxThreshold, OpenCV.THRESH_BINARY);
     }
    
     // find blobs
@@ -59,6 +63,7 @@ class Detector {
       motionImage = createImage(img.width, img.height, ALPHA);
       presenceImage = createImage(img.width, img.height, ALPHA);
       objectImage = createImage(img.width, img.height, ALPHA);
+      prethresholdImage = createImage(img.width, img.height, ALPHA);
       numPixels = img.width * img.height;
       previousFrame = new int[numPixels];
       blank = createImage(width, height, ALPHA);
@@ -101,7 +106,8 @@ class Detector {
     if (presence == null) return null;
     DetectionResult motion = motion(img);
     combine(motionImage, presenceImage, objectImage, motionWeight);
-    return new DetectionResult(objectImage, presence.activity + motion.activity);
+//    return new DetectionResult(objectImage, presence.activity + motion.activity);
+    return new DetectionResult(objectImage, motion.activity);
   }
   
   void combine(PImage a, PImage b, PImage target, float aWeight) {

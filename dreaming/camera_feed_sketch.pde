@@ -11,7 +11,7 @@ class CameraFeedSketch extends Behavior {
   }
   
   void draw() {
-    if (frameCount % 80 == 0) resetMappings();
+//    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
   }
     
@@ -51,6 +51,8 @@ class CameraFeedSketch extends Behavior {
     fill(45,99,137);
     noStroke();
     rect(5,5,fish[camIndex].activity/10000,10);
+    
+//    if (camIndex == 1) println(fish[camIndex].activity);
   }
     
   void resetMappings() {

@@ -10,6 +10,11 @@ int leftBorder = 25;
 int maxBlinks = 20;
 int framesPerBlink = 20;
 
+color normalColor = 180;
+color blinkColor = 210;
+
+// this list will be shared across displays,
+// so that it flows along all four
 Row[] rows = new Row[nRows];
 float[] maxWidths;
 
@@ -42,7 +47,7 @@ void draw() {
     float maxWidth = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[colNum];
     for (int i=0; i<nRows; i++) {
       Row r = rows[i];
-      color c = r.blinkOn ? 230 : 180;
+      color c = r.blinkOn ? blinkColor : normalColor;
       fill(c);
       rect(0,0,r.colWidths[colNum], rowHeight);
       translate(0, rowPadding+rowHeight);

@@ -33,6 +33,8 @@ int nextControlY = 10;
 public int threshold = 16;
 public int maxThreshold = 500;
 
+MotionBlob suspiciousFish = null;
+
 void setup() {
   
   PFont font = loadFont("Helvetica-Bold-16.vlw");
@@ -87,7 +89,22 @@ void mousePressed() {
 void draw() {
  background(0);
  streamVideo();
+ findSuspiciousActivity();
  activeBehavior.draw();
+}
+
+void findSuspiciousActivity() {
+  int maxMotion = 0;
+  for (int c=0; c<fish.length; c++) {
+    MotionBlob[] mblobs = fish[c].blobs;
+    if (mblobs == null) continue;
+    for( int i=0; i<mblobs.length; i++ ) {
+      if (mblobs[i].motion > maxMotion) {
+        suspiciousFish = mblobs[i];
+        maxMotion = suspiciousFish.motion;
+      }
+    }
+  }
 }
 
 void streamVideo() {

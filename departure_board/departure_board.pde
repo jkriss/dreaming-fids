@@ -1,5 +1,6 @@
 
-float[] colPositions = { 0.5, 0.25, 0.25 };
+float[] colPositions = { 0.5, 0.35, 0.15 };
+float[] minWidths = { 0.6, 0.7, 0.8 };
 float rowHeight = 30;
 int rowPadding = 15;
 int colPadding = 15;
@@ -7,6 +8,7 @@ int nRows = 7;
 int topBorder = 65;
 int leftBorder = 25;
 int maxBlinks = 20;
+int framesPerBlink = 20;
 
 Row[] rows = new Row[nRows];
 float[] maxWidths;
@@ -28,7 +30,7 @@ void draw() {
   fill(180);
   pushMatrix();
   
-  if (frameCount % 20 == 0 ) {
+  if (frameCount % framesPerBlink == 0 ) {
     for (int i=0; i<rows.length; i++) {
       rows[i].blinkIfBlinking();
     }
@@ -90,7 +92,8 @@ class Row {
  }
  void randomize() {
    for (int i=0; i<colWidths.length; i++) {
-     colWidths[i] = maxWidths[i] * random(0.5, 1);
+     colWidths[i] = maxWidths[i] * random(minWidths[i], 1);
    }
+   if (random(1) > 0.7) colWidths[colWidths.length-1] = 0;
  }
 }

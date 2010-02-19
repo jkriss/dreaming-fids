@@ -6,6 +6,7 @@ int colPadding = 15;
 int nRows = 7;
 int topBorder = 65;
 int leftBorder = 25;
+int maxBlinks = 20;
 
 Row[] rows = new Row[nRows];
 float[] maxWidths;
@@ -26,12 +27,21 @@ void draw() {
   noStroke();
   fill(180);
   pushMatrix();
+  
+  if (frameCount % 20 == 0 ) {
+    for (int i=0; i<rows.length; i++) {
+      rows[i].blinkIfBlinking();
+    }
+  }
+  
   translate(leftBorder, topBorder);
   for (int colNum=0; colNum<3; colNum++) {
     pushMatrix();
     float maxWidth = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[colNum];
     for (int i=0; i<nRows; i++) {
       Row r = rows[i];
+      color c = r.blinkOn ? 230 : 180;
+      fill(c);
       rect(0,0,r.colWidths[colNum], rowHeight);
       translate(0, rowPadding+rowHeight);
     }
@@ -45,6 +55,10 @@ void mousePressed() {
   pop();
 }
 
+void keyPressed() {
+  rows[(int)random(rows.length)].startBlinking();
+}
+
 void pop() {
   arraycopy(rows, 1, rows, 0, rows.length-1);
   rows[rows.length-1] = new Row(maxWidths);
@@ -53,10 +67,26 @@ void pop() {
 class Row {
  float[] maxWidths;
  float[] colWidths;
+ boolean blinking;
+ boolean blinkOn;
+ int blinkCount = 0;
  Row(float[] maxWidths) {
    this.maxWidths = maxWidths;
    colWidths = new float[maxWidths.length];
    randomize();
+ }
+ void startBlinking() {
+   blinking = true;
+ }
+ void blinkIfBlinking() {
+   if (blinking) {
+     blinkCount += 1;
+     blinkOn = !blinkOn;
+     if (blinkCount == maxBlinks) {
+       blinking = false;
+       blinkOn = false;
+     }
+   }
  }
  void randomize() {
    for (int i=0; i<colWidths.length; i++) {

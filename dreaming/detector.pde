@@ -51,7 +51,7 @@ class Detector {
     Blob b;
     for (int i=0; i<blobs.length; i++) {
       b = blobs[i];
-      mblobs[i] = new MotionBlob(b, movement(b.rectangle.x, b.rectangle.y, b.rectangle.width, b.rectangle.height));
+      mblobs[i] = new MotionBlob((int)random(1000000), b, movement(b.rectangle.x, b.rectangle.y, b.rectangle.width, b.rectangle.height));
     }
     
     arraycopy(currentMotionFrame.pixels, previousMotionFrame.pixels);
@@ -198,7 +198,9 @@ class Detector {
 class MotionBlob {
  Blob blob;
  int motion;
- MotionBlob(Blob blob, int motion) {
+ int id;
+ MotionBlob(int id, Blob blob, int motion) {
+   this.id = id;
    this.blob = blob;
    this.motion = motion;
  }

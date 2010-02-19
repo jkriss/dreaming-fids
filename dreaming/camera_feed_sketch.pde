@@ -3,6 +3,8 @@ int[] cameraMappings = { 0, 1, 2, 3 };
 
 class CameraFeedSketch extends Behavior {
   
+  MotionBlob suspiciousFish = null;
+  
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
   }
@@ -12,7 +14,22 @@ class CameraFeedSketch extends Behavior {
   
   void draw() {
 //    if (frameCount % 80 == 0) resetMappings();
+    findSuspiciousActivity();
     splitScreens();
+  }
+  
+  void findSuspiciousActivity() {
+    int maxMotion = 0;
+    for (int c=0; c<fish.length; c++) {
+      MotionBlob[] mblobs = fish[c].blobs;
+      if (mblobs == null) continue;
+      for( int i=0; i<mblobs.length; i++ ) {
+        if (mblobs[i].motion > maxMotion) {
+          suspiciousFish = mblobs[i];
+          maxMotion = suspiciousFish.motion;
+        }
+      }
+    }
   }
     
   void drawScreen(int screenIndex) {
@@ -43,6 +60,12 @@ class CameraFeedSketch extends Behavior {
       // draw blob rects
       stroke(0,200,0);
       for( int i=0; i<mblobs.length; i++ ) {
+        
+        if (mblobs[i].id == suspiciousFish.id) 
+          stroke(0,200,0);
+        else
+          noStroke(); //stroke(0,200,0);
+        
         Rectangle r = mblobs[i].blob.rectangle;
         noFill();
         rect(r.x, r.y, r.width, r.height);

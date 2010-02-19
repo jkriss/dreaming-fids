@@ -8,10 +8,11 @@ int topBorder = 65;
 int leftBorder = 25;
 
 Row[] rows = new Row[nRows];
+float[] maxWidths;
 
 void setup() {
  size(800, 480); 
- float[] maxWidths = new float[colPositions.length];
+ maxWidths = new float[colPositions.length];
  for (int i=0; i<maxWidths.length; i++) {
    maxWidths[i] = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[i];
  }
@@ -20,7 +21,7 @@ void setup() {
  }
 }
 
-void draw() {
+void draw() {   
   background(0);
   noStroke();
   fill(180);
@@ -40,12 +41,24 @@ void draw() {
   popMatrix();
 }
 
+void mousePressed() {
+  pop();
+}
+
+void pop() {
+  arraycopy(rows, 1, rows, 0, rows.length-1);
+  rows[rows.length-1] = new Row(maxWidths);
+}
+
 class Row {
  float[] maxWidths;
  float[] colWidths;
  Row(float[] maxWidths) {
    this.maxWidths = maxWidths;
    colWidths = new float[maxWidths.length];
+   randomize();
+ }
+ void randomize() {
    for (int i=0; i<colWidths.length; i++) {
      colWidths[i] = maxWidths[i] * random(0.5, 1);
    }

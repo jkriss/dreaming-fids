@@ -40,6 +40,8 @@ MotionRect mostInterestingRect;
 
 void setup() {
   
+  smooth();
+  
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
   
@@ -210,7 +212,7 @@ class MotionRect {
    this.cameraIndex = cameraIndex;
  }
  void step() {
-   float amt = .5;
+   float amt = .3;
    current.x = interp(current.x, target.x, amt, 0.7);   
    current.y = interp(current.y, target.y, amt, 0.7);   
    current.width = interp(current.width, target.width, 0.2, 0.3);   

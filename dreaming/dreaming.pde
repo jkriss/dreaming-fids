@@ -21,7 +21,7 @@ int[] screenSize = {800, 480};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
 int numScreens = 4;
 int numCameras = 6;
-int border = 10;
+int border = 0; //10;
 int motionLevel;
 
 FishInfo[] fish = new FishInfo[numCameras];
@@ -63,7 +63,7 @@ void setup() {
     interestRects[i] = new MotionRect();
   }
 //  localVideo = new Capture(this, camW, camH, 24);
-  movie = new Movie(this, "Fish Comp 3.mov");
+  movie = new Movie(this, "Fish Comp 1.mov");
   movie.loop();
   movieFrame = createImage(camW, camH, ALPHA);
 

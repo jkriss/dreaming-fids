@@ -87,10 +87,10 @@ class CameraFeedSketch extends Behavior {
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
       float score = scaledAct+scaledStab;
 //      println("rect score: " + score);
-//      if (score > 200) {
-      if (true) {
+      if (score > 180) {
+//      if (true) {
         stroke(245,237,12, score);
-        strokeWeight(2);
+        strokeWeight(4);
         rectMode(CENTER);
         
         float rw = r.width*wScale;
@@ -105,12 +105,15 @@ class CameraFeedSketch extends Behavior {
           rw = rh * ratio;
         }
         
-        rect(r.x*wScale, r.y*hScale, rw, rh);
+        // remember, r.x and r.y are center points, here, so we need to adjust
+        PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(rw/2), (int)(r.y*hScale)-(int)(rh/2), (int)rw, (int)rh);
+        image(mug,0,0,w,h);
+//        rect(r.x*wScale, r.y*hScale, rw, rh);
         rectMode(CORNER);
       }
-      noStroke();
-      fill(255,255,255,150);
-      ellipse(r.x*wScale, r.y*hScale, 30, 30);
+//      noStroke();
+//      fill(255,255,255,150);
+//      ellipse(r.x*wScale, r.y*hScale, 30, 30);
     }
     
     // draw activity meter

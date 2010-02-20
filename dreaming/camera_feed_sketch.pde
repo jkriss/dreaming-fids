@@ -80,7 +80,13 @@ class CameraFeedSketch extends Behavior {
       Rectangle r = mostInterestingRect.current;
       stroke(245,237,12);
       strokeWeight(5);
+      rectMode(CENTER);
       rect(r.x*wScale, r.y*hScale, r.width*wScale, r.height*hScale);
+      rectMode(CORNER);
+
+      noStroke();
+      fill(255,255,255,150);
+      ellipse(r.x*wScale, r.y*hScale, 30, 30);
     }
     
     // draw activity meter

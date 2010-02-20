@@ -109,7 +109,9 @@ void findSuspiciousActivity() {
     for( int i=0; i<mblobs.length; i++ ) {
       if (mblobs[i].motion > maxMotion) {
         suspiciousFish = mblobs[i];
-        interestRects[c].setTarget(mblobs[i].blob.rectangle, c);
+        Rectangle r = mblobs[i].blob.rectangle;
+        Point center = mblobs[i].blob.centroid;
+        interestRects[c].setTarget(center.x, center.y, r.width, r.height, c);
         interestRects[c].active(sqrt(suspiciousFish.motion));
 //        mostInterestingRect = interestRects[i];
 //        mostInterestingRect.active(true);
@@ -197,15 +199,15 @@ class MotionRect {
    activity += motion;
  }
  void setTarget(Rectangle r, int cameraIndex) {
-   setTarget(r.x, r.y, r.width, r.height);
-   this.cameraIndex = cameraIndex;
+   setTarget(r.x, r.y, r.width, r.height, cameraIndex);
  }
- void setTarget(int x, int y, int w, int h) {
+ void setTarget(int x, int y, int w, int h, int cameraIndex) {
    int margin = 30;
-   target.x = x-margin;
-   target.y = y-margin;
+   target.x = x;
+   target.y = y;
    target.width = w+(2*margin);
    target.height = h+(2*margin);
+   this.cameraIndex = cameraIndex;
  }
  void step() {
    float amt = .5;
@@ -217,7 +219,8 @@ class MotionRect {
  }
  
  int interp(int start, int end, float amt, float maxAmt) {
-   int delta = abs(end-start);
-   return (int)lerp(start,end,min(maxAmt, amt*screenFactor/delta));
+   return end;
+//   int delta = abs(end-start);
+//   return (int)lerp(start,end,min(maxAmt, amt*screenFactor/delta));
  }
 }

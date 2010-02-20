@@ -79,9 +79,22 @@ class CameraFeedSketch extends Behavior {
       noFill();
       Rectangle r = mostInterestingRect.current;
       stroke(245,237,12);
-      strokeWeight(5);
+      strokeWeight(2);
       rectMode(CENTER);
-      rect(r.x*wScale, r.y*hScale, r.width*wScale, r.height*hScale);
+      
+      float rw = r.width*wScale;
+      float rh = r.height*hScale;
+      float ratio = 1.61; //16/9;
+      
+      if (rw/rh > ratio) {
+        // wider than ideal, scale height up based on width
+        rh = rw / ratio;
+      } else {
+        // taller than ideal, scale width up based on height
+        rw = rh * ratio;
+      }
+      
+      rect(r.x*wScale, r.y*hScale, rw, rh);
       rectMode(CORNER);
 
       noStroke();

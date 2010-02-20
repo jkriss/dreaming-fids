@@ -17,7 +17,7 @@ UDP udp;
 Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
-int screenFactor = screenSize[0] * screenSize[1] / 7000;
+//int screenFactor = screenSize[0] * screenSize[1] / 7000;
 int numScreens = 4;
 int numCameras = 6;
 int border = 10;
@@ -202,7 +202,7 @@ class MotionRect {
    setTarget(r.x, r.y, r.width, r.height, cameraIndex);
  }
  void setTarget(int x, int y, int w, int h, int cameraIndex) {
-   int margin = 30;
+   int margin = 25;
    target.x = x;
    target.y = y;
    target.width = w+(2*margin);
@@ -213,14 +213,15 @@ class MotionRect {
    float amt = .5;
    current.x = interp(current.x, target.x, amt, 0.7);   
    current.y = interp(current.y, target.y, amt, 0.7);   
-   current.width = interp(current.width, target.width, 0.2, 0.5);   
-   current.height = interp(current.height, target.height, 0.2, 0.5);   
+   current.width = interp(current.width, target.width, 0.2, 0.3);   
+   current.height = interp(current.height, target.height, 0.2, 0.3);   
    activity *= 0.95;
  }
  
  int interp(int start, int end, float amt, float maxAmt) {
-   return end;
-//   int delta = abs(end-start);
+//   return end;
+   int delta = abs(end-start);
 //   return (int)lerp(start,end,min(maxAmt, amt*screenFactor/delta));
+   return (int)lerp(start,end,min(maxAmt, amt*100/delta));
  }
 }

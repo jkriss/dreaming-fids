@@ -45,16 +45,16 @@ class CameraFeedSketch extends Behavior {
       strokeWeight(1);
       for( int i=0; i<mblobs.length; i++ ) {
         
-        if (mblobs[i].id == suspiciousFish.id) {
-          stroke(200,0,0);
-          fill(200,0,0,50);
-          beginShape();
-          Blob b = mblobs[i].blob;
-          for( int j=0; j<b.points.length; j++ ) {
-              vertex( b.points[j].x, b.points[j].y );
-          }
-          endShape(CLOSE);
-        }
+//        if (mblobs[i].id == suspiciousFish.id) {
+//          stroke(200,0,0);
+//          fill(200,0,0,50);
+//          beginShape();
+//          Blob b = mblobs[i].blob;
+//          for( int j=0; j<b.points.length; j++ ) {
+//              vertex( b.points[j].x, b.points[j].y );
+//          }
+//          endShape(CLOSE);
+//        }
 
         
 //        if (mblobs[i].id == suspiciousFish.id) 
@@ -78,7 +78,9 @@ class CameraFeedSketch extends Behavior {
     if (mostInterestingRect != null && mostInterestingRect.cameraIndex == camIndex) {
       noFill();
       Rectangle r = mostInterestingRect.current;
-      stroke(245,237,12);
+      println("stability: " + mostInterestingRect.stability);
+//      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
+      stroke(245,237,12, map(mostInterestingRect.stability,700,100, 0, 255));
       strokeWeight(2);
       rectMode(CENTER);
       
@@ -97,9 +99,9 @@ class CameraFeedSketch extends Behavior {
       rect(r.x*wScale, r.y*hScale, rw, rh);
       rectMode(CORNER);
 
-      noStroke();
-      fill(255,255,255,150);
-      ellipse(r.x*wScale, r.y*hScale, 30, 30);
+//      noStroke();
+//      fill(255,255,255,150);
+//      ellipse(r.x*wScale, r.y*hScale, 30, 30);
     }
     
     // draw activity meter

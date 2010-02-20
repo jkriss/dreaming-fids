@@ -60,7 +60,7 @@ void setup() {
     interestRects[i] = new MotionRect();
   }
 //  localVideo = new Capture(this, camW, camH, 24);
-  movie = new Movie(this, "Fish Comp 3.mov");
+  movie = new Movie(this, "Fish Comp 1.mov");
   movie.loop();
   movieFrame = createImage(camW, camH, ALPHA);
 
@@ -191,6 +191,7 @@ class MotionRect {
  Rectangle target;
  int cameraIndex;
  float activity;
+ float stability;
  boolean active;
  MotionRect() {
   current = new Rectangle();
@@ -212,12 +213,14 @@ class MotionRect {
    this.cameraIndex = cameraIndex;
  }
  void step() {
-   float amt = .3;
+   float amt = .6;
    current.x = interp(current.x, target.x, amt, 0.7);   
    current.y = interp(current.y, target.y, amt, 0.7);   
    current.width = interp(current.width, target.width, 0.2, 0.3);   
    current.height = interp(current.height, target.height, 0.2, 0.3);   
+   stability += dist(current.x, current.y, target.x, target.y);
    activity *= 0.95;
+   stability *= 0.95;
  }
  
  int interp(int start, int end, float amt, float maxAmt) {

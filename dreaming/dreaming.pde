@@ -220,7 +220,7 @@ class MotionRect {
    current.height = interp(current.height, target.height, 0.2, 0.3);   
    stability += dist(current.x, current.y, target.x, target.y);
    activity *= 0.95;
-   stability *= 0.95;
+   stability *= 0.7;
  }
  
  int interp(int start, int end, float amt, float maxAmt) {

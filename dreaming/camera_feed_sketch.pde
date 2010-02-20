@@ -78,27 +78,35 @@ class CameraFeedSketch extends Behavior {
     if (mostInterestingRect != null && mostInterestingRect.cameraIndex == camIndex) {
       noFill();
       Rectangle r = mostInterestingRect.current;
-      println("stability: " + mostInterestingRect.stability);
+//      println("stability: " + mostInterestingRect.stability);
+//      println("activity: " + mostInterestingRect.activity);
+      float scaledAct = 0.2*max(0,map(mostInterestingRect.activity,3000,8000, 0, 255));
+      float scaledStab = 0.8*max(0,map(mostInterestingRect.stability,100,10, 0, 255));
+      
+//      println("stability: " + mostInterestingRect.stability + ", scaled stability: " + scaledStab);
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
-      stroke(245,237,12, map(mostInterestingRect.stability,700,100, 0, 255));
-      strokeWeight(2);
-      rectMode(CENTER);
-      
-      float rw = r.width*wScale;
-      float rh = r.height*hScale;
-      float ratio = 1.61; //16/9;
-      
-      if (rw/rh > ratio) {
-        // wider than ideal, scale height up based on width
-        rh = rw / ratio;
-      } else {
-        // taller than ideal, scale width up based on height
-        rw = rh * ratio;
+      float score = scaledAct+scaledStab;
+//      println("rect score: " + score);
+      if (score > 200) {
+        stroke(245,237,12, score);
+        strokeWeight(2);
+        rectMode(CENTER);
+        
+        float rw = r.width*wScale;
+        float rh = r.height*hScale;
+        float ratio = 1.61; //16/9;
+        
+        if (rw/rh > ratio) {
+          // wider than ideal, scale height up based on width
+          rh = rw / ratio;
+        } else {
+          // taller than ideal, scale width up based on height
+          rw = rh * ratio;
+        }
+        
+        rect(r.x*wScale, r.y*hScale, rw, rh);
+        rectMode(CORNER);
       }
-      
-      rect(r.x*wScale, r.y*hScale, rw, rh);
-      rectMode(CORNER);
-
 //      noStroke();
 //      fill(255,255,255,150);
 //      ellipse(r.x*wScale, r.y*hScale, 30, 30);

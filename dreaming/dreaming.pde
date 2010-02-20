@@ -1,6 +1,7 @@
 import hypermedia.video.*;
 import processing.video.*;
 import controlP5.*;
+import fullscreen.*; 
 
 VideoStreamer streamer;
 PImage[] cams = new PImage[6];
@@ -38,6 +39,8 @@ MotionBlob suspiciousFish = null;
 MotionRect[] interestRects = new MotionRect[numCameras];
 MotionRect mostInterestingRect;
 
+SoftFullScreen fs; 
+
 void setup() {
   
   smooth();
@@ -60,7 +63,7 @@ void setup() {
     interestRects[i] = new MotionRect();
   }
 //  localVideo = new Capture(this, camW, camH, 24);
-  movie = new Movie(this, "Fish Comp 1.mov");
+  movie = new Movie(this, "Fish Comp 3.mov");
   movie.loop();
   movieFrame = createImage(camW, camH, ALPHA);
 
@@ -76,6 +79,8 @@ void setup() {
 //  controlWindow.hideCoordinates();
 //  slider("threshold", 0, 200, 16);
 //  slider("maxThreshold", 0, 500, 500);
+
+  fs = new SoftFullScreen(this);
 }
 
 void slider(String name, int min, int max, int defaultValue) {

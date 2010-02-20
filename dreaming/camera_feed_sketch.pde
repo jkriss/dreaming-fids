@@ -30,32 +30,44 @@ class CameraFeedSketch extends Behavior {
     MotionBlob[] mblobs = fish[camIndex].blobs;
     if (mblobs != null) {
       scaleBlobs(mblobs, c.width, c.height, w, h);
-      stroke(200,0,0);
-      fill(200,0,0,50);
-      for( int i=0; i<mblobs.length; i++ ) {
-          beginShape();
-          for( int j=0; j<mblobs[i].blob.points.length; j++ ) {
-              vertex( mblobs[i].blob.points[j].x, mblobs[i].blob.points[j].y );
-          }
-          endShape(CLOSE);
-      }
+//      stroke(200,0,0);
+//      fill(200,0,0,50);
+//      for( int i=0; i<mblobs.length; i++ ) {
+//          beginShape();
+//          for( int j=0; j<mblobs[i].blob.points.length; j++ ) {
+//              vertex( mblobs[i].blob.points[j].x, mblobs[i].blob.points[j].y );
+//          }
+//          endShape(CLOSE);
+//      }
   
       // draw blob rects
       stroke(0,200,0);
       strokeWeight(1);
       for( int i=0; i<mblobs.length; i++ ) {
         
-        if (mblobs[i].id == suspiciousFish.id) 
-          stroke(0,200,0);
-        else
-          noStroke(); //stroke(0,200,0);
+        if (mblobs[i].id == suspiciousFish.id) {
+          stroke(200,0,0);
+          fill(200,0,0,50);
+          beginShape();
+          Blob b = mblobs[i].blob;
+          for( int j=0; j<b.points.length; j++ ) {
+              vertex( b.points[j].x, b.points[j].y );
+          }
+          endShape(CLOSE);
+        }
+
         
-        Rectangle r = mblobs[i].blob.rectangle;
-        noFill();
-        rect(r.x, r.y, r.width, r.height);
-        // show activity level
-        fill(0);
-        text(mblobs[i].motion, r.x + (r.width/2), r.y + (r.height/2));
+//        if (mblobs[i].id == suspiciousFish.id) 
+//          stroke(0,200,0);
+//        else
+//          noStroke(); //stroke(0,200,0);
+//        
+//        Rectangle r = mblobs[i].blob.rectangle;
+//        noFill();
+//        rect(r.x, r.y, r.width, r.height);
+//        // show activity level
+//        fill(0);
+//        text(mblobs[i].motion, r.x + (r.width/2), r.y + (r.height/2));
       }
     }
     

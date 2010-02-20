@@ -17,6 +17,7 @@ UDP udp;
 Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
+int screenFactor = screenSize[0] * screenSize[1] / 7000;
 int numScreens = 4;
 int numCameras = 6;
 int border = 10;
@@ -100,7 +101,7 @@ void findSuspiciousActivity() {
   int maxMotion = 0;
   for (int i=0; i<interestRects.length; i++) {
     interestRects[i].step();
-    interestRects[i].active(false);
+    interestRects[i].active(0);
   }
   for (int c=0; c<fish.length; c++) {
     MotionBlob[] mblobs = fish[c].blobs;
@@ -109,7 +110,7 @@ void findSuspiciousActivity() {
       if (mblobs[i].motion > maxMotion) {
         suspiciousFish = mblobs[i];
         interestRects[c].setTarget(mblobs[i].blob.rectangle, c);
-        interestRects[c].active(true);
+        interestRects[c].active(sqrt(suspiciousFish.motion));
 //        mostInterestingRect = interestRects[i];
 //        mostInterestingRect.active(true);
         maxMotion = suspiciousFish.motion;
@@ -119,15 +120,14 @@ void findSuspiciousActivity() {
 
   float maxActivity = -1;
   for (int i=0; i<interestRects.length; i++) {
-    println("rect " + i + " activity: " + interestRects[i].activity);
+//    println("rect " + i + " activity: " + interestRects[i].activity);
     if (interestRects[i].activity > maxActivity) {
       maxActivity = interestRects[i].activity;
-      println("new max: " + i);
       mostInterestingRect = interestRects[i];
     }
   }
   
-  println("most interesting rect: " + mostInterestingRect.cameraIndex + ", activity: " + mostInterestingRect.activity);
+//  println("most interesting rect: " + mostInterestingRect.cameraIndex + ", activity: " + mostInterestingRect.activity);
 
 }
 
@@ -192,31 +192,32 @@ class MotionRect {
   current = new Rectangle();
   target = new Rectangle();
  }
- void active(boolean b) {
-   if (b) activity += 1;
-   active = b;
+ void active(float motion) {
+   active = motion > 0;
+   activity += motion;
  }
  void setTarget(Rectangle r, int cameraIndex) {
    setTarget(r.x, r.y, r.width, r.height);
    this.cameraIndex = cameraIndex;
  }
  void setTarget(int x, int y, int w, int h) {
-   int margin = 20;
+   int margin = 30;
    target.x = x-margin;
    target.y = y-margin;
    target.width = w+(2*margin);
    target.height = h+(2*margin);
  }
  void step() {
-   float amt = .3;
-   current.x = interp(current.x, target.x, amt);   
-   current.y = interp(current.y, target.y, amt);   
-   current.width = interp(current.width, target.width, amt);   
-   current.height = interp(current.height, target.height, amt);   
-   activity *= 0.5;
+   float amt = .5;
+   current.x = interp(current.x, target.x, amt, 0.7);   
+   current.y = interp(current.y, target.y, amt, 0.7);   
+   current.width = interp(current.width, target.width, 0.2, 0.5);   
+   current.height = interp(current.height, target.height, 0.2, 0.5);   
+   activity *= 0.95;
  }
  
- int interp(int start, int end, float amt) {
-   return (int)lerp(start,end,amt);
+ int interp(int start, int end, float amt, float maxAmt) {
+   int delta = abs(end-start);
+   return (int)lerp(start,end,min(maxAmt, amt*screenFactor/delta));
  }
 }

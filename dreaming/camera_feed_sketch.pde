@@ -42,6 +42,7 @@ class CameraFeedSketch extends Behavior {
   
       // draw blob rects
       stroke(0,200,0);
+      strokeWeight(1);
       for( int i=0; i<mblobs.length; i++ ) {
         
         if (mblobs[i].id == suspiciousFish.id) 
@@ -56,6 +57,18 @@ class CameraFeedSketch extends Behavior {
         fill(0);
         text(mblobs[i].motion, r.x + (r.width/2), r.y + (r.height/2));
       }
+    }
+    
+    float wScale = w / (float)c.width;
+    float hScale = h / (float)c.height;
+
+    // draw following rect, scaled
+    if (mostInterestingRect != null && mostInterestingRect.cameraIndex == camIndex) {
+      noFill();
+      Rectangle r = mostInterestingRect.current;
+      stroke(245,237,12);
+      strokeWeight(5);
+      rect(r.x*wScale, r.y*hScale, r.width*wScale, r.height*hScale);
     }
     
     // draw activity meter

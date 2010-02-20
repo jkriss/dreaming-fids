@@ -56,6 +56,5 @@ class Behavior {
       b.centroid.y *= hScale;
     } 
   }
-
  
 }

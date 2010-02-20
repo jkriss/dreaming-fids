@@ -34,6 +34,8 @@ public int threshold = 16;
 public int maxThreshold = 500;
 
 MotionBlob suspiciousFish = null;
+MotionRect[] interestRects = new MotionRect[numCameras];
+MotionRect mostInterestingRect;
 
 void setup() {
   
@@ -52,6 +54,7 @@ void setup() {
   }
   for (int i=0; i<fish.length; i++) {
     fish[i] = new FishInfo(); 
+    interestRects[i] = new MotionRect();
   }
 //  localVideo = new Capture(this, camW, camH, 24);
   movie = new Movie(this, "Fish Comp 3.mov");
@@ -95,16 +98,37 @@ void draw() {
 
 void findSuspiciousActivity() {
   int maxMotion = 0;
+  for (int i=0; i<interestRects.length; i++) {
+    interestRects[i].step();
+    interestRects[i].active(false);
+  }
   for (int c=0; c<fish.length; c++) {
     MotionBlob[] mblobs = fish[c].blobs;
     if (mblobs == null) continue;
     for( int i=0; i<mblobs.length; i++ ) {
       if (mblobs[i].motion > maxMotion) {
         suspiciousFish = mblobs[i];
+        interestRects[c].setTarget(mblobs[i].blob.rectangle, c);
+        interestRects[c].active(true);
+//        mostInterestingRect = interestRects[i];
+//        mostInterestingRect.active(true);
         maxMotion = suspiciousFish.motion;
       }
     }
   }
+
+  float maxActivity = -1;
+  for (int i=0; i<interestRects.length; i++) {
+    println("rect " + i + " activity: " + interestRects[i].activity);
+    if (interestRects[i].activity > maxActivity) {
+      maxActivity = interestRects[i].activity;
+      println("new max: " + i);
+      mostInterestingRect = interestRects[i];
+    }
+  }
+  
+  println("most interesting rect: " + mostInterestingRect.cameraIndex + ", activity: " + mostInterestingRect.activity);
+
 }
 
 void streamVideo() {
@@ -156,4 +180,43 @@ PImage loadPImageFromBytes(byte[] b, PApplet p){
 class FishInfo {
   MotionBlob[] blobs;
   int activity;
+}
+
+class MotionRect {
+ Rectangle current;
+ Rectangle target;
+ int cameraIndex;
+ float activity;
+ boolean active;
+ MotionRect() {
+  current = new Rectangle();
+  target = new Rectangle();
+ }
+ void active(boolean b) {
+   if (b) activity += 1;
+   active = b;
+ }
+ void setTarget(Rectangle r, int cameraIndex) {
+   setTarget(r.x, r.y, r.width, r.height);
+   this.cameraIndex = cameraIndex;
+ }
+ void setTarget(int x, int y, int w, int h) {
+   int margin = 20;
+   target.x = x-margin;
+   target.y = y-margin;
+   target.width = w+(2*margin);
+   target.height = h+(2*margin);
+ }
+ void step() {
+   float amt = .3;
+   current.x = interp(current.x, target.x, amt);   
+   current.y = interp(current.y, target.y, amt);   
+   current.width = interp(current.width, target.width, amt);   
+   current.height = interp(current.height, target.height, amt);   
+   activity *= 0.5;
+ }
+ 
+ int interp(int start, int end, float amt) {
+   return (int)lerp(start,end,amt);
+ }
 }

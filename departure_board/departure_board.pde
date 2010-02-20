@@ -1,17 +1,19 @@
 
-float[] colPositions = { 0.5, 0.35, 0.15 };
-float[] minWidths = { 0.6, 0.7, 0.8 };
+//float[] colPositions = { 0.5, 0.35, 0.15 };
+float[] colPositions = { 57/104.0, 14/104.0, 7/104.0 };
+float[] minWidths = { 0.6, 1, 1 };
 float rowHeight = 30;
 int rowPadding = 15;
+//int[] colPaddings = new int[3];
 int colPadding = 15;
-int nRows = 7;
+int nRows = 10;
 int topBorder = 65;
 int leftBorder = 25;
 int maxBlinks = 20;
-int framesPerBlink = 20;
+int framesPerBlink = 30;
 
 color normalColor = 180;
-color blinkColor = 210;
+color blinkColor = 0;
 
 // this list will be shared across displays,
 // so that it flows along all four
@@ -20,6 +22,13 @@ float[] maxWidths;
 
 void setup() {
  size(800, 480); 
+ 
+ topBorder = (int)(width * (5/78.0));
+ leftBorder = (int)(width * (6/78.0));
+
+// colPaddings[0] = (int)(width * (10/104.0));
+// colPaddings[1] = (int)(width * (4/104.0));
+ 
  maxWidths = new float[colPositions.length];
  for (int i=0; i<maxWidths.length; i++) {
    maxWidths[i] = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[i];
@@ -47,7 +56,7 @@ void draw() {
     float maxWidth = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[colNum];
     for (int i=0; i<nRows; i++) {
       Row r = rows[i];
-      color c = r.blinkOn ? blinkColor : normalColor;
+      color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
       fill(c);
       rect(0,0,r.colWidths[colNum], rowHeight);
       translate(0, rowPadding+rowHeight);

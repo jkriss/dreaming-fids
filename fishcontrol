@@ -1,0 +1,17 @@
+#! /usr/bin/env ruby
+
+args = ARGV.reverse
+command = args.pop
+
+puts "running #{command}"
+
+case command
+when 'open'
+  `open dreaming/dreaming.pde`
+when 'run'
+  `open dreaming/dreaming.pde`
+  sleep(10)
+  `open #{File.expand_path(File.dirname(__FILE__))}/run_sketch.app`
+when 'stop'
+  `echo "quit application \\"Processing\\"" | osascript`
+end

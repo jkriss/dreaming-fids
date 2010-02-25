@@ -1,3 +1,5 @@
+import org.jklabs.easyosc.*;
+
 import hypermedia.video.*;
 import processing.video.*;
 import controlP5.*;
@@ -41,9 +43,13 @@ MotionRect mostInterestingRect;
 
 SoftFullScreen fs; 
 
+EasyOsc osc;
+
 void setup() {
   
   smooth();
+  
+  osc = new EasyOsc(this, "fish");
   
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
@@ -85,6 +91,12 @@ void setup() {
 //  slider("maxThreshold", 0, 500, 500);
 
   fs = new SoftFullScreen(this);
+}
+
+void click(String message) {
+// println("osc message: " + message); 
+  println("clicking");
+  mousePressed();
 }
 
 void slider(String name, int min, int max, int defaultValue) {

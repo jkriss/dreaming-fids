@@ -24,7 +24,14 @@ get '/click' do
   redirect '/'
 end
 
+get '/fullscreen' do
+  osc :fullscreen
+  redirect '/'
+end
+
 def cmd(action)
+  # this will need to run on both machines
+  # just use ssh?
   `./fishcontrol #{action}`
 end
 
@@ -44,3 +51,4 @@ __END__
 %a{ :href => '/start' } start
 %a{ :href => '/stop' } stop
 %a{ :href => '/click' } click
+%a{ :href => '/fullscreen' } fullscreen

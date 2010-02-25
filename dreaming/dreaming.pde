@@ -21,7 +21,7 @@ Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
-int numScreens = 4;
+int numScreens = 2;
 int numCameras = 6;
 int border = 0; //10;
 int motionLevel;
@@ -97,6 +97,10 @@ void click(String message) {
 // println("osc message: " + message); 
   println("clicking");
   mousePressed();
+}
+
+void fullscreen(String foo) {
+  fs.setFullScreen(!fs.isFullScreen());
 }
 
 void slider(String name, int min, int max, int defaultValue) {

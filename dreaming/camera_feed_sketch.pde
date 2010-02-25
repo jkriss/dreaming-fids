@@ -21,6 +21,8 @@ class CameraFeedSketch extends Behavior {
     // show video
     PImage c = cams[camIndex];
     if (c == null) return;
+    
+//    if (screenIndex > 1) return;
 
     image(c,0,0,w,h);
     
@@ -87,8 +89,8 @@ class CameraFeedSketch extends Behavior {
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
       float score = scaledAct+scaledStab;
 //      println("rect score: " + score);
-      if (score > 180) {
-//      if (true) {
+//      if (score > 180) {
+      if (true) {
         stroke(245,237,12, score);
         strokeWeight(4);
         rectMode(CENTER);
@@ -106,9 +108,9 @@ class CameraFeedSketch extends Behavior {
         }
         
         // remember, r.x and r.y are center points, here, so we need to adjust
-        PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(rw/2), (int)(r.y*hScale)-(int)(rh/2), (int)rw, (int)rh);
-        image(mug,0,0,w,h);
-//        rect(r.x*wScale, r.y*hScale, rw, rh);
+//        PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(rw/2), (int)(r.y*hScale)-(int)(rh/2), (int)rw, (int)rh);
+//        image(mug,0,0,w,h);
+        rect(r.x*wScale, r.y*hScale, rw, rh);
         rectMode(CORNER);
       }
 //      noStroke();

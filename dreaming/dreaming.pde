@@ -48,8 +48,12 @@ void setup() {
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
   
-  float scale = .45;
+  float scale = 1;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
+
+  Graphics2D g2 = ((PGraphicsJava2D)g).g2;
+  g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   activeBehavior = behaviors[0];
   for (int i=0; i<behaviors.length; i++) {
@@ -62,10 +66,10 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect();
   }
-//  localVideo = new Capture(this, camW, camH, 24);
-  movie = new Movie(this, "Fish Comp 1.mov");
-  movie.loop();
-  movieFrame = createImage(camW, camH, ALPHA);
+  localVideo = new Capture(this, camW, camH, 24);
+//  movie = new Movie(this, "Fish Comp 3.mov");
+//  movie.loop();
+//  movieFrame = createImage(camW, camH, ALPHA);
 
   streamer = new VideoStreamer(this, "224.0.0.0", 9091);
   udp = new UDP( this, 9091, "224.0.0.0"); // this, port, ip address
@@ -102,6 +106,9 @@ void draw() {
  streamVideo();
  findSuspiciousActivity();
  activeBehavior.draw();
+ 
+ fill(106,161,204);
+ text(frameRate, 40, 20);
 }
 
 void findSuspiciousActivity() {

@@ -53,7 +53,7 @@ __END__
   = yield
 
 @@ index
-%a{ :href => '/run' } open
+%a{ :href => '/open' } open
 %a{ :href => '/run' } run
 %a{ :href => '/stop' } stop
 %a{ :href => '/click' } click

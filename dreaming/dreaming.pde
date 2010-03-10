@@ -72,10 +72,10 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect();
   }
-  localVideo = new Capture(this, camW, camH, 24);
-//  movie = new Movie(this, "Fish Comp 3.mov");
-//  movie.loop();
-//  movieFrame = createImage(camW, camH, ALPHA);
+//  localVideo = new Capture(this, camW, camH, 24);
+  movie = new Movie(this, "Fish Comp 3.mov");
+  movie.loop();
+  movieFrame = createImage(camW, camH, ALPHA);
 
   streamer = new VideoStreamer(this, "224.0.0.0", 9091);
   udp = new UDP( this, 9091, "224.0.0.0"); // this, port, ip address
@@ -91,6 +91,7 @@ void setup() {
 //  slider("maxThreshold", 0, 500, 500);
 
   fs = new SoftFullScreen(this);
+  fs.setFullScreen(true);
 }
 
 void click(String message) {

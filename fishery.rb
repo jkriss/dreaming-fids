@@ -9,7 +9,12 @@ get '/' do
   haml :index
 end
 
-get '/start' do
+get '/open' do
+  cmd :open
+  redirect '/'
+end
+
+get '/run' do
   cmd :run
   redirect '/'
 end
@@ -48,7 +53,8 @@ __END__
   = yield
 
 @@ index
-%a{ :href => '/start' } start
+%a{ :href => '/run' } open
+%a{ :href => '/run' } run
 %a{ :href => '/stop' } stop
 %a{ :href => '/click' } click
 %a{ :href => '/fullscreen' } fullscreen

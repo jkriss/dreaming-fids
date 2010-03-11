@@ -12,8 +12,6 @@ when 'open'
   `open dreaming/dreaming.pde`
 when 'run'
   `open #{File.expand_path(File.dirname(__FILE__))}/run_sketch.app`
-when 'cursor:hide'
-  `open #{File.expand_path(File.dirname(__FILE__))}/trigger_cursorcerer.app`
 when 'stop'
   `echo "quit application \\"Processing\\"" | osascript`
 when 'server:start'

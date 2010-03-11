@@ -92,6 +92,17 @@ void setup() {
 
   fs = new SoftFullScreen(this);
   fs.setFullScreen(true);
+  hideCursor();
+}
+
+void hideCursor() {
+ int[] pixels = new int[16 * 16];
+Image image = Toolkit.getDefaultToolkit().createImage(
+        new MemoryImageSource(16, 16, pixels, 0, 16));
+Cursor transparentCursor =
+        Toolkit.getDefaultToolkit().createCustomCursor
+             (image, new Point(0, 0), "invisibleCursor"); 
+  setCursor(transparentCursor);
 }
 
 void click(String message) {

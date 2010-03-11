@@ -89,6 +89,7 @@ class Detector {
     if (i == 2) {
       PImage bg = subtractForeground(samples[0], samples[1], samples[2]);
       bg.save(imagePath());
+      loadBackground();
     }
   }
   
@@ -97,7 +98,7 @@ class Detector {
   }
   
   String imagePath() {
-    return "background-"+id+".jpg";
+    return "data/background-"+id+".jpg";
   }
   
   void initImage(PImage img) {

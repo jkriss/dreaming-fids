@@ -41,8 +41,9 @@ get '/fullscreen' do
 end
 
 def echo(request_path)
+  return if params[:echo] == 'false'
   other_hosts.each do |h|
-    url = "http://#{h}:9393#{request_path}"
+    url = "http://#{h}:9393#{request_path}?echo=false"
     puts "requesting #{url}"
     begin
       open url

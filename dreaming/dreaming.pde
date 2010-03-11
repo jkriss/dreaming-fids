@@ -82,6 +82,8 @@ void setup() {
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
   udp.listen(true);
   
+  println("sending on " + sendIP() + ", receiving on " + receiveIP());
+  
   // set up control panel
 //  controls = new ControlP5(this);
 //  controls.setAutoDraw(false);
@@ -105,7 +107,7 @@ String receiveIP() {
 }
 
 boolean isThing1() {
-  return true || hostname().equals("thing1.local");
+  return hostname().equals("thing1.local");
 }
 
 String hostname() {

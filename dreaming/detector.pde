@@ -16,10 +16,14 @@ class Detector {
   
   int activity;
   
+  int id;
+  
   private OpenCV vision;
   
-  Detector(PApplet parent) {
+  Detector(PApplet parent, int id) {
     vision = new OpenCV(parent); 
+    this.id = id;
+    loadBackground();
   }
   
   MotionBlob[] findBlobs(PImage img) {
@@ -75,7 +79,7 @@ class Detector {
     return totalDifference;
   }
   
-  PImage sampleBackground(PImage img) {
+  void sampleBackground(PImage img) {
     if (samples[samples.length-1] != null) {
       Arrays.fill(samples, null);
     }
@@ -84,10 +88,16 @@ class Detector {
     samples[i] = img;
     if (i == 2) {
       PImage bg = subtractForeground(samples[0], samples[1], samples[2]);
-      setBackground(bg);
-      return bg;
+      bg.save(imagePath());
     }
-    return null;
+  }
+  
+  void loadBackground() {
+    setBackground(loadImage(imagePath()));
+  }
+  
+  String imagePath() {
+    return "background-"+id+".jpg";
   }
   
   void initImage(PImage img) {

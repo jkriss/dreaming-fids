@@ -21,7 +21,7 @@ Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
-int numScreens = 4;
+int numScreens = 2;
 int numCameras = 6;
 int border = 0; //10;
 int motionLevel;
@@ -55,7 +55,7 @@ void setup() {
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
   
-  float scale = 0.3;
+  float scale = 1;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
 
   Graphics2D g2 = ((PGraphicsJava2D)g).g2;
@@ -67,7 +67,7 @@ void setup() {
    behaviors[i].setup(); 
   }
   for (int i=0; i<detectors.length; i++) {
-   detectors[i] = new Detector(this); 
+   detectors[i] = new Detector(this, i); 
   }
   for (int i=0; i<fish.length; i++) {
     fish[i] = new FishInfo(); 

@@ -1,5 +1,7 @@
 #! /usr/bin/env ruby
 
+require 'sinatra_server'
+
 args = ARGV.reverse
 command = args.pop
 
@@ -12,4 +14,8 @@ when 'run'
   `open #{File.expand_path(File.dirname(__FILE__))}/run_sketch.app`
 when 'stop'
   `echo "quit application \\"Processing\\"" | osascript`
+when 'server:start'
+  SinatraServer.new.start
+when 'server:stop'
+  SinatraServer.new.stop
 end

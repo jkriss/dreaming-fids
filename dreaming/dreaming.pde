@@ -97,11 +97,11 @@ void setup() {
 }
 
 String sendIP() {
- return isThing1() ? "224.0.0.0" : "224.0.0.1";
+ return isThing1() ? "225.0.0.0" : "224.0.0.0";
 }
 
 String receiveIP() {
- return isThing1() ? "224.0.0.1" : "224.0.0.0"; 
+ return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
 }
 
 boolean isThing1() {

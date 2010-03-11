@@ -229,10 +229,12 @@ void receive( byte[] data, String ip, int port ) {
 //  cams[isThing1() ? 4 : 1] = cams[1];
 //  cams[isThing1() ? 5 : 2] = cams[2];
 
-  cams[isThing1() ? 3 : 0] = localVideo.get(0,0,camW2,camH2);
-  cams[isThing1() ? 4 : 1] = localVideo.get(camW2,0,camW2,camH2);
-  cams[isThing1() ? 5 : 2] = localVideo.get(0,camH2,camW2,camH2);
-
+  
+  if (movieFrame != null) {
+    cams[isThing1() ? 3 : 0] = movieFrame.get(0,0,camW2,camH2);
+    cams[isThing1() ? 4 : 1] = movieFrame.get(camW2,0,camW2,camH2);
+    cams[isThing1() ? 5 : 2] = movieFrame.get(0,camH2,camW2,camH2);
+  }
   
   for (int i=0; i<cams.length; i++) {
     fish[i].blobs = detectors[i].findBlobs(cams[i]);

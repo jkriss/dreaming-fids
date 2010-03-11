@@ -21,7 +21,7 @@ Behavior[] behaviors = new Behavior[1];
 Behavior activeBehavior;
 int[] screenSize = {800, 480};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
-int numScreens = 2;
+int numScreens = 4;
 int numCameras = 6;
 int border = 0; //10;
 int motionLevel;
@@ -44,6 +44,7 @@ MotionRect mostInterestingRect;
 SoftFullScreen fs; 
 
 EasyOsc osc;
+String hostname = null;
 
 void setup() {
   
@@ -54,7 +55,7 @@ void setup() {
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
   
-  float scale = 1;
+  float scale = 0.3;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
 
   Graphics2D g2 = ((PGraphicsJava2D)g).g2;
@@ -77,8 +78,8 @@ void setup() {
   movie.loop();
   movieFrame = createImage(camW, camH, ALPHA);
 
-  streamer = new VideoStreamer(this, "224.0.0.0", 9091);
-  udp = new UDP( this, 9091, "224.0.0.0"); // this, port, ip address
+  streamer = new VideoStreamer(this, sendIP(), 9091);
+  udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
   udp.listen(true);
   
   // set up control panel
@@ -93,6 +94,30 @@ void setup() {
   fs = new SoftFullScreen(this);
   fs.setFullScreen(true);
   hideCursor();
+}
+
+String sendIP() {
+ return isThing1() ? "224.0.0.0" : "224.0.0.1";
+}
+
+String receiveIP() {
+ return isThing1() ? "224.0.0.1" : "224.0.0.0"; 
+}
+
+boolean isThing1() {
+  return true || hostname().equals("thing1.local");
+}
+
+String hostname() {
+  if (hostname == null) {
+    try {
+      String[] cmd_elements = {"hostname"};
+      Process p = Runtime.getRuntime().exec(cmd_elements);
+      hostname = new BufferedReader(new InputStreamReader(p.getInputStream())).readLine();
+    } catch (IOException e) {
+    }
+  }
+  return hostname;
 }
 
 void hideCursor() {
@@ -193,14 +218,14 @@ void streamVideo() {
 void receive( byte[] data, String ip, int port ) {
   PImage img = loadPImageFromBytes(data, this);
 
-  cams[0] = img.get(0,0,camW2,camH2);
-  cams[1] = img.get(camW2,0,camW2,camH2);
-  cams[2] = img.get(0,camH2,camW2,camH2);
+  cams[isThing1() ? 0 : 3] = img.get(0,0,camW2,camH2);
+  cams[isThing1() ? 1 : 4] = img.get(camW2,0,camW2,camH2);
+  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
    
   // for now
-  cams[3] = cams[0];
-  cams[4] = cams[1];
-  cams[5] = cams[2];
+  cams[isThing1() ? 3 : 0] = cams[0];
+  cams[isThing1() ? 4 : 1] = cams[1];
+  cams[isThing1() ? 5 : 2] = cams[2];
   
   for (int i=0; i<cams.length; i++) {
     fish[i].blobs = detectors[i].findBlobs(cams[i]);

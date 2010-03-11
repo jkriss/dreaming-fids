@@ -2,8 +2,11 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'osc'
+require 'open-uri'
 
 OscClient = OSC::UDPSocket.new
+
+HOSTS = %w(jklabs-mbp.local thing1.local thing2.local)
 
 get '/' do
   haml :index
@@ -11,16 +14,19 @@ end
 
 get '/open' do
   cmd :open
+  echo '/open'
   redirect '/'
 end
 
 get '/run' do
   cmd :run
+  echo '/run'
   redirect '/'
 end
 
 get '/stop' do
   cmd :stop
+  echo '/stop'
   redirect '/'
 end
 
@@ -32,6 +38,26 @@ end
 get '/fullscreen' do
   osc :fullscreen
   redirect '/'
+end
+
+def echo(request_path)
+  other_hosts.each do |h|
+    url = "http://#{h}:9393#{request_path}"
+    puts "requesting #{url}"
+    begin
+      open url
+    rescue Exception => e
+      puts "error loading url: #{e}"
+    end
+  end
+end
+
+def hostname
+  @@hostname ||= `hostname`.strip
+end
+
+def other_hosts
+  HOSTS.reject{ |h| h == hostname }
 end
 
 def cmd(action)

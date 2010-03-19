@@ -1,5 +1,6 @@
 
 int[] cameraMappings = { 0, 1, 2, 3 };
+Mugshotter mugshotter = new Mugshotter();
 
 class CameraFeedSketch extends Behavior {
   
@@ -13,6 +14,8 @@ class CameraFeedSketch extends Behavior {
   void draw() {
 //    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
+    spanScreens();
+    mugshotter.draw();
   }
     
   void drawScreen(int screenIndex) {
@@ -162,7 +165,10 @@ class CameraFeedSketch extends Behavior {
         if (r.contains(fishRect)) {
           fill(255,255,255, 20);
           println("caught one!");
-          mugshot(r, screenIndex);
+          // cam image isn't scaled, so scale rect down to its size
+          PImage scaledCam = createImage(w,h,ALPHA);
+          scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
+          mugshotter.mugshot(scaledCam, r);
         } else {
           noFill();
         }
@@ -182,14 +188,12 @@ class CameraFeedSketch extends Behavior {
     fill(45,99,137);
     noStroke();
     rect(5,5,fish[camIndex].activity/10000,10);
-    
+       
 //    if (camIndex == 1) println(fish[camIndex].activity);
   }
   
-  void mugshot(Rectangle r, int screenIndex) {
-    println("taking mugshot");
-  }
-    
+
+      
   void resetMappings() {
     int[] choices = {0,1,2,3,4,5};
     for (int i=0; i<cameraMappings.length;) {
@@ -200,4 +204,37 @@ class CameraFeedSketch extends Behavior {
       i++;
     }
   }
+}
+
+class Mugshotter {
+ 
+ long lastShot;
+ ArrayList mugshots = new ArrayList();
+ 
+ int scaleFactor = 5;
+ 
+ int mWidth = 16 * scaleFactor; 
+ int mHeight = 9 * scaleFactor;
+ int mMargin = 1 * scaleFactor;
+ 
+ void mugshot(PImage img, Rectangle r) {
+   if (millis() - lastShot > 1000) { 
+     println("taking mugshot");
+     PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
+     mugshots.add(mug);
+     lastShot = millis();
+   }
+ }
+ 
+ void draw() {
+   Iterator it = mugshots.iterator();
+   pushMatrix();
+   translate(mMargin, mMargin);
+   while(it.hasNext()) {
+     PImage mug = (PImage)it.next();
+     image(mug, 0, 0, mWidth, mHeight);
+     translate(mMargin+mWidth, 0);
+   }
+   popMatrix();
+ }
 }

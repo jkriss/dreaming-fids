@@ -64,8 +64,8 @@ class DepartureBoard extends Behavior {
     }
     
     b.beginDraw();
-    b.background(0);
-//    b.background(100);
+//    b.background(0);
+    b.background(75);
     b.noStroke();
     b.fill(normalColor);
     b.pushMatrix();

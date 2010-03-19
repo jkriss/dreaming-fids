@@ -1,14 +1,13 @@
 
-//float[] colPositions = { 0.5, 0.35, 0.15 };
 float[] colPositions = { 57/104.0, 14/104.0, 7/104.0 };
-float[] minWidths = { 0.6, 1, 1 };
-float rowHeight = 30;
-int rowPadding = 15;
-//int[] colPaddings = new int[3];
-int colPadding = 15;
+float[] minWidths = { 14/57.0, 1, 1 };
+float[] maxWidths = { 57/104.0, 14/104.0, 7/104.0 };
+float rowHeight = 5/78.0;
+float rowPadding = 2/78.0;
+float[] colPaddings = { 10/104.0, 4/104.0, 0 };
 int nRows = 10;
-int topBorder = 65;
-int leftBorder = 25;
+float topBorder = 5/78.0;
+float leftBorder = 6/104.0;
 int maxBlinks = 20;
 int framesPerBlink = 30;
 
@@ -18,20 +17,19 @@ color blinkColor = 0;
 // this list will be shared across displays,
 // so that it flows along all four
 Row[] rows = new Row[nRows];
-float[] maxWidths;
 
 void setup() {
- size(800, 480); 
+ size(800, 600); 
  
- topBorder = (int)(width * (5/78.0));
- leftBorder = (int)(width * (6/78.0));
+ rowHeight *= height;
+ rowPadding *= height;
+ topBorder *= height;
+ leftBorder *= width;
 
-// colPaddings[0] = (int)(width * (10/104.0));
-// colPaddings[1] = (int)(width * (4/104.0));
+ for (int i=0; i<colPaddings.length; i++) colPaddings[i] *= width;
  
- maxWidths = new float[colPositions.length];
  for (int i=0; i<maxWidths.length; i++) {
-   maxWidths[i] = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[i];
+   maxWidths[i] *= width;
  }
  for (int i=0; i<nRows; i++) {
    rows[i] = new Row(maxWidths);
@@ -53,7 +51,6 @@ void draw() {
   translate(leftBorder, topBorder);
   for (int colNum=0; colNum<3; colNum++) {
     pushMatrix();
-    float maxWidth = (width - (2 * leftBorder) - ((colPositions.length-1) * colPadding)) * colPositions[colNum];
     for (int i=0; i<nRows; i++) {
       Row r = rows[i];
       color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
@@ -62,7 +59,7 @@ void draw() {
       translate(0, rowPadding+rowHeight);
     }
     popMatrix();
-    translate(maxWidth + colPadding, 0);
+    translate(maxWidths[colNum] + colPaddings[colNum], 0);
   }
   popMatrix();
 }

@@ -11,9 +11,9 @@ class DepartureBoard extends Behavior {
   float topBorder = 5/78.0;
   float leftBorder = 6/104.0;
   int maxBlinks = 20;
-  int framesPerBlink = 30;
+  int framesPerBlink = 10;
   
-  color normalColor = 180;
+  color normalColor = 255;
   color blinkColor = 0;
   
   // this list will be shared across displays,
@@ -42,13 +42,22 @@ class DepartureBoard extends Behavior {
   }
 
   void draw() {
+    
+    if (frameCount % 80 == 0) pop();
+    if (frameCount % 30 == 0) rows[(int)random(rows.length)].startBlinking();
+    
     background(0);
     splitScreens();
   }
   
   void drawScreen(int screenIndex) {
+    
+    PImage cam = cams[screenIndex];
+    if (cam == null) return;
+    image(cam,0,0,w,h);
+    
     noStroke();
-    fill(180);
+    fill(normalColor);
     pushMatrix();
     
     if (frameCount % framesPerBlink == 0 ) {
@@ -62,8 +71,9 @@ class DepartureBoard extends Behavior {
       pushMatrix();
       for (int i=0; i<nRows; i++) {
         Row r = rows[i];
-        color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
-        fill(c);
+//        color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
+        if (r.blinkOn && colNum == 2) continue;
+//        fill(c);
         rect(0,0,r.colWidths[colNum], rowHeight);
         translate(0, rowPadding+rowHeight);
       }
@@ -73,14 +83,6 @@ class DepartureBoard extends Behavior {
     popMatrix();
   }
 
-  void mousePressed() {
-    pop();
-  }
-  
-  void keyPressed() {
-    rows[(int)random(rows.length)].startBlinking();
-  }
-  
   void pop() {
     arraycopy(rows, 1, rows, 0, rows.length-1);
     rows[rows.length-1] = new Row(maxWidths);

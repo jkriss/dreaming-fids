@@ -16,6 +16,7 @@ class DepartureBoard extends Behavior {
   color normalColor = 255;
   color blinkColor = 0;
   
+  PGraphics b;
   // this list will be shared across displays,
   // so that it flows along all four
   Row[] rows = new Row[nRows];
@@ -25,20 +26,7 @@ class DepartureBoard extends Behavior {
   }
 
   void setup() {
-   
-   rowHeight *= h;
-   rowPadding *= h;
-   topBorder *= h;
-   leftBorder *= w/numScreens;
-  
-   for (int i=0; i<colPaddings.length; i++) colPaddings[i] *= w/numScreens;
-   
-   for (int i=0; i<maxWidths.length; i++) {
-     maxWidths[i] *= w/numScreens;
-   }
-   for (int i=0; i<nRows; i++) {
-     rows[i] = new Row(maxWidths);
-   }
+     
   }
 
   void draw() {
@@ -52,13 +40,35 @@ class DepartureBoard extends Behavior {
     
   void drawScreen(int screenIndex) {
     
+    
     PImage cam = cams[screenIndex];
+
     if (cam == null) return;
 //    image(cam,0,0,w,h);
+
+    if (b == null) {
+      b = createGraphics(cam.width, cam.height,JAVA2D);
+      rowHeight *= b.height;
+      rowPadding *= b.height;
+      topBorder *= b.height;
+      leftBorder *= b.width;
+
+       for (int i=0; i<colPaddings.length; i++) colPaddings[i] *= b.width;
+       
+       for (int i=0; i<maxWidths.length; i++) {
+         maxWidths[i] *= b.width;
+       }
+       for (int i=0; i<nRows; i++) {
+         rows[i] = new Row(maxWidths);
+       }
+    }
     
-    noStroke();
-    fill(normalColor);
-    pushMatrix();
+    b.beginDraw();
+    b.background(0);
+//    b.background(100);
+    b.noStroke();
+    b.fill(normalColor);
+    b.pushMatrix();
     
     if (frameCount % framesPerBlink == 0 ) {
       for (int i=0; i<rows.length; i++) {
@@ -66,28 +76,32 @@ class DepartureBoard extends Behavior {
       }
     }
     
-    translate(leftBorder, topBorder);
+    b.translate(leftBorder, topBorder);
     for (int colNum=0; colNum<3; colNum++) {
-      pushMatrix();
+      b.pushMatrix();
       for (int i=0; i<nRows; i++) {
         Row r = rows[i];
 //        color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
         if (r.blinkOn && colNum == 2) continue;
 //        fill(c);
-        rect(0,0,r.colWidths[colNum], rowHeight);
-        translate(0, rowPadding+rowHeight);
+        b.rect(0,0,r.colWidths[colNum], rowHeight);
+        b.translate(0, rowPadding+rowHeight);
       }
-      popMatrix();
-      translate(maxWidths[colNum] + colPaddings[colNum], 0);
+      b.popMatrix();
+      b.translate(maxWidths[colNum] + colPaddings[colNum], 0);
     }
-    popMatrix();
+    b.popMatrix();
+    b.endDraw();
     
 //    PImage board = get(w*screenIndex, 0, w, h);
+    PImage board = b.get(0,0,b.width,b.height);
 //    image(cam, 0, 0, w, h);
-//    image(board, 0, 0, w, h);
 //    PImage scaledCam = get(w*screenIndex, 0, w, h);
-//    scaledCam.mask(board);
-//    image(scaledCam, 0, 0, w, h);
+    cam.mask(board);
+    image(cam, 0, 0, w, h);
+    
+//    image(board, 0, 0, w, h);
+
   }
 
   void pop() {

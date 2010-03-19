@@ -27,7 +27,7 @@ class Detector {
   }
   
   MotionBlob[] findBlobs(PImage img) {
-    if (backgroundImage == null) return null;
+    if (backgroundImage == null || img == null) return null;
     initImage(img);
     arraycopy(img.pixels, currentMotionFrame.pixels);
     DetectionResult detect = objects(img, 0.3);

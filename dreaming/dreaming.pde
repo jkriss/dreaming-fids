@@ -78,10 +78,10 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect();
   }
-  localVideo = new Capture(this, camW, camH, 24);
-//  movie = new Movie(this, "Fish Comp 3.mov");
-//  movie.loop();
-//  movieFrame = createImage(camW, camH, ALPHA);
+//  localVideo = new Capture(this, camW, camH, 24);
+  movie = new Movie(this, "Fish Comp 3.mov");
+  movie.loop();
+  movieFrame = createImage(camW, camH, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
@@ -212,7 +212,7 @@ void streamVideo() {
     if (localVideo.available()) {
       localVideo.read();
       localVideo.loadPixels();
-    //  opencv.convert(OpenCV.GRAY);
+//      opencv.convert(OpenCV.GRAY);
       streamer.send(localVideo);
     }
   } else {
@@ -234,11 +234,14 @@ void receive( byte[] data, String ip, int port ) {
 //  cams[isThing1() ? 4 : 1] = cams[1];
 //  cams[isThing1() ? 5 : 2] = cams[2];
 
+  PImage frame = null;
+  if (movieFrame != null) frame = movieFrame;
+  if (localVideo != null) frame = localVideo;
   
-  if (movieFrame != null) {
-    cams[isThing1() ? 3 : 0] = movieFrame.get(0,0,camW2,camH2);
-    cams[isThing1() ? 4 : 1] = movieFrame.get(camW2,0,camW2,camH2);
-    cams[isThing1() ? 5 : 2] = movieFrame.get(0,camH2,camW2,camH2);
+  if (frame != null) {
+    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
+    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
+    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
   }
   
   for (int i=0; i<cams.length; i++) {

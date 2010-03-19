@@ -89,28 +89,88 @@ class CameraFeedSketch extends Behavior {
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
       float score = scaledAct+scaledStab;
 //      println("rect score: " + score);
-//      if (score > 180) {
-      if (true) {
+      if (score > 180) {
+//      if (true) {
         stroke(245,237,12, score);
-        strokeWeight(4);
+        
         rectMode(CENTER);
         
-        float rw = r.width*wScale;
-        float rh = r.height*hScale;
-        float ratio = 1.61; //16/9;
+        r.x *= wScale;
+        r.y *= hScale;
+        r.width *= wScale;
+        r.height *= hScale;
         
-        if (rw/rh > ratio) {
+        if (r.width == 0 || r.height == 0) return;
+        
+        float ratio = 1.61; //16/9;
+               
+        if (r.width/r.height > ratio) {
           // wider than ideal, scale height up based on width
-          rh = rw / ratio;
+          r.height = (int)(r.width / ratio);
         } else {
           // taller than ideal, scale width up based on height
-          rw = rh * ratio;
+          r.width = (int)(r.height * ratio);
         }
+        
+        Rectangle fishRect = (Rectangle)r.clone();
+        fishRect.grow(-2, -2);
+        
+//        r = r.intersection(new Rectangle(m,m,w-m2,h-m2));
+//        if (!r.equals(before)) println("before: " + before + ", after: " + r);
+
+        int tooLeftBy = -1 * (r.x - r.width/2);
+        if (tooLeftBy > 0) {
+           r.x += tooLeftBy;
+           r.width -= tooLeftBy;
+        }
+
+        int tooWideBy = (r.x + r.width/2) - w;
+        if (tooWideBy > 0) {
+          r.width -= tooWideBy;
+          r.x -= tooWideBy;
+        }
+        
+        int tooHighBy = -1 * (r.y - r.height/2);
+        if (tooHighBy > 0) {
+          r.y += tooHighBy;
+          r.height -= tooHighBy;
+        }
+        
+        int tooTallBy = (r.y + r.height/2) - h;
+        if (tooTallBy > 0) {
+          r.height -= tooTallBy;
+          r.y -= tooTallBy;
+        }
+
+        // reapply aspect ratio fixing, but no size increase        
+        if (r.width/r.height > ratio) {
+          // wider than ideal, scale width down based on height
+          r.width = (int)(r.height * ratio);
+        } else {
+          // taller than ideal, scale height down based on width
+          r.height = (int)(r.width / ratio);
+        }
+
         
         // remember, r.x and r.y are center points, here, so we need to adjust
 //        PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(rw/2), (int)(r.y*hScale)-(int)(rh/2), (int)rw, (int)rh);
 //        image(mug,0,0,w,h);
-        rect(r.x*wScale, r.y*hScale, rw, rh);
+//        println("drawing " + r);
+        
+        strokeWeight(4);
+        
+        if (r.contains(fishRect)) {
+          fill(255,255,255, 20);
+          println("caught one!");
+          mugshot(r, screenIndex);
+        } else {
+          noFill();
+        }
+        rect(r.x, r.y, r.width, r.height);
+        
+//        strokeWeight(1);
+//        stroke(255,0,0);
+//        rect(fishRect.x, fishRect.y, fishRect.width, fishRect.height);
         rectMode(CORNER);
       }
 //      noStroke();
@@ -124,6 +184,10 @@ class CameraFeedSketch extends Behavior {
     rect(5,5,fish[camIndex].activity/10000,10);
     
 //    if (camIndex == 1) println(fish[camIndex].activity);
+  }
+  
+  void mugshot(Rectangle r, int screenIndex) {
+    println("taking mugshot");
   }
     
   void resetMappings() {

@@ -22,7 +22,7 @@ Behavior activeBehavior;
 //int[] screenSize = {800, 480};
 int[] screenSize = {800, 600};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
-int numScreens = 2;
+int numScreens = 4;
 int numCameras = 6;
 int border = 0; //10;
 int motionLevel;
@@ -56,7 +56,7 @@ void setup() {
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
   
-  float scale = 1;
+  float scale = .4;
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
 
   Graphics2D g2 = ((PGraphicsJava2D)g).g2;
@@ -65,8 +65,8 @@ void setup() {
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   behaviors[1] = new DepartureBoard(this, numScreens, border);
 
-//  activeBehavior = behaviors[0];
-  activeBehavior = behaviors[1];
+  activeBehavior = behaviors[0];
+//  activeBehavior = behaviors[1];
 
   for (int i=0; i<behaviors.length; i++) {
    if (behaviors[i] != null) behaviors[i].setup(); 
@@ -76,7 +76,7 @@ void setup() {
   }
   for (int i=0; i<fish.length; i++) {
     fish[i] = new FishInfo(); 
-    interestRects[i] = new MotionRect();
+    interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
 //  localVideo = new Capture(this, camW, camH, 24);
   movie = new Movie(this, "Fish Comp 3.mov");
@@ -275,7 +275,9 @@ class MotionRect {
  float activity;
  float stability;
  boolean active;
- MotionRect() {
+ Rectangle bounds;
+ MotionRect(Rectangle bounds) {
+  this.bounds = bounds;
   current = new Rectangle();
   target = new Rectangle();
  }

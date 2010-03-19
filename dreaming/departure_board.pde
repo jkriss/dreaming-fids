@@ -49,12 +49,12 @@ class DepartureBoard extends Behavior {
     background(0);
     splitScreens();
   }
-  
+    
   void drawScreen(int screenIndex) {
     
     PImage cam = cams[screenIndex];
     if (cam == null) return;
-    image(cam,0,0,w,h);
+//    image(cam,0,0,w,h);
     
     noStroke();
     fill(normalColor);
@@ -81,6 +81,13 @@ class DepartureBoard extends Behavior {
       translate(maxWidths[colNum] + colPaddings[colNum], 0);
     }
     popMatrix();
+    
+//    PImage board = get(w*screenIndex, 0, w, h);
+//    image(cam, 0, 0, w, h);
+//    image(board, 0, 0, w, h);
+//    PImage scaledCam = get(w*screenIndex, 0, w, h);
+//    scaledCam.mask(board);
+//    image(scaledCam, 0, 0, w, h);
   }
 
   void pop() {

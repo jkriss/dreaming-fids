@@ -102,6 +102,7 @@ class Detector {
   }
   
   void initImage(PImage img) {
+    if (img == null) return;
     if (motionImage == null) {
       vision.allocate(img.width, img.height);
       motionImage = createImage(img.width, img.height, ALPHA);

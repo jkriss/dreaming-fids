@@ -78,10 +78,10 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect();
   }
-//  localVideo = new Capture(this, camW, camH, 24);
-  movie = new Movie(this, "Fish Comp 3.mov");
-  movie.loop();
-  movieFrame = createImage(camW, camH, ALPHA);
+  localVideo = new Capture(this, camW, camH, 24);
+//  movie = new Movie(this, "Fish Comp 3.mov");
+//  movie.loop();
+//  movieFrame = createImage(camW, camH, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address

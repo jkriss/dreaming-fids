@@ -17,9 +17,10 @@ Movie movie;
 PImage movieFrame;
 UDP udp;
 
-Behavior[] behaviors = new Behavior[1];
+Behavior[] behaviors = new Behavior[2];
 Behavior activeBehavior;
-int[] screenSize = {800, 480};
+//int[] screenSize = {800, 480};
+int[] screenSize = {800, 600};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
 int numScreens = 2;
 int numCameras = 6;
@@ -62,9 +63,13 @@ void setup() {
   g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
-  activeBehavior = behaviors[0];
+  behaviors[1] = new DepartureBoard(this, numScreens, border);
+
+//  activeBehavior = behaviors[0];
+  activeBehavior = behaviors[1];
+
   for (int i=0; i<behaviors.length; i++) {
-   behaviors[i].setup(); 
+   if (behaviors[i] != null) behaviors[i].setup(); 
   }
   for (int i=0; i<detectors.length; i++) {
    detectors[i] = new Detector(this, i); 
@@ -94,7 +99,7 @@ void setup() {
 //  slider("maxThreshold", 0, 500, 500);
 
   fs = new SoftFullScreen(this);
-  fs.setFullScreen(true);
+//  fs.setFullScreen(true);
   hideCursor();
 }
 
@@ -103,7 +108,7 @@ String sendIP() {
 }
 
 String receiveIP() {
- return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
+ return true || isThing1() ? "224.0.0.0" : "225.0.0.0"; 
 }
 
 boolean isThing1() {

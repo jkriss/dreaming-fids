@@ -42,11 +42,11 @@ class DepartureBoard extends Behavior {
   }
 
   void draw() {
+    background(0);
     splitScreens();
   }
   
   void drawScreen(int screenIndex) {
-    background(0);
     noStroke();
     fill(180);
     pushMatrix();

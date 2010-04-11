@@ -1,5 +1,5 @@
 
-int[] cameraMappings = { 0, 1, 2, 3 };
+int[] cameraMappings = { 0, 3, 2, 1 };
 Mugshotter mugshotter = new Mugshotter();
 
 class CameraFeedSketch extends Behavior {
@@ -15,6 +15,8 @@ class CameraFeedSketch extends Behavior {
 //    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
     spanScreens();
+    fill(0,0,0, 150);
+    rect(0,0,w,h);
     mugshotter.draw();
   }
     
@@ -163,12 +165,15 @@ class CameraFeedSketch extends Behavior {
         strokeWeight(4);
         
         if (r.contains(fishRect)) {
-          fill(255,255,255, 20);
+//          fill(255,255,255, 20);
           println("caught one!");
           // cam image isn't scaled, so scale rect down to its size
           PImage scaledCam = createImage(w,h,ALPHA);
           scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
           mugshotter.mugshot(scaledCam, r);
+        }
+        if (mugshotter.recentMugshot()) {
+          fill(245,237,12,100);
         } else {
           noFill();
         }
@@ -185,9 +190,9 @@ class CameraFeedSketch extends Behavior {
     }
     
     // draw activity meter
-    fill(45,99,137);
+//    fill(45,99,137);
     noStroke();
-    rect(5,5,fish[camIndex].activity/10000,10);
+//    rect(5,5,fish[camIndex].activity/10000,10);
        
 //    if (camIndex == 1) println(fish[camIndex].activity);
   }
@@ -211,19 +216,26 @@ class Mugshotter {
  long lastShot;
  ArrayList mugshots = new ArrayList();
  
- int scaleFactor = 5;
+ int scaleFactor = 6;
  
  int mWidth = 16 * scaleFactor; 
  int mHeight = 9 * scaleFactor;
- int mMargin = 1 * scaleFactor;
+ int mMargin = (1 * scaleFactor) + 3;
  
- void mugshot(PImage img, Rectangle r) {
+ boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 
      println("taking mugshot");
      PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
      mugshots.add(mug);
      lastShot = millis();
+     return true;
+   } else {
+     return false;
    }
+ }
+ 
+ boolean recentMugshot() {
+   return (millis() - lastShot < 300);
  }
  
  void draw() {
@@ -233,6 +245,10 @@ class Mugshotter {
    while(it.hasNext()) {
      PImage mug = (PImage)it.next();
      image(mug, 0, 0, mWidth, mHeight);
+     if (!it.hasNext() && recentMugshot()) {
+       fill(245,237,12,70);
+       rect(0,0,mWidth,mHeight);
+     }
      translate(mMargin+mWidth, 0);
    }
    popMatrix();

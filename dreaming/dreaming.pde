@@ -80,6 +80,7 @@ void setup() {
   }
 //  localVideo = new Capture(this, camW, camH, 24);
   movie = new Movie(this, "Fish Comp 3.mov");
+//  movie = new Movie(this, "Fish Comp 1.mov");
   movie.loop();
   movieFrame = createImage(camW, camH, ALPHA);
 
@@ -168,7 +169,7 @@ void draw() {
  activeBehavior.draw();
  
  fill(106,161,204);
- text(frameRate, 40, 20);
+// text(frameRate, 40, 20);
 }
 
 void findSuspiciousActivity() {

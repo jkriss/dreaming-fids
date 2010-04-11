@@ -220,7 +220,9 @@ class Mugshotter {
  
  int mWidth = 16 * scaleFactor; 
  int mHeight = 9 * scaleFactor;
- int mMargin = (1 * scaleFactor) + 3;
+ int mMargin = (1 * scaleFactor) + 4;
+ 
+ int shotsPerLine = 12;
  
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 
@@ -242,6 +244,7 @@ class Mugshotter {
    Iterator it = mugshots.iterator();
    pushMatrix();
    translate(mMargin, mMargin);
+   int count = 0;
    while(it.hasNext()) {
      PImage mug = (PImage)it.next();
      image(mug, 0, 0, mWidth, mHeight);
@@ -249,7 +252,15 @@ class Mugshotter {
        fill(245,237,12,70);
        rect(0,0,mWidth,mHeight);
      }
-     translate(mMargin+mWidth, 0);
+     count++;
+     if (count > 0 && count % shotsPerLine == 0) {
+       popMatrix();
+       translate(0,mMargin+mHeight);
+       pushMatrix();
+       translate(mMargin, mMargin);
+     } else {
+       translate(mMargin+mWidth, 0);
+     }
    }
    popMatrix();
  }

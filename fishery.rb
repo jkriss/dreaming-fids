@@ -39,7 +39,7 @@ configure do
           begin
             open(url)
           rescue Exception => e
-            puts "ERROR: #{e}"
+            puts "ERROR: #{e} URL: #{url}"
           end
           puts "- ping #{url} at #{Time.now}"
         end

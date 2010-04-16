@@ -7,7 +7,8 @@ require 'open-uri'
 OscClient = OSC::UDPSocket.new
 
 HOSTS = %w(jklabs-mbp.local thing1.local thing2.local)
-LAZY_COMPUTER = 'thing2.local'
+# LAZY_COMPUTER = 'thing2.local'
+LAZY_COMPUTER = 'jklabs-mbp.local'
 HEARTBEAT_URL = "http://google.com"
 # HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=[id]"
 HEARTBEAT_DELAY = 5 # in seconds
@@ -31,9 +32,15 @@ configure do
     puts "  - about to start heartbeat thread"
     heartbeat = Thread.new do
       while true do
+        puts "pinging #{other_hosts.inspect}"
         other_hosts.each do |h|
-          url = "http://#{h}:{SERVER_PORT}/heartbeat"
-          open(url)
+          url = "http://#{h}:#{SERVER_PORT}/heartbeat"
+          puts "- about to ping #{url}"
+          begin
+            open(url)
+          rescue Exception => e
+            puts "ERROR: #{e}"
+          end
           puts "- ping #{url} at #{Time.now}"
         end
         sleep(HEARTBEAT_DELAY)

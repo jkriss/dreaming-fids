@@ -7,8 +7,24 @@ require 'open-uri'
 OscClient = OSC::UDPSocket.new
 
 HOSTS = %w(jklabs-mbp.local thing1.local thing2.local)
+HEARTBEAT_URL = "http://google.com"
+# HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=[id]"
+HEARTBEAT_DELAY = 60 # in seconds
+
+# start heartbeat
+configure do
+  puts "about to start heartbeat thread"
+  heartbeat = Thread.new do
+    while true do
+      open(HEARTBEAT_URL)
+      puts "ping #{HEARTBEAT_URL} at #{Time.now}"
+      sleep(HEARTBEAT_DELAY)
+    end
+  end
+end
 
 get '/' do
+  puts "hi?"
   haml :index
 end
 

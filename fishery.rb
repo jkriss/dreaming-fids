@@ -26,6 +26,8 @@ end
 # start heartbeat
 configure do
   
+  @@last_heartbeat = nil
+  
   if hostname == LAZY_COMPUTER
     
   
@@ -61,6 +63,7 @@ end
 get '/heartbeat' do
   if hostname != LAZY_COMPUTER
     puts "got local ping, sending heartbeat to #{HEARTBEAT_URL}"
+    @@last_heartbeat = Time.now
     open(HEARTBEAT_URL)
   end
   redirect '/'
@@ -133,3 +136,9 @@ __END__
 %a{ :href => '/stop' } stop
 %a{ :href => '/click' } click
 %a{ :href => '/fullscreen' } fullscreen
+
+%br
+
+%p
+  last heartbeat: 
+  = @@last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - @@last_heartbeat.to_f)} seconds ago" : 'none'

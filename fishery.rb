@@ -11,7 +11,7 @@ LAZY_COMPUTER = 'thing2.local'
 # LAZY_COMPUTER = 'jklabs-mbp.local'
 HEARTBEAT_URL = "http://google.com"
 # HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=[id]"
-HEARTBEAT_DELAY = 5 # in seconds
+HEARTBEAT_DELAY = 60 # in seconds
 SERVER_PORT = 4567
 # HEARTBEAT_DELAY = 60 # in seconds
 
@@ -67,6 +67,10 @@ get '/heartbeat' do
     open(HEARTBEAT_URL)
   end
   redirect '/'
+end
+
+get '/restart_server' do
+  `./fishcontrol server:stop && ./fishcontrol server:start`
 end
 
 get '/open' do
@@ -136,6 +140,7 @@ __END__
 %a{ :href => '/stop' } stop
 %a{ :href => '/click' } click
 %a{ :href => '/fullscreen' } fullscreen
+%a{ :href => '/restart_server' } restart server
 
 %br
 

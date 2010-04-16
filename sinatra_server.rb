@@ -8,7 +8,7 @@ class SinatraServer
     pid_dir + "sinatra.pid"
   end
   def run
-    exec "shotgun -o 0.0.0.0 fishery.rb"
+    exec "ruby fishery.rb"
   end
   def start
     if File.exist?(pid_path)

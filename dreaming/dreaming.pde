@@ -65,8 +65,8 @@ void setup() {
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   behaviors[1] = new DepartureBoard(this, numScreens, border);
 
-  activeBehavior = behaviors[0];
-//  activeBehavior = behaviors[1];
+//  activeBehavior = behaviors[0];
+  activeBehavior = behaviors[1];
 
   for (int i=0; i<behaviors.length; i++) {
    if (behaviors[i] != null) behaviors[i].setup(); 

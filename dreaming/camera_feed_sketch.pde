@@ -220,7 +220,7 @@ class Mugshotter {
  long lastShot;
  ArrayList mugshots = new ArrayList();
  
- int scaleFactor = 6;
+ int scaleFactor = (int)(6 * (scale/.4));
  
  int mWidth = 16 * scaleFactor; 
  int mHeight = 9 * scaleFactor;

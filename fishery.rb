@@ -186,6 +186,7 @@ __END__
 %p
   %a{ :href => '/behaviors/0'} mugshots
   %a{ :href => '/behaviors/1'} departures
+  %a{ :href => '/behaviors/2'} cameras
 
 %p
   last heartbeat: 

@@ -17,7 +17,7 @@ Movie movie;
 PImage movieFrame;
 UDP udp;
 
-Behavior[] behaviors = new Behavior[2];
+Behavior[] behaviors = new Behavior[3];
 Behavior activeBehavior;
 //int[] screenSize = {800, 480};
 int[] screenSize = {800, 600};
@@ -64,6 +64,7 @@ void setup() {
 
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   behaviors[1] = new DepartureBoard(this, numScreens, border);
+  behaviors[2] = new RawCameras(this, numScreens, border);
 
 //  activeBehavior = behaviors[0];
   activeBehavior = behaviors[1];

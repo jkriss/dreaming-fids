@@ -1,8 +1,9 @@
 
-int[] cameraMappings = { 0, 3, 2, 1 };
-Mugshotter mugshotter = new Mugshotter();
 
 class CameraFeedSketch extends Behavior {
+
+  int[] cameraMappings = { 0, 3, 2, 1 };
+  Mugshotter mugshotter = new Mugshotter();
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 

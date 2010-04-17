@@ -22,7 +22,7 @@ Behavior activeBehavior;
 //int[] screenSize = {800, 480};
 int[] screenSize = {800, 600};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
-int numScreens = 1;
+int numScreens = 2;
 int numCameras = 6;
 int border = 0; //10;
 int motionLevel;

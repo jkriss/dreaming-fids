@@ -2,5 +2,5 @@
 
 `./fishcontrol server:start`
 `./fishcontrol open`
-sleep(10)
+sleep(5)
 `./fishcontrol run`

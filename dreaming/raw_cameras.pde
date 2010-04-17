@@ -1,7 +1,7 @@
 
-int[] cameraMappings = { 0, 1, 2, 3 };
-
 class RawCameras extends Behavior {
+
+  int[] cameraMappings = { 0, 1, 2, 3 };
   
   RawCameras(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
@@ -11,11 +11,7 @@ class RawCameras extends Behavior {
   }
   
   void draw() {
-//    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
-    spanScreens();
-    fill(0,0,0, 150);
-    rect(0,0,w,h);
   }
     
   void drawScreen(int screenIndex) {
@@ -27,15 +23,5 @@ class RawCameras extends Behavior {
   
     image(c,0,0,w,h);  
   }
-  
-  void resetMappings() {
-    int[] choices = {0,1,2,3,4,5};
-    for (int i=0; i<cameraMappings.length;) {
-      int r = round(random(choices.length-1));
-      cameraMappings[i] = choices[r];
-      if (choices[r] == -1) continue;
-      choices[r] = -1; 
-      i++;
-    }
-  }
+ 
 }

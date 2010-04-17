@@ -19,7 +19,7 @@ UDP udp;
 
 boolean showBlobs;
 
-Behavior[] behaviors = new Behavior[3];
+Behavior[] behaviors = new Behavior[4];
 Behavior activeBehavior;
 //int[] screenSize = {800, 480};
 int[] screenSize = {
@@ -68,7 +68,8 @@ void setup() {
   behaviors[0] = new CameraFeedSketch(this, numScreens, border);
   behaviors[1] = new DepartureBoard(this, numScreens, border);
   behaviors[2] = new RawCameras(this, numScreens, border);
-
+  behaviors[3] = new SwitchingCameras(this, numScreens, border);
+  
   activeBehavior = behaviors[0];
   //  activeBehavior = behaviors[1];
 

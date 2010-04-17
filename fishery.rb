@@ -140,19 +140,52 @@ __END__
   = yield
 
 @@ index
-%a{ :href => '/open' } open
-%a{ :href => '/run' } run
-%a{ :href => '/stop' } stop
-%a{ :href => '/click' } click
-%a{ :href => '/fullscreen' } fullscreen
-%a{ :href => '/restart_server' } restart server
 
-%br
+:plain
+  <style type="text/css"> 
+    * {
+      margin: 0;
+      padding: 0;
+    }
 
-%a{ :href => '/behaviors/0'} mugshots
-%a{ :href => '/behaviors/1'} departures
+    body {
+      font-family: 'Helvetica', sans-serif;
+      margin: 30;
+      font-size: 0.8em;
+    }
 
-%br
+    p {
+      margin-bottom: 30px;
+    }
+
+    a {
+      color: #444;
+      text-decoration: none;
+      border: 1px dotted #444;
+      padding: 5px;
+      margin-right: 5px;
+      font-weight: bold;
+      font-size: 1.2em;
+      letter-spacing: 0.7px;
+    }
+
+    a:hover {
+      color: #000;
+      border-style: solid;
+    }
+  </style>
+
+%p
+  %a{ :href => '/open' } open
+  %a{ :href => '/run' } run
+  %a{ :href => '/stop' } stop
+  %a{ :href => '/click' } click
+  %a{ :href => '/fullscreen' } fullscreen
+  %a{ :href => '/restart_server' } restart server
+
+%p
+  %a{ :href => '/behaviors/0'} mugshots
+  %a{ :href => '/behaviors/1'} departures
 
 %p
   last heartbeat: 

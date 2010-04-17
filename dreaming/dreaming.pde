@@ -100,7 +100,7 @@ void setup() {
 //  slider("maxThreshold", 0, 500, 500);
 
   fs = new SoftFullScreen(this);
-//  fs.setFullScreen(true);
+  if (hostname().startsWith("thing")) fs.setFullScreen(true);
   hideCursor();
 }
 

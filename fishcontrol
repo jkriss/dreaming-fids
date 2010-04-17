@@ -14,6 +14,8 @@ when 'run'
   `open #{File.expand_path(File.dirname(__FILE__))}/run_sketch.app`
 when 'stop'
   `echo "quit application \\"Processing\\"" | osascript`
+when 'reboot'
+  `echo "tell application \\"Finder\\" \n restart \n end tell" | osascript`
 when 'server:start'
   SinatraServer.new.start
 when 'server:stop'

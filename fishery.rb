@@ -78,6 +78,11 @@ get '/restart_server' do
   `./fishcontrol server:stop && ./fishcontrol server:start`
 end
 
+get '/reboot' do
+  echo '/reboot'
+  `./fishcontrol reboot`
+end
+
 get '/open' do
   cmd :open
   echo '/open'
@@ -193,7 +198,7 @@ __END__
   %a{ :href => '/stop' } stop
   %a{ :href => '/click' } click
   %a{ :href => '/fullscreen' } fullscreen
-  %a{ :href => '/restart_server' } restart server
+  %a{ :href => '/restart_server' } restart web server
 
 %p
   %a{ :href => '/behaviors/0'} mugshots
@@ -211,3 +216,6 @@ __END__
 %p
   last heartbeat: 
   = @@last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - @@last_heartbeat.to_f)} seconds ago" : 'none'
+
+%p
+  %a{ :href => '/reboot'} reboot!

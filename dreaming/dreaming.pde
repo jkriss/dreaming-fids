@@ -84,7 +84,9 @@ void setup() {
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
   localVideo = new Capture(this, camW, camH, 24);
+  localVideo.crop(20,20,camW-40,camH-40);
 //  movie = new Movie(this, "Fish Comp 3.mov");
+//  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
 //  movie.loop();
 //  movieFrame = createImage(camW, camH, ALPHA);
@@ -238,6 +240,8 @@ void streamVideo() {
   else {
     movie.read();
     movieFrame.copy(movie, 0, 0, movie.width, movie.height, 0, 0, camW, camH);
+//    int border = 20;
+//    movieFrame.copy(movie, border, border, movie.width-(2*border), movie.height-(2*border), 0, 0, camW, camH);
     streamer.send(movieFrame); 
   }
 }

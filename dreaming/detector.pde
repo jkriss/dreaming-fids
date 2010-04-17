@@ -214,7 +214,7 @@ class MotionBlob {
  MotionBlob(int id, Blob blob, int motion) {
    this.id = id;
    this.blob = blob;
-   this.motion = motion;
+   this.motion = (int)(motion/(scale*scale));
  }
 }
 
@@ -223,6 +223,6 @@ class DetectionResult {
  int activity; 
  DetectionResult(PImage image, int activity) {
    this.image = image;
-   this.activity = activity;
+   this.activity = (int)(activity/(scale*scale));
  }
 }

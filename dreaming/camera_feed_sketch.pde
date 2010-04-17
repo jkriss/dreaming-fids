@@ -2,7 +2,7 @@
 
 class CameraFeedSketch extends Behavior {
 
-  int[] cameraMappings = { 0, 3, 2, 1 };
+  int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
@@ -97,8 +97,8 @@ class CameraFeedSketch extends Behavior {
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
       float score = scaledAct+scaledStab;
 //      println("rect score: " + score);
-      if (score > 180) {
-//      if (true) {
+//      if (score > 180) {
+      if (true) {
         stroke(245,237,12, score);
         
         rectMode(CENTER);
@@ -151,7 +151,7 @@ class CameraFeedSketch extends Behavior {
         }
 
         // reapply aspect ratio fixing, but no size increase        
-        if (r.width/r.height > ratio) {
+        if (r.height != 0 && r.width/r.height > ratio) {
           // wider than ideal, scale width down based on height
           r.width = (int)(r.height * ratio);
         } else {

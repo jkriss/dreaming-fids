@@ -2,7 +2,7 @@
 
 class CameraFeedSketch extends Behavior {
 
-  int[] cameraMappings = { 0, 3, 2, 1 };
+  int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {

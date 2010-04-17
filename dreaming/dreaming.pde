@@ -83,8 +83,8 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
-  localVideo = new Capture(this, camW, camH, 24);
-  localVideo.crop(20,20,camW-40,camH-40);
+  localVideo = new Capture(this, camW+40, camH+40, 24);
+  localVideo.crop(20,20,camW,camH);
 //  movie = new Movie(this, "Fish Comp 3.mov");
 //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");

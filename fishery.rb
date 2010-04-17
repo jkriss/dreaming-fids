@@ -101,6 +101,11 @@ get '/fullscreen' do
   redirect '/'
 end
 
+get '/behaviors/:id' do
+  osc :behavior, 'i', params[:id].to_i
+  redirect '/'
+end
+
 def echo(request_path)
   return if params[:echo] == 'false'
   other_hosts.each do |h|
@@ -120,8 +125,8 @@ def cmd(action)
   `./fishcontrol #{action}`
 end
 
-def osc(method)
-  m = OSC::Message.new("/fish/in/#{method}", "s", "hi")
+def osc(method, arg_types='s', value='hi')
+  m = OSC::Message.new("/fish/in/#{method}", arg_types, value)
   puts "sending #{m.inspect}"
   OscClient.send m, 0, "230.0.0.1", 7447
 end
@@ -141,6 +146,11 @@ __END__
 %a{ :href => '/click' } click
 %a{ :href => '/fullscreen' } fullscreen
 %a{ :href => '/restart_server' } restart server
+
+%br
+
+%a{ :href => '/behaviors/0'} mugshots
+%a{ :href => '/behaviors/1'} departures
 
 %br
 

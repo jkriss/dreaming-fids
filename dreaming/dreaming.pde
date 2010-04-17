@@ -144,6 +144,11 @@ void click(String message) {
   mousePressed();
 }
 
+void behavior(int index) {
+  println("switching to behavior " + index);
+  activeBehavior = behaviors[index];
+}
+
 void fullscreen(String foo) {
   fs.setFullScreen(!fs.isFullScreen());
 }

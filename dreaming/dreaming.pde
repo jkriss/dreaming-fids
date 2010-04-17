@@ -29,7 +29,7 @@ int numScreens = 2;
 int numCameras = 6;
 int border = 0; //10;
 int motionLevel;
-float scale = .8;
+float scale = 1;
 
 FishInfo[] fish = new FishInfo[numCameras];
 

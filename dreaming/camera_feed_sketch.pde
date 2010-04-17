@@ -96,10 +96,11 @@ class CameraFeedSketch extends Behavior {
 //      println("stability: " + mostInterestingRect.stability + ", scaled stability: " + scaledStab);
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
       float score = scaledAct+scaledStab;
-//      println("rect score: " + score);
-//      if (score > 180) {
-      if (true) {
-        stroke(245,237,12, score);
+      println("rect score: " + score);
+      if (score > 180) {
+//      if (true) {
+//        stroke(245,237,12, score);
+        stroke(245,237,12);
         
         rectMode(CENTER);
         

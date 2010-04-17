@@ -2,7 +2,7 @@
 
 class CameraFeedSketch extends Behavior {
 
-  int[] cameraMappings = { 0, 1, 2, 3 };
+  int[] cameraMappings = { 0, 3, 2, 1 };
   Mugshotter mugshotter = new Mugshotter();
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
@@ -38,15 +38,17 @@ class CameraFeedSketch extends Behavior {
     MotionBlob[] mblobs = fish[camIndex].blobs;
     if (mblobs != null) {
       scaleBlobs(mblobs, c.width, c.height, w, h);
-//      stroke(200,0,0);
-//      fill(200,0,0,50);
-//      for( int i=0; i<mblobs.length; i++ ) {
-//          beginShape();
-//          for( int j=0; j<mblobs[i].blob.points.length; j++ ) {
-//              vertex( mblobs[i].blob.points[j].x, mblobs[i].blob.points[j].y );
-//          }
-//          endShape(CLOSE);
-//      }
+      if (showBlobs) {
+        stroke(200,0,0);
+        fill(200,0,0,50);
+        for( int i=0; i<mblobs.length; i++ ) {
+            beginShape();
+            for( int j=0; j<mblobs[i].blob.points.length; j++ ) {
+                vertex( mblobs[i].blob.points[j].x, mblobs[i].blob.points[j].y );
+            }
+            endShape(CLOSE);
+        }
+      }
   
       // draw blob rects
       stroke(0,200,0);

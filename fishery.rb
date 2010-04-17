@@ -15,6 +15,9 @@ HEARTBEAT_DELAY = 60 # in seconds
 SERVER_PORT = 4567
 # HEARTBEAT_DELAY = 60 # in seconds
 
+@@settings = {}
+@@hostname = nil
+
 def hostname
   @@hostname ||= `hostname`.strip
 end
@@ -57,6 +60,8 @@ configure do
 end
 
 get '/' do
+  @settings = @@settings
+  puts "current settings: #{@settings.inspect}"
   haml :index
 end
 
@@ -103,6 +108,13 @@ end
 
 get '/behaviors/:id' do
   osc :behavior, 'i', params[:id].to_i
+  redirect '/'
+end
+
+get '/settings' do
+  puts params.inspect
+  @@settings = params
+  osc :showBlobs, 's', !params[:showBlobs].nil?
   redirect '/'
 end
 
@@ -187,7 +199,14 @@ __END__
   %a{ :href => '/behaviors/0'} mugshots
   %a{ :href => '/behaviors/1'} departures
   %a{ :href => '/behaviors/2'} cameras
-
+  
+%p
+  %form{ :action => '/settings' }
+    %label{ :for => 'showBlobs' } Show blobs
+    %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @settings[:showBlobs]}
+    %br
+    %br
+    %input{ :type => 'submit', :value => 'apply' }
 %p
   last heartbeat: 
   = @@last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - @@last_heartbeat.to_f)} seconds ago" : 'none'

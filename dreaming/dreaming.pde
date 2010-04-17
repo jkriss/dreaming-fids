@@ -17,6 +17,8 @@ Movie movie;
 PImage movieFrame;
 UDP udp;
 
+boolean showBlobs;
+
 Behavior[] behaviors = new Behavior[3];
 Behavior activeBehavior;
 //int[] screenSize = {800, 480};
@@ -66,8 +68,8 @@ void setup() {
   behaviors[1] = new DepartureBoard(this, numScreens, border);
   behaviors[2] = new RawCameras(this, numScreens, border);
 
-//  activeBehavior = behaviors[0];
-  activeBehavior = behaviors[1];
+  activeBehavior = behaviors[0];
+//  activeBehavior = behaviors[1];
 
   for (int i=0; i<behaviors.length; i++) {
    if (behaviors[i] != null) behaviors[i].setup(); 
@@ -148,6 +150,12 @@ void click(String message) {
 void behavior(int index) {
   println("switching to behavior " + index);
   activeBehavior = behaviors[index];
+}
+
+void showBlobs(String bString) {
+  boolean b = (bString.equals("true"));
+  println("showing blobs? " + b);
+  showBlobs = b;
 }
 
 void fullscreen(String foo) {

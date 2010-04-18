@@ -147,6 +147,11 @@ void hideCursor() {
     Toolkit.getDefaultToolkit().createCustomCursor
     (image, new Point(0, 0), "invisibleCursor"); 
   setCursor(transparentCursor);
+  try {
+    new Robot().mouseMove(4,4);
+  } catch (AWTException e) {
+    e.printStackTrace();
+  }
 }
 
 void click(String message) {

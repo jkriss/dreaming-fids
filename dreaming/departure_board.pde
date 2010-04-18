@@ -19,7 +19,7 @@ class DepartureBoard extends Behavior {
   PGraphics b;
   // this list will be shared across displays,
   // so that it flows along all four
-  Row[] rows = new Row[nRows];
+  Row[] rows = new Row[nRows*numScreens];
   
   DepartureBoard(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
@@ -61,7 +61,7 @@ class DepartureBoard extends Behavior {
        for (int i=0; i<maxWidths.length; i++) {
          maxWidths[i] *= b.width;
        }
-       for (int i=0; i<nRows; i++) {
+       for (int i=0; i<rows.length; i++) {
          rows[i] = new Row(maxWidths);
        }
     }
@@ -82,7 +82,8 @@ class DepartureBoard extends Behavior {
     b.translate(leftBorder, topBorder);
     for (int colNum=0; colNum<3; colNum++) {
       b.pushMatrix();
-      for (int i=0; i<nRows; i++) {
+      int start = screenIndex*nRows;
+      for (int i=start; i<nRows+start; i++) {
         Row r = rows[i];
         Row nextRow = null;
         if (i < rows.length-1) {
@@ -139,7 +140,7 @@ class DepartureBoard extends Behavior {
    boolean hidden(Row nextHidden) {
      if (!hidden) return false;
      hiddenFrames += 1;
-     boolean done = hiddenFrames > 8;
+     boolean done = hiddenFrames > 5;
      if (done) {
        hidden = false;
        if (nextHidden != null) {

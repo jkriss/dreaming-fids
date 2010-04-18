@@ -49,7 +49,7 @@ class DepartureBoard extends Behavior {
     
     PImage cam = cams[screenIndex];
 
-//    if (cam == null) return;
+    if (cam == null) return;
 //    image(cam,0,0,w,h);
 
     if (b == null) {

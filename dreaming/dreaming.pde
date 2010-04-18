@@ -141,6 +141,7 @@ String hostname() {
 }
 
 void hideCursor() {
+  if (cursorHidden) return;
   int[] pixels = new int[16 * 16];
   Image image = Toolkit.getDefaultToolkit().createImage(
   new MemoryImageSource(16, 16, pixels, 0, 16));

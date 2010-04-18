@@ -51,6 +51,8 @@ SoftFullScreen fs;
 EasyOsc osc;
 String hostname = null;
 
+boolean cursorHidden;
+
 void setup() {
 
   smooth();
@@ -110,7 +112,6 @@ void setup() {
 
   fs = new SoftFullScreen(this);
   if (hostname().startsWith("thing")) fs.setFullScreen(true);
-  hideCursor();
 }
 
 String sendIP() {
@@ -152,6 +153,7 @@ void hideCursor() {
   } catch (AWTException e) {
     e.printStackTrace();
   }
+  cursorHidden = true;
 }
 
 void click(String message) {
@@ -196,6 +198,8 @@ void draw() {
   activeBehavior.draw();
 
   fill(106,161,204);
+  hideCursor();
+
   // text(frameRate, 40, 20);
 }
 

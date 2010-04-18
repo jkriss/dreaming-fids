@@ -31,14 +31,16 @@ class DepartureBoard extends Behavior {
 
   void draw() {
     
-    if (frameCount % 80 == 0) {
-      //pop();
-      rows[0].hide();
+    if (frameCount > 0) {
+      if (frameCount % 80 == 0) {
+        //pop();
+        rows[0].hide();
+      }
+      if (frameCount % 30 == 0) rows[(int)random(rows.length)].startBlinking();
+      
+      background(0);
+      splitScreens();
     }
-    if (frameCount % 30 == 0) rows[(int)random(rows.length)].startBlinking();
-    
-    background(0);
-    splitScreens();
   }
     
   void drawScreen(int screenIndex) {
@@ -109,7 +111,8 @@ class DepartureBoard extends Behavior {
 //    image(cam, 0, 0, w, h);
 //    PImage scaledCam = get(w*screenIndex, 0, w, h);
     cam.mask(board);
-    image(cam, 0, 0, w, h);
+    image(board, 0, 0, w, h);
+//    image(cam, 0, 0, w, h);
     
 //    image(board, 0, 0, w, h);
 

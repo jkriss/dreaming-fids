@@ -56,6 +56,8 @@ void setup() {
   smooth();
 
   osc = new EasyOsc(this, "fish");
+//  thisFish = new EasyOsc(this, isThing1() ? "thing1", "thing2");
+//  oscP5 = new OscP5(this, "230.0.0.1", 7447);
 
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
@@ -70,8 +72,8 @@ void setup() {
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
   
-  activeBehavior = behaviors[0];
-  //  activeBehavior = behaviors[1];
+//  activeBehavior = behaviors[0];
+  activeBehavior = behaviors[1];
 
   for (int i=0; i<behaviors.length; i++) {
     if (behaviors[i] != null) behaviors[i].setup(); 
@@ -233,7 +235,6 @@ void streamVideo() {
     if (localVideo.available()) {
       localVideo.read();
       localVideo.loadPixels();
-      //      opencv.convert(OpenCV.GRAY);
       streamer.send(localVideo);
     }
   } 

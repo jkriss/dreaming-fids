@@ -31,7 +31,10 @@ class DepartureBoard extends Behavior {
 
   void draw() {
     
-    if (frameCount % 80 == 0) pop();
+    if (frameCount % 80 == 0) {
+      //pop();
+      rows[0].hide();
+    }
     if (frameCount % 30 == 0) rows[(int)random(rows.length)].startBlinking();
     
     background(0);
@@ -81,10 +84,17 @@ class DepartureBoard extends Behavior {
       b.pushMatrix();
       for (int i=0; i<nRows; i++) {
         Row r = rows[i];
+        Row nextRow = null;
+        if (i < rows.length-1) {
+          nextRow = rows[i+1];
+        }
 //        color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
+
         if (r.blinkOn && colNum == 2) continue;
 //        fill(c);
-        b.rect(0,0,r.colWidths[colNum], rowHeight);
+        if (!r.hidden(nextRow)) {
+          b.rect(0,0,r.colWidths[colNum], rowHeight);
+        }
         b.translate(0, rowPadding+rowHeight);
       }
       b.popMatrix();
@@ -114,11 +124,32 @@ class DepartureBoard extends Behavior {
    float[] colWidths;
    boolean blinking;
    boolean blinkOn;
+   boolean hidden;
+   int hiddenFrames;
    int blinkCount = 0;
    Row(float[] maxWidths) {
      this.maxWidths = maxWidths;
      colWidths = new float[maxWidths.length];
      randomize();
+   }
+   void hide() {
+     hidden = true;
+     hiddenFrames = 0;
+   }
+   boolean hidden(Row nextHidden) {
+     if (!hidden) return false;
+     hiddenFrames += 1;
+     boolean done = hiddenFrames > 8;
+     if (done) {
+       hidden = false;
+       if (nextHidden != null) {
+         arrayCopy(nextHidden.colWidths, colWidths);
+         nextHidden.hide();
+       } else {
+         randomize();
+       }
+     }
+     return !done;
    }
    void startBlinking() {
      blinking = true;

@@ -17,6 +17,8 @@ Movie movie;
 PImage movieFrame;
 UDP udp;
 
+int SERVER_PORT = 4567;
+
 boolean showBlobs;
 
 Behavior[] behaviors = new Behavior[4];
@@ -74,8 +76,8 @@ void setup() {
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
   
-//  activeBehavior = behaviors[0];
-  activeBehavior = behaviors[1];
+  activeBehavior = behaviors[0];
+//  activeBehavior = behaviors[1];
 
   for (int i=0; i<behaviors.length; i++) {
     if (behaviors[i] != null) behaviors[i].setup(); 
@@ -87,13 +89,13 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
-  localVideo = new Capture(this, camW+40, camH+40, 24);
-  localVideo.crop(20,20,camW,camH);
-//  movie = new Movie(this, "Fish Comp 3.mov");
+//  localVideo = new Capture(this, camW+40, camH+40, 24);
+//  localVideo.crop(20,20,camW,camH);
+  movie = new Movie(this, "Fish Comp 3.mov");
 //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
-//  movie.loop();
-//  movieFrame = createImage(camW, camH, ALPHA);
+  movie.loop();
+  movieFrame = createImage(camW, camH, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address

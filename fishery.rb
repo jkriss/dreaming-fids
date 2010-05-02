@@ -18,6 +18,8 @@ SERVER_PORT = 4567
 @@settings = {}
 @@hostname = nil
 
+set :public, Proc.new { File.join(root,'dreaming','mugshots') }
+
 def hostname
   @@hostname ||= `hostname`.strip
 end

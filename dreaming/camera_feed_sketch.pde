@@ -232,6 +232,9 @@ class Mugshotter {
    if (millis() - lastShot > 1000) { 
      println("taking mugshot");
      PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
+     String imageName = "mugshot-" + (mugshots.size()+1) + ".jpg";
+     mug.save("mugshots/" + imageName);
+     println("http://"+hostname()+":"+SERVER_PORT+"/"+imageName);
      mugshots.add(mug);
      lastShot = millis();
      return true;

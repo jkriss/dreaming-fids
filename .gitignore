@@ -1,6 +1,7 @@
 .DS_Store
 *.mov
 *.mp4
+*.m4v
 background.jpeg
 *.pdf
 *.pid
@@ -8,3 +9,4 @@ background.jpeg
 screencasts
 dreaming/data/*.jpg
 artist-tools.zip
+dreaming/mugshots/*.jpg

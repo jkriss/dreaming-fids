@@ -17,6 +17,10 @@ class CameraFeedSketch extends Behavior {
     mugshotter.showMugshot(url); 
   }
   
+  public void resetMugshots() {
+    mugshotter.mugshots.clear(); 
+  }
+  
   void draw() {
 //    if (frameCount % 80 == 0) resetMappings();
     splitScreens();

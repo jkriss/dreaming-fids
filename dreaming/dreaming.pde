@@ -179,6 +179,7 @@ void click(String message) {
 
 void behavior(int index) {
   println("switching to behavior " + index);
+  mugshotBehavior.resetMugshots();
   activeBehavior = behaviors[index];
 }
 

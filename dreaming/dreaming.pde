@@ -291,12 +291,14 @@ void oscEvent(OscMessage m) {
   String value = null;
   if (m.arguments().length > 1) value = m.get(1).stringValue();
 //  println("target : " + target + ", hostname: " + hostname());
-  if (hostname().startsWith(target)) {
-//    println("calling osc method " + method);
+  if (hostname().startsWith(target) || target.equals("all")) {
+    println("calling osc method " + method);
     if (method.equals("showMugshot")) {
       mugshotBehavior.showMugshot(value);
     } else if (method.equals("startDepartureReshuffle")) {
       departureBoardBehavior.startDepartureReshuffle();
+    } else if (method.equals("resetMugshots")) {
+      mugshotBehavior.resetMugshots();
     }
   }
 }

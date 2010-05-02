@@ -246,9 +246,7 @@ class Mugshotter {
      mug.save("mugshots/" + imageName);
      String mugshotUrl = "http://"+hostname()+":"+SERVER_PORT+"/"+imageName;
 //     showMugshot(mugshotUrl);
-     callMethod("jklabs-mbp", "showMugshot", mugshotUrl);
-     callMethod("thing1", "showMugshot", mugshotUrl);
-     callMethod("thing2", "showMugshot", mugshotUrl);
+     callMethod("all", "showMugshot", mugshotUrl);
      return true;
    } else {
      return false;
@@ -258,7 +256,9 @@ class Mugshotter {
  void showMugshot(String url) {
    println("adding mugshot " + url);
    PImage urlMug = loadImage(url);
-   if (mugshots.size() == maxShots) mugshots.clear();
+   if (mugshots.size() >= maxShots) {
+     callMethod("all", "resetMugshots");
+   }
    mugshots.add(urlMug);
    lastShot = millis();
  }

@@ -234,8 +234,10 @@ class Mugshotter {
      PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
      String imageName = "mugshot-" + (mugshots.size()+1) + ".jpg";
      mug.save("mugshots/" + imageName);
-     println("http://"+hostname()+":"+SERVER_PORT+"/"+imageName);
-     mugshots.add(mug);
+     String mugshotUrl = "http://"+hostname()+":"+SERVER_PORT+"/"+imageName;
+     
+     PImage urlMug = loadImage(mugshotUrl);
+     mugshots.add(urlMug);
      lastShot = millis();
      return true;
    } else {

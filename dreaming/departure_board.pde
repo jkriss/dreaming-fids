@@ -36,7 +36,7 @@ class DepartureBoard extends Behavior {
 
   void draw() {
     
-    if (frameCount % 80 == 0) {
+    if (isThing1() && frameCount % 80 == 0) {
       //pop();
       if (rows[0] != null) rows[0].hide();
     }

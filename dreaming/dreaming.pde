@@ -61,6 +61,7 @@ String hostname = null;
 boolean cursorHidden;
 
 CameraFeedSketch mugshotBehavior;
+DepartureBoard departureBoardBehavior;
 
 void setup() {
 
@@ -79,13 +80,14 @@ void setup() {
   g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
   mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
+  departureBoardBehavior = new DepartureBoard(this, numScreens, border);
   behaviors[0] = mugshotBehavior;
-  behaviors[1] = new DepartureBoard(this, numScreens, border);
+  behaviors[1] = departureBoardBehavior;
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
   
-  activeBehavior = behaviors[0];
-//  activeBehavior = behaviors[1];
+//  activeBehavior = behaviors[0];
+  activeBehavior = behaviors[1];
 
   for (int i=0; i<behaviors.length; i++) {
     if (behaviors[i] != null) behaviors[i].setup(); 
@@ -129,11 +131,13 @@ String sendIP() {
 }
 
 String receiveIP() {
-  return true || isThing1() ? "224.0.0.0" : "225.0.0.0"; 
+  return "225.0.0.0"; 
+//  return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
 }
 
 boolean isThing1() {
-  return hostname().equals("thing1.local");
+//  return hostname().equals("thing1.local");
+  return !hostname().equals("thing2.local");
 }
 
 String hostname() {
@@ -267,24 +271,31 @@ void streamVideo() {
   }
 }
 
+void callMethod(String target, String method) {
+  callMethod(target, method, null);
+}
+
 void callMethod(String target, String method, String message) {
   OscMessage m = new OscMessage("/"+method);
   m.add(target);
-  m.add(message);
+  if (message != null) m.add(message);
   oscP5.send(m);
-//  println("sent " + method + " : " + message + " to " + target);
+  println("sent " + method + " : " + message + " to " + target);
 }
 
 void oscEvent(OscMessage m) {
-//  println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
+  println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
   String method = m.addrPattern().substring(1);
   String target = m.get(0).stringValue();
-  String value = m.get(1).stringValue();
+  String value = null;
+  if (m.arguments().length > 1) value = m.get(1).stringValue();
 //  println("target : " + target + ", hostname: " + hostname());
   if (hostname().startsWith(target)) {
 //    println("calling osc method " + method);
     if (method.equals("showMugshot")) {
       mugshotBehavior.showMugshot(value);
+    } else if (method.equals("startDepartureReshuffle")) {
+      departureBoardBehavior.startDepartureReshuffle();
     }
   }
 }

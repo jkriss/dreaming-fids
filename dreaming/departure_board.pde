@@ -28,6 +28,11 @@ class DepartureBoard extends Behavior {
   void setup() {
      
   }
+  
+  public void startDepartureReshuffle() {
+    println("starting departure board reshuffle");
+    rows[0].hide(); 
+  }
 
   void draw() {
     
@@ -152,6 +157,10 @@ class DepartureBoard extends Behavior {
          nextHidden.hide();
        } else {
          randomize();
+         // this means we're done updating for this machine
+         if (isThing1()) {
+           callMethod("thing2", "startDepartureReshuffle");
+         }
        }
      }
      return !done;

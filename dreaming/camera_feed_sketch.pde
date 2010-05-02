@@ -231,7 +231,8 @@ class Mugshotter {
  int mHeight = 9 * scaleFactor;
  int mMargin = (1 * scaleFactor) + 4;
  
- int shotsPerLine = 12;
+ int shotsPerLine = 6;
+ int maxShots = shotsPerLine * 4;
  
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 
@@ -253,6 +254,7 @@ class Mugshotter {
  void showMugshot(String url) {
    println("adding mugshot " + url);
    PImage urlMug = loadImage(url);
+   if (mugshots.size() == maxShots) mugshots.clear();
    mugshots.add(urlMug);
    lastShot = millis();
  }
@@ -262,14 +264,18 @@ class Mugshotter {
  }
  
  void draw() {
-   Iterator it = mugshots.iterator();
+//   Iterator it = mugshots.iterator();
    pushMatrix();
    translate(mMargin, mMargin);
    int count = 0;
-   while(it.hasNext()) {
-     PImage mug = (PImage)it.next();
+//   while(it.hasNext()) {
+   int startAt = isThing1() ? 0 : maxShots / 2;
+   int endAt = isThing1() ? min(mugshots.size(), maxShots / 2) : mugshots.size();
+   for (int i=startAt; i<endAt; i++) {
+//     PImage mug = (PImage)it.next();
+     PImage mug = (PImage)mugshots.get(i);
      image(mug, 0, 0, mWidth, mHeight);
-     if (!it.hasNext() && recentMugshot()) {
+     if (i == mugshots.size()-1 && recentMugshot()) {
        fill(245,237,12,70);
        rect(0,0,mWidth,mHeight);
      }

@@ -5,6 +5,9 @@ import processing.video.*;
 import controlP5.*;
 import fullscreen.*; 
 
+import oscP5.*;
+import netP5.*;
+
 VideoStreamer streamer;
 PImage[] cams = new PImage[6];
 int camW = 640;
@@ -18,6 +21,7 @@ PImage movieFrame;
 UDP udp;
 
 int SERVER_PORT = 4567;
+NetAddress oscBroadcast;
 
 boolean showBlobs;
 
@@ -50,19 +54,22 @@ MotionRect mostInterestingRect;
 
 SoftFullScreen fs; 
 
-EasyOsc osc;
+EasyOsc osc, thisFish;
+OscP5 oscP5;
 String hostname = null;
 
 boolean cursorHidden;
+
+CameraFeedSketch mugshotBehavior;
 
 void setup() {
 
   smooth();
 
   osc = new EasyOsc(this, "fish");
-//  thisFish = new EasyOsc(this, isThing1() ? "thing1", "thing2");
-//  oscP5 = new OscP5(this, "230.0.0.1", 7447);
-
+  thisFish = new EasyOsc(this, isThing1() ? "thing1" : "thing2");
+  oscP5 = new OscP5(this, "239.0.0.1", 7777); 
+  oscBroadcast = new NetAddress("230.0.0.1", 7447);
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
 
@@ -71,7 +78,8 @@ void setup() {
   Graphics2D g2 = ((PGraphicsJava2D)g).g2;
   g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-  behaviors[0] = new CameraFeedSketch(this, numScreens, border);
+  mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
+  behaviors[0] = mugshotBehavior;
   behaviors[1] = new DepartureBoard(this, numScreens, border);
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
@@ -256,6 +264,28 @@ void streamVideo() {
 //    int border = 20;
 //    movieFrame.copy(movie, border, border, movie.width-(2*border), movie.height-(2*border), 0, 0, camW, camH);
     streamer.send(movieFrame); 
+  }
+}
+
+void callMethod(String target, String method, String message) {
+  OscMessage m = new OscMessage("/"+method);
+  m.add(target);
+  m.add(message);
+  oscP5.send(m);
+//  println("sent " + method + " : " + message + " to " + target);
+}
+
+void oscEvent(OscMessage m) {
+//  println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
+  String method = m.addrPattern().substring(1);
+  String target = m.get(0).stringValue();
+  String value = m.get(1).stringValue();
+//  println("target : " + target + ", hostname: " + hostname());
+  if (hostname().startsWith(target)) {
+//    println("calling osc method " + method);
+    if (method.equals("showMugshot")) {
+      mugshotBehavior.showMugshot(value);
+    }
   }
 }
 

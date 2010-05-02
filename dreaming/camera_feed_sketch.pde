@@ -12,6 +12,11 @@ class CameraFeedSketch extends Behavior {
   void setup() {
   }
   
+  public void showMugshot(String url) {
+//    println("receiving new mugshot url: " + url);
+    mugshotter.showMugshot(url); 
+  }
+  
   void draw() {
 //    if (frameCount % 80 == 0) resetMappings();
     splitScreens();
@@ -170,7 +175,7 @@ class CameraFeedSketch extends Behavior {
         
         if (r.contains(fishRect)) {
 //          fill(255,255,255, 20);
-          println("caught one!");
+//          println("caught one!");
           // cam image isn't scaled, so scale rect down to its size
           PImage scaledCam = createImage(w,h,ALPHA);
           scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
@@ -230,19 +235,26 @@ class Mugshotter {
  
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 
-     println("taking mugshot");
+//     println("taking mugshot");
      PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
      String imageName = "mugshot-" + (mugshots.size()+1) + ".jpg";
      mug.save("mugshots/" + imageName);
      String mugshotUrl = "http://"+hostname()+":"+SERVER_PORT+"/"+imageName;
-     
-     PImage urlMug = loadImage(mugshotUrl);
-     mugshots.add(urlMug);
-     lastShot = millis();
+//     showMugshot(mugshotUrl);
+     callMethod("jklabs-mbp", "showMugshot", mugshotUrl);
+     callMethod("thing1", "showMugshot", mugshotUrl);
+     callMethod("thing2", "showMugshot", mugshotUrl);
      return true;
    } else {
      return false;
    }
+ }
+ 
+ void showMugshot(String url) {
+   println("adding mugshot " + url);
+   PImage urlMug = loadImage(url);
+   mugshots.add(urlMug);
+   lastShot = millis();
  }
  
  boolean recentMugshot() {

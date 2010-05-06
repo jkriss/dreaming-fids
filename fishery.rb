@@ -121,7 +121,7 @@ end
 get '/settings' do
   puts params.inspect
   @@settings = params
-  osc :showBlobs, 's', !params[:showBlobs].nil?
+  osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'
 end
 
@@ -213,6 +213,11 @@ __END__
     %label{ :for => 'showBlobs' } Show blobs
     %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @settings[:showBlobs]}
     %br
+    %label{ :for => 'cycleBehaviors' } Cycle behaviors
+    %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @settings[:cycleBehaviors]}
+    %br
+    %label{ :for => 'cycleLength' } Cycle length
+    %input{ :type => 'number', :name => 'cycleLength' }
     %br
     %input{ :type => 'submit', :value => 'apply' }
 %p

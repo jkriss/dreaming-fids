@@ -63,6 +63,10 @@ boolean cursorHidden;
 CameraFeedSketch mugshotBehavior;
 DepartureBoard departureBoardBehavior;
 
+int framesPerBehavior = 300;
+int behaviorIndex = 0;
+boolean cycleBehaviors = false;
+
 void setup() {
 
   smooth();
@@ -180,14 +184,20 @@ void click(String message) {
 void behavior(int index) {
   println("switching to behavior " + index);
   mugshotBehavior.resetMugshots();
-  activeBehavior = behaviors[index];
+  behaviorIndex = index;
+  activeBehavior = behaviors[behaviorIndex];
 }
 
-void showBlobs(String bString) {
-  boolean b = (bString.equals("true"));
-  println("showing blobs? " + b);
-  showBlobs = b;
-}
+//void cycleBehaviors(String bString) {
+//  boolean b = (bString.equals("true"));
+//  cycleBehaviors = b;
+//}
+
+//void showBlobs(String bString) {
+//  boolean b = (bString.equals("true"));
+//  println("showing blobs? " + b);
+//  showBlobs = b;
+//}
 
 void fullscreen(String foo) {
   fs.setFullScreen(!fs.isFullScreen());
@@ -207,7 +217,32 @@ void mousePressed() {
   }
 }
 
+public void setSettings(String settingsString) {
+  println("got settings: " + settingsString);
+  String[] settings = settingsString.split("&");
+  for (int i=0; i<settings.length; i++) {
+    String entry[] = settings[i].split("=");
+    String key = entry[0];
+    String value = entry[1]; 
+    
+    if (key.equals("showBlobs")) {
+      showBlobs = value.equals("true");
+    } else if (key.equals("cycleBehaviors")) {
+      cycleBehaviors = value.equals("true");
+    } else if (key.equals("cycleLength")) {
+      framesPerBehavior = Integer.valueOf(value);
+    }
+  }
+}
+
 void draw() {
+  
+  if (isThing1() && frameCount % framesPerBehavior == 0) {
+    behaviorIndex += 1;
+    if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
+    callMethod("all","setBehavior", ""+behaviorIndex);
+  }
+  
   background(0);
   streamVideo();
   findSuspiciousActivity();
@@ -299,6 +334,8 @@ void oscEvent(OscMessage m) {
       departureBoardBehavior.startDepartureReshuffle();
     } else if (method.equals("resetMugshots")) {
       mugshotBehavior.resetMugshots();
+    } else if (method.equals("setBehavior")) {
+      behavior(Integer.valueOf(value));
     }
   }
 }

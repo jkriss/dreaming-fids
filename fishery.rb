@@ -217,7 +217,7 @@ __END__
     %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @settings[:cycleBehaviors]}
     %br
     %label{ :for => 'cycleLength' } Cycle length
-    %input{ :type => 'number', :name => 'cycleLength' }
+    %input{ :type => 'number', :name => 'cycleLength', :value => @settings[:cycleLength] }
     %br
     %input{ :type => 'submit', :value => 'apply' }
 %p

@@ -277,7 +277,11 @@ class Mugshotter {
    int endAt = isThing1() ? min(mugshots.size(), maxShots / 2) : mugshots.size();
    for (int i=startAt; i<endAt; i++) {
 //     PImage mug = (PImage)it.next();
-     PImage mug = (PImage)mugshots.get(i);
+     try {
+       PImage mug = (PImage)mugshots.get(i);
+     } catch (Exception e) {
+       e.printStackTrace();
+     }
      if (mug == null) continue;
      image(mug, 0, 0, mWidth, mHeight);
      if (i == mugshots.size()-1 && recentMugshot()) {

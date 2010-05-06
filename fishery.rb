@@ -121,7 +121,7 @@ end
 get '/settings' do
   puts params.inspect
   @@settings = params
-  osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
+  # osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'
 end
 

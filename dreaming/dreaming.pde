@@ -223,13 +223,13 @@ public void setSettings(String settingsString) {
   for (int i=0; i<settings.length; i++) {
     String entry[] = settings[i].split("=");
     String key = entry[0];
-    String value = entry[1]; 
+    String value = entry.length > 1 ? entry[1] : null; 
     
-    if (key.equals("showBlobs")) {
+    if ("showBlobs".equals(key)) {
       showBlobs = value.equals("true");
-    } else if (key.equals("cycleBehaviors")) {
+    } else if ("cycleBehaviors".equals(key)) {
       cycleBehaviors = value.equals("true");
-    } else if (key.equals("cycleLength")) {
+    } else if (key.equals("cycleLength") && value != null) {
       framesPerBehavior = Integer.valueOf(value);
     }
   }

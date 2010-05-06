@@ -67,6 +67,10 @@ get '/' do
   haml :index
 end
 
+get '/fish' do
+  haml :fishies
+end
+
 get '/heartbeat' do
   if hostname != LAZY_COMPUTER
     puts "got local ping, sending heartbeat to #{HEARTBEAT_URL}"
@@ -157,6 +161,13 @@ __END__
 @@ layout
 %html
   = yield
+  
+@@ fishies
+
+- (1..36).each do |i| 
+  - fish = "mugshot-#{i}.jpg"
+  %a{ :href => fish }
+    %img{ :src => fish, :width => 80, :border => 0 }
 
 @@ index
 

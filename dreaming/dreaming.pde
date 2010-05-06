@@ -68,10 +68,15 @@ int framesPerBehavior = 300;
 int behaviorIndex = 0;
 boolean cycleBehaviors = false;
 
+Recorder inputRecorder, outputRecorder;
+
 void setup() {
 
   smooth();
-
+  
+  inputRecorder = new Recorder(this, "mugshots/input.mov", 10);
+  outputRecorder = new Recorder(this, "mugshots/output.mov", 10);
+  
   osc = new EasyOsc(this, "fish");
   thisFish = new EasyOsc(this, isThing1() ? "thing1" : "thing2");
   oscP5 = new OscP5(this, "239.0.0.1", 7777); 
@@ -256,6 +261,8 @@ void draw() {
   hideCursor();
 
   // text(frameRate, 40, 20);
+  
+  outputRecorder.record();
 }
 
 void findSuspiciousActivity() {
@@ -300,6 +307,7 @@ void streamVideo() {
       localVideo.read();
       localVideo.loadPixels();
       streamer.send(localVideo);
+      inputRecorder.record(localVideo);
     }
   } 
   else {
@@ -447,5 +455,66 @@ class MotionRect {
     return (int)lerp(start,end,amt);
     //   return (int)lerp(start,end,min(maxAmt, amt*100/delta));
   }
+}
+
+public void record(int frames) {
+  println("starting to record...");
+  inputRecorder.startRecording(frames);
+  outputRecorder.startRecording(frames);
+}
+
+class Recorder {
+ 
+  MovieMaker mm;
+  
+  boolean recording = false;
+  int maxFrames, count;
+  
+  PApplet parent;
+  String filename;
+  int frameRate;
+  
+  public Recorder(PApplet parent, String filename, int frameRate) {
+    this.parent = parent; 
+    this.filename = filename;
+    this.frameRate = frameRate;
+  }
+  
+  void startRecording(int frames) {
+    recording = true;
+    count = 0;
+    maxFrames = frames;
+  } 
+  
+  void record() {
+    record(null);
+  }
+  
+  void record(PImage inputFrame) {
+    if (mm == null && recording) {
+      String path = sketchPath+"/"+filename;
+      File f = new File(path);
+      println("recording to " + path);
+      if (f.exists()) f.delete();
+      if (inputFrame == null)
+        mm = new MovieMaker(parent, width, height, filename, frameRate, MovieMaker.H263, MovieMaker.HIGH);
+      else
+        mm = new MovieMaker(parent, inputFrame.width, inputFrame.height, filename, frameRate, MovieMaker.H263, MovieMaker.HIGH);
+    }
+    if (mm != null) {
+      if (inputFrame == null)
+        mm.addFrame();
+      else
+        mm.addFrame(inputFrame.pixels, inputFrame.width, inputFrame.height);
+    }
+    count += 1;
+    if (count > maxFrames && recording) {
+      println("writing movie file");
+      mm.finish();
+      mm = null;
+      recording = false;
+    }
+  }
+  
 }
 

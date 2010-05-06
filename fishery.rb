@@ -129,6 +129,11 @@ get '/settings' do
   redirect '/'
 end
 
+get '/record' do
+  osc :record, 'i', params[:frames].to_i
+  redirect '/'
+end
+
 def echo(request_path)
   return if params[:echo] == 'false'
   other_hosts.each do |h|
@@ -234,6 +239,17 @@ __END__
     %input{ :type => 'number', :name => 'cycleLength', :value => @settings[:cycleLength] }
     %br
     %input{ :type => 'submit', :value => 'apply' }
+    
+%p
+  %form{ :action => '/record' }
+    %input{ :type => 'number', :name => 'frames', :value => 200 }
+    frames
+    %input{ :type => 'submit', :value => 'record' }
+    
+%p
+  %a{ :href => 'fish' } fish
+  %a{ :href => 'input.mov' } input.mov
+  %a{ :href => 'output.mov' } output.mov
 %p
   last heartbeat: 
   = @@last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - @@last_heartbeat.to_f)} seconds ago" : 'none'

@@ -347,8 +347,8 @@ void oscEvent(OscMessage m) {
 void receive( byte[] data, String ip, int port ) {
   PImage img = loadPImageFromBytes(data, this);
 
-  cams[isThing1() ? 0 : 3] = img.get(0,0,camW2,camH2);
-  cams[isThing1() ? 1 : 4] = img.get(camW2,0,camW2,camH2);
+  cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
+  cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
 //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
 
   // for now

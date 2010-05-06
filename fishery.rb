@@ -218,6 +218,9 @@ __END__
   %a{ :href => '/behaviors/1'} departures
   %a{ :href => '/behaviors/2'} cameras
   %a{ :href => '/behaviors/3'} switching cameras
+
+%p
+  %a{ :href => '/behaviors/4'} raw input
   
 %p
   %form{ :action => '/settings' }

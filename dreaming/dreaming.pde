@@ -9,12 +9,13 @@ import oscP5.*;
 import netP5.*;
 
 VideoStreamer streamer;
-PImage[] cams = new PImage[6];
+PImage[] cams = new PImage[4];
 int camW = 640;
 //int camW = 800;
 int camH = 480;
 int camW2 = camW/2;
-int camH2 = camH/2;
+//int camH2 = camH/2;
+int camH2 = camH; // only using the top quads now
 Capture localVideo;
 Movie movie;
 PImage movieFrame;
@@ -25,7 +26,7 @@ NetAddress oscBroadcast;
 
 boolean showBlobs;
 
-Behavior[] behaviors = new Behavior[4];
+Behavior[] behaviors = new Behavior[5];
 Behavior activeBehavior;
 //int[] screenSize = {800, 480};
 int[] screenSize = {
@@ -89,9 +90,10 @@ void setup() {
   behaviors[1] = departureBoardBehavior;
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
+  behaviors[4] = new RawInput(this, numScreens, border);
   
 //  activeBehavior = behaviors[0];
-  activeBehavior = behaviors[1];
+  activeBehavior = behaviors[4];
 
   for (int i=0; i<behaviors.length; i++) {
     if (behaviors[i] != null) behaviors[i].setup(); 
@@ -345,7 +347,7 @@ void receive( byte[] data, String ip, int port ) {
 
   cams[isThing1() ? 0 : 3] = img.get(0,0,camW2,camH2);
   cams[isThing1() ? 1 : 4] = img.get(camW2,0,camW2,camH2);
-  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
+//  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
 
   // for now
   //  cams[isThing1() ? 3 : 0] = cams[0];
@@ -357,9 +359,12 @@ void receive( byte[] data, String ip, int port ) {
   if (localVideo != null) frame = localVideo;
 
   if (frame != null) {
-    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
-    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
-    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
+    cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
+    cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
+
+//    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
+//    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
+//    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
   }
 
   for (int i=0; i<cams.length; i++) {

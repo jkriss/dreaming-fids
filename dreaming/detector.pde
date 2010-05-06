@@ -169,6 +169,7 @@ class Detector {
   }
   
   DetectionResult presence(PImage img) {
+    if (img == null) return null;
     initImage(img);
     if (backgroundImage == null) return null;
     arraycopy(img.pixels, presenceImage.pixels);

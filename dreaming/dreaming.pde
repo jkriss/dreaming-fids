@@ -33,7 +33,7 @@ int[] screenSize = {
   800, 600};
 //int screenFactor = screenSize[0] * screenSize[1] / 7000;
 int numScreens = 2;
-int numCameras = 6;
+int numCameras = 4;
 int border = 0; //10;
 int motionLevel;
 float scale = 1;

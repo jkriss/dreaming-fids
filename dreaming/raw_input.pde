@@ -15,6 +15,6 @@ class RawInput extends Behavior {
     
   void drawScreen(int screenIndex) {
     if (localVideo == null) return;
-    image(localVideo,0,0,w,h);
+    image(localVideo,0,0,w,h/2);
   }
 }

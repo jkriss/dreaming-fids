@@ -237,7 +237,7 @@ public void setSettings(String settingsString) {
 
 void draw() {
   
-  if (isThing1() && frameCount % framesPerBehavior == 0) {
+  if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
     behaviorIndex += 1;
     if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
     callMethod("all","setBehavior", ""+behaviorIndex);

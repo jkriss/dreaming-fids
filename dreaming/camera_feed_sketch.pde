@@ -278,6 +278,7 @@ class Mugshotter {
    for (int i=startAt; i<endAt; i++) {
 //     PImage mug = (PImage)it.next();
      PImage mug = (PImage)mugshots.get(i);
+     if (mug == null) continue;
      image(mug, 0, 0, mWidth, mHeight);
      if (i == mugshots.size()-1 && recentMugshot()) {
        fill(245,237,12,70);

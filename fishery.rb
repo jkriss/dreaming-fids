@@ -20,6 +20,13 @@ SERVER_PORT = 4567
 @@hostname = nil
 
 set :public, Proc.new { File.join(root,'dreaming','mugshots') }
+# set :settings_path, Proc.new { File.join(root,'dreaming','settings.txt') }
+SETTINGS_PATH = 'dreaming/settings.txt'
+
+if File.exists?(SETTINGS_PATH)
+  File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); @@settings[vals.first.intern] = vals[1] if vals.size > 1 }
+  puts "loaded #{@@settings.inspect}"
+end
 
 def hostname
   @@hostname ||= `hostname`.strip
@@ -223,6 +230,25 @@ __END__
       color: #000;
       border-style: solid;
     }
+ 
+    fieldset {
+      padding: 5px;
+      zpadding-left: 0;
+      border: 1px dotted #ccc;
+      width: 300px;
+      margin-bottom: 10px;
+    }
+
+    legend {
+      font-weight: bold;
+      padding: 5px
+    }
+
+    fieldset label {
+      width: 100px;
+      line-height: 1.6em;
+      display: inline-block;
+    }
   </style>
 
 %p
@@ -245,14 +271,21 @@ __END__
   
 %p
   %form{ :action => '/settings' }
-    %label{ :for => 'showBlobs' } Show blobs
-    %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @settings[:showBlobs]}
-    %br
-    %label{ :for => 'cycleBehaviors' } Cycle behaviors
-    %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @settings[:cycleBehaviors]}
-    %br
-    %label{ :for => 'cycleLength' } Cycle length
-    %input{ :type => 'number', :name => 'cycleLength', :value => @settings[:cycleLength] }
+  
+    %fieldset
+      %legend general
+      %label{ :for => 'cycleBehaviors' } Cycle behaviors
+      %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @@settings[:cycleBehaviors]}
+      %br
+      %label{ :for => 'cycleLength' } Cycle length
+      %input{ :type => 'number', :name => 'cycleLength', :value => @@settings[:cycleLength] }
+
+    
+    %fieldset
+      %legend mugshots
+      %label{ :for => 'showBlobs' } Show blobs
+      %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @@settings[:showBlobs]}
+      %br
     %br
     %input{ :type => 'submit', :value => 'apply' }
     

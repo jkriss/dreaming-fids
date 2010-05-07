@@ -76,10 +76,10 @@ AutoClicker autoclicker = new AutoClicker();
 void setup() {
 
   smooth();
-  
+
   inputRecorder = new Recorder(this, "mugshots/input.mov", 10);
   outputRecorder = new Recorder(this, "mugshots/output.mov", 10);
-  
+
   osc = new EasyOsc(this, "fish");
   thisFish = new EasyOsc(this, isThing1() ? "thing1" : "thing2");
   oscP5 = new OscP5(this, "239.0.0.1", 7777); 
@@ -101,13 +101,13 @@ void setup() {
   behaviors[1] = departureBoardBehavior;
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
-//  behaviors[4] = new RawInput(this, numScreens, border);
-//  behaviors[4] = zoomingBehavior;
+  //  behaviors[4] = new RawInput(this, numScreens, border);
+  //  behaviors[4] = zoomingBehavior;
   behaviors[4] = mugshotBehavior;
-  
+
   rawInput = new RawInput(this, numScreens, border);
-  
-//  activeBehavior = behaviors[0];
+
+  //  activeBehavior = behaviors[0];
   activeBehavior = behaviors[4];
 
   for (int i=0; i<behaviors.length; i++) {
@@ -121,14 +121,14 @@ void setup() {
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
   localVideo = new Capture(this, camW+40, camH+40, 24);
-//  localVideo.crop(20,20,camW,camH);
+  //  localVideo.crop(20,20,camW,camH);
   localVideo.crop(20,20,camW,camH/2);
-  
-//  movie = new Movie(this, "Fish Comp 3.mov");
-//  movie = new Movie(this, "camera test.mov");
+
+  //  movie = new Movie(this, "Fish Comp 3.mov");
+  //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
-//  movie.loop();
-//  movieFrame = createImage(camW, camH, ALPHA);
+  //  movie.loop();
+  //  movieFrame = createImage(camW, camH, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
@@ -147,6 +147,12 @@ void setup() {
 
   fs = new SoftFullScreen(this);
   if (hostname().startsWith("thing")) fs.setFullScreen(true);
+
+  try {
+    setSettings(loadStrings("settings.txt")[0]);
+  } catch (Exception e) {
+    e.printStackTrace();
+  }
 }
 
 String sendIP() {
@@ -155,11 +161,11 @@ String sendIP() {
 
 String receiveIP() {
   return "225.0.0.0"; 
-//  return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
+  //  return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
 }
 
 boolean isThing1() {
-//  return hostname().equals("thing1.local");
+  //  return hostname().equals("thing1.local");
   return !hostname().equals("thing2.local");
 }
 
@@ -167,7 +173,7 @@ String hostname() {
   if (hostname == null) {
     try {
       String[] cmd_elements = {
-        "hostname"      };
+        "hostname"            };
       Process p = Runtime.getRuntime().exec(cmd_elements);
       hostname = new BufferedReader(new InputStreamReader(p.getInputStream())).readLine();
     } 
@@ -188,7 +194,8 @@ void hideCursor() {
   setCursor(transparentCursor);
   try {
     new Robot().mouseMove(4,4);
-  } catch (AWTException e) {
+  } 
+  catch (AWTException e) {
     e.printStackTrace();
   }
   cursorHidden = true;
@@ -242,34 +249,37 @@ void mousePressed() {
 
 public void setSettings(String settingsString) {
   println("got settings: " + settingsString);
+  saveStrings("settings.txt",new String[]{settingsString});
   String[] settings = settingsString.split("&");
   for (int i=0; i<settings.length; i++) {
     String entry[] = settings[i].split("=");
     String key = entry[0];
     String value = entry.length > 1 ? entry[1] : null; 
-    
+
     if ("showBlobs".equals(key)) {
       showBlobs = value.equals("showBlobs");
-    } else if ("cycleBehaviors".equals(key)) {
+    } 
+    else if ("cycleBehaviors".equals(key)) {
       cycleBehaviors = value.equals("cycleBehaviors");
-    } else if (key.equals("cycleLength") && value != null) {
+    } 
+    else if (key.equals("cycleLength") && value != null) {
       framesPerBehavior = Integer.valueOf(value);
     }
   }
 }
 
 void draw() {
-  
+
   autoclicker.doClick(); // will only trigger if it's supposed to
-  
+
   if (frameCount % 1000 == 0) autoclicker.start();
-  
+
   if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
     behaviorIndex += 1;
     if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
     callMethod("all","setBehavior", ""+behaviorIndex);
   }
-  
+
   background(0);
   streamVideo();
   findSuspiciousActivity();
@@ -279,7 +289,7 @@ void draw() {
   hideCursor();
 
   text(frameRate, 40, 20);
-  
+
   outputRecorder.record();
 }
 
@@ -331,8 +341,8 @@ void streamVideo() {
   else {
     movie.read();
     movieFrame.copy(movie, 0, 0, movie.width, movie.height, 0, 0, camW, camH);
-//    int border = 20;
-//    movieFrame.copy(movie, border, border, movie.width-(2*border), movie.height-(2*border), 0, 0, camW, camH);
+    //    int border = 20;
+    //    movieFrame.copy(movie, border, border, movie.width-(2*border), movie.height-(2*border), 0, 0, camW, camH);
     streamer.send(movieFrame); 
   }
 }
@@ -355,18 +365,22 @@ void oscEvent(OscMessage m) {
   String target = m.get(0).stringValue();
   String value = null;
   if (m.arguments().length > 1) value = m.get(1).stringValue();
-//  println("target : " + target + ", hostname: " + hostname());
+  //  println("target : " + target + ", hostname: " + hostname());
   if (hostname().startsWith(target) || target.equals("all")) {
     println("calling osc method " + method);
     if (method.equals("showMugshot")) {
       mugshotBehavior.showMugshot(value);
-    } else if (method.equals("startDepartureReshuffle")) {
+    } 
+    else if (method.equals("startDepartureReshuffle")) {
       departureBoardBehavior.startDepartureReshuffle();
-    } else if (method.equals("resetMugshots")) {
+    } 
+    else if (method.equals("resetMugshots")) {
       mugshotBehavior.resetMugshots();
-    } else if (method.equals("setBehavior")) {
+    } 
+    else if (method.equals("setBehavior")) {
       behavior(Integer.valueOf(value));
-    } else if (method.equals("departureBlink")) {
+    } 
+    else if (method.equals("departureBlink")) {
       departureBoardBehavior.blink();
     }
   }
@@ -377,7 +391,7 @@ void receive( byte[] data, String ip, int port ) {
 
   cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
   cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
-//  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
+  //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
 
   // for now
   //  cams[isThing1() ? 3 : 0] = cams[0];
@@ -392,9 +406,9 @@ void receive( byte[] data, String ip, int port ) {
     cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
     cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
 
-//    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
-//    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
-//    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
+    //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
+    //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
+    //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
   }
 
   for (int i=0; i<cams.length; i++) {
@@ -484,32 +498,32 @@ public void record(int frames) {
 }
 
 class Recorder {
- 
+
   MovieMaker mm;
-  
+
   boolean recording = false;
   int maxFrames, count;
-  
+
   PApplet parent;
   String filename;
   int frameRate;
-  
+
   public Recorder(PApplet parent, String filename, int frameRate) {
     this.parent = parent; 
     this.filename = filename;
     this.frameRate = frameRate;
   }
-  
+
   void startRecording(int frames) {
     recording = true;
     count = 0;
     maxFrames = frames;
   } 
-  
+
   void record() {
     record(null);
   }
-  
+
   void record(PImage inputFrame) {
     if (mm == null && recording) {
       String path = sketchPath+"/"+filename;
@@ -535,7 +549,7 @@ class Recorder {
       recording = false;
     }
   }
-  
+
 }
 
 class AutoClicker {
@@ -546,7 +560,7 @@ class AutoClicker {
     clicks = 0;
     doClick();
   }
-  
+
   void doClick() {
     if (clicks < 3 && frameCount % pause == 0) {
       println("autoclicking");
@@ -555,4 +569,5 @@ class AutoClicker {
     }
   }
 }
+
 

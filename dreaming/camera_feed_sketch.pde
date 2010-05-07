@@ -50,6 +50,7 @@ class CameraFeedSketch extends Behavior {
       scaleBlobs(mblobs, c.width, c.height, w, h);
       if (showBlobs) {
 //        stroke(200,0,0); // red
+        strokeWeight(1);
         stroke(255,255,0); // yellow
 //        fill(200,0,0,50);
         fill(255,255,0,50);

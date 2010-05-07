@@ -24,7 +24,7 @@ UDP udp;
 int SERVER_PORT = 4567;
 NetAddress oscBroadcast;
 
-boolean showBlobs;
+boolean showBlobs = true;
 
 Behavior[] behaviors = new Behavior[5];
 Behavior activeBehavior;

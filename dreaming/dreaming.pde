@@ -87,6 +87,7 @@ void setup() {
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
 
+  frameRate(12);
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
 
   Graphics2D g2 = ((PGraphicsJava2D)g).g2;
@@ -277,7 +278,7 @@ void draw() {
   fill(106,161,204);
   hideCursor();
 
-  // text(frameRate, 40, 20);
+  text(frameRate, 40, 20);
   
   outputRecorder.record();
 }

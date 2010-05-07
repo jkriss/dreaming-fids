@@ -61,8 +61,9 @@ String hostname = null;
 
 boolean cursorHidden;
 
-CameraFeedSketch mugshotBehavior;
+CameraFeedSketch mugshotBehavior, zoomingBehavior;
 DepartureBoard departureBoardBehavior;
+RawInput rawInput;
 
 int framesPerBehavior = 300;
 int behaviorIndex = 0;
@@ -90,12 +91,16 @@ void setup() {
   g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
   mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
+  zoomingBehavior = new CameraFeedSketch(this, numScreens, border);
   departureBoardBehavior = new DepartureBoard(this, numScreens, border);
   behaviors[0] = mugshotBehavior;
   behaviors[1] = departureBoardBehavior;
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
-  behaviors[4] = new RawInput(this, numScreens, border);
+//  behaviors[4] = new RawInput(this, numScreens, border);
+  behaviors[4] = zoomingBehavior;
+  
+  rawInput = new RawInput(this, numScreens, border);
   
 //  activeBehavior = behaviors[0];
   activeBehavior = behaviors[4];
@@ -182,6 +187,10 @@ void hideCursor() {
     e.printStackTrace();
   }
   cursorHidden = true;
+}
+
+void showRawInput(String s) {
+  activeBehavior = rawInput;
 }
 
 void click(String message) {

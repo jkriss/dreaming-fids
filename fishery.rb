@@ -122,6 +122,11 @@ get '/behaviors/:id' do
   redirect '/'
 end
 
+get '/test/input' do
+  osc :showRawInput, 's', 'ptthbt'
+  redirect '/'
+end
+
 get '/settings' do
   puts params.inspect
   params[:showBlobs] ||= false
@@ -225,9 +230,10 @@ __END__
   %a{ :href => '/behaviors/1'} departures
   %a{ :href => '/behaviors/2'} cameras
   %a{ :href => '/behaviors/3'} switching cameras
+  %a{ :href => '/behaviors/4'} zooming
 
 %p
-  %a{ :href => '/behaviors/4'} raw input
+  %a{ :href => '/test/input'} raw input
   
 %p
   %form{ :action => '/settings' }

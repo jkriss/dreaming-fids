@@ -4,6 +4,7 @@ class CameraFeedSketch extends Behavior {
 
   int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
+  boolean zooming = false;
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
@@ -175,7 +176,10 @@ class CameraFeedSketch extends Behavior {
         
         // remember, r.x and r.y are center points, here, so we need to adjust
 //        PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(rw/2), (int)(r.y*hScale)-(int)(rh/2), (int)rw, (int)rh);
-//        image(mug,0,0,w,h);
+        if (zooming) {
+          PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(r.width/2), (int)(r.y*hScale)-(int)(r.height/2), (int)r.width, (int)r.height);
+          image(mug,0,0,w,h);
+        }
 //        println("drawing " + r);
         
         strokeWeight(4);
@@ -194,7 +198,9 @@ class CameraFeedSketch extends Behavior {
         } else {
           noFill();
         }
-        rect(r.x, r.y, r.width, r.height);
+        
+        if (!zooming)
+          rect(r.x, r.y, r.width, r.height);
         
 //        strokeWeight(1);
 //        stroke(255,0,0);

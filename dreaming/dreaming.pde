@@ -71,6 +71,8 @@ boolean cycleBehaviors = false;
 
 Recorder inputRecorder, outputRecorder;
 
+AutoClicker autoclicker = new AutoClicker();
+
 void setup() {
 
   smooth();
@@ -255,6 +257,10 @@ public void setSettings(String settingsString) {
 }
 
 void draw() {
+  
+  autoclicker.doClick(); // will only trigger if it's supposed to
+  
+  if (frameCount % 1000 == 0) autoclicker.start();
   
   if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
     behaviorIndex += 1;
@@ -526,5 +532,23 @@ class Recorder {
     }
   }
   
+}
+
+class AutoClicker {
+  int clicks = 0;
+  int pause = 100;
+
+  void start() {
+    clicks = 0;
+    doClick();
+  }
+  
+  void doClick() {
+    if (clicks < 3 && frameCount % pause == 0) {
+      println("autoclicking");
+      clicks++;
+      click("tbbttth");
+    }
+  }
 }
 

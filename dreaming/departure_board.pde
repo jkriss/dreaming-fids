@@ -12,6 +12,8 @@ class DepartureBoard extends Behavior {
   float leftBorder = 6/104.0;
   int maxBlinks = 20;
   int framesPerBlink = 10;
+  int framesBeforeShuffle = 200;
+  int framesPerNewBlink = 100;
   
   color normalColor = 255;
   color blinkColor = 0;
@@ -36,15 +38,19 @@ class DepartureBoard extends Behavior {
 
   void draw() {
     
-    if (isThing1() && frameCount % 80 == 0) {
+    if (isThing1() && frameCount % framesBeforeShuffle == 0) {
       //pop();
       if (rows[0] != null) rows[0].hide();
     }
-    if (frameCount % 30 == 0) {
+    if (frameCount % framesPerNewBlink == 0) {
       Row r = rows[(int)random(rows.length)];
       if (r != null) r.startBlinking();
     }
-    
+    if (frameCount % framesPerBlink == 0 ) {
+      for (int i=0; i<rows.length; i++) {
+        if (rows[i] != null) rows[i].blinkIfBlinking();
+      }
+    }
     background(0);
     splitScreens();
   }
@@ -80,12 +86,6 @@ class DepartureBoard extends Behavior {
     b.noStroke();
     b.fill(normalColor);
     b.pushMatrix();
-    
-    if (frameCount % framesPerBlink == 0 ) {
-      for (int i=0; i<rows.length; i++) {
-        rows[i].blinkIfBlinking();
-      }
-    }
     
     b.translate(leftBorder, topBorder);
     for (int colNum=0; colNum<3; colNum++) {

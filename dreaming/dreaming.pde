@@ -365,6 +365,8 @@ void oscEvent(OscMessage m) {
       mugshotBehavior.resetMugshots();
     } else if (method.equals("setBehavior")) {
       behavior(Integer.valueOf(value));
+    } else if (method.equals("departureBlink")) {
+      departureBoardBehavior.blink();
     }
   }
 }

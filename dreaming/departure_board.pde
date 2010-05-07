@@ -47,12 +47,17 @@ class DepartureBoard extends Behavior {
       if (r != null) r.startBlinking();
     }
     if (frameCount % framesPerBlink == 0 ) {
-      for (int i=0; i<rows.length; i++) {
-        if (rows[i] != null) rows[i].blinkIfBlinking();
-      }
+      callMethod("all", "departureBlink");
     }
     background(0);
     splitScreens();
+  }
+  
+  void blink() {
+    println("remote blink received");
+    for (int i=0; i<rows.length; i++) {
+      if (rows[i] != null) rows[i].blinkIfBlinking();
+    }
   }
     
   void drawScreen(int screenIndex) {

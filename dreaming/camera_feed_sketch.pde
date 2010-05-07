@@ -48,8 +48,10 @@ class CameraFeedSketch extends Behavior {
     if (mblobs != null) {
       scaleBlobs(mblobs, c.width, c.height, w, h);
       if (showBlobs) {
-        stroke(200,0,0);
-        fill(200,0,0,50);
+//        stroke(200,0,0); // red
+        stroke(255,255,0); // yellow
+//        fill(200,0,0,50);
+        fill(255,255,0,50);
         for( int i=0; i<mblobs.length; i++ ) {
             beginShape();
             for( int j=0; j<mblobs[i].blob.points.length; j++ ) {
@@ -109,7 +111,8 @@ class CameraFeedSketch extends Behavior {
       if (score > 180) {
 //      if (true) {
 //        stroke(245,237,12, score);
-        stroke(255,255,0);
+//        stroke(255,255,0); // yellow
+        stroke(200,0,0); // red
         
         rectMode(CENTER);
         
@@ -186,7 +189,8 @@ class CameraFeedSketch extends Behavior {
           mugshotter.mugshot(scaledCam, r);
         }
         if (mugshotter.recentMugshot()) {
-          fill(245,237,12,100);
+//          fill(245,237,12,100);
+          fill(200,0,100); // red
         } else {
           noFill();
         }

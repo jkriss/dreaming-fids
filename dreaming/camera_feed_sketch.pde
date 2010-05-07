@@ -5,6 +5,7 @@ class CameraFeedSketch extends Behavior {
   int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
   boolean zooming = false;
+  int framesBeforeSwitching = 200;
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
@@ -17,13 +18,13 @@ class CameraFeedSketch extends Behavior {
 //    println("receiving new mugshot url: " + url);
     mugshotter.showMugshot(url); 
   }
-  
+    
   public void resetMugshots() {
     mugshotter.mugshots.clear(); 
   }
   
   void draw() {
-//    if (frameCount % 80 == 0) resetMappings();
+    if (frameCount % framesBeforeSwitching == 0) resetMappings();
     splitScreens();
     spanScreens();
     fill(0,0,0, 10);
@@ -230,7 +231,7 @@ class CameraFeedSketch extends Behavior {
 
       
   void resetMappings() {
-    int[] choices = {0,1,2,3,4,5};
+    int[] choices = {0,1,2,3};
     for (int i=0; i<cameraMappings.length;) {
       int r = round(random(choices.length-1));
       cameraMappings[i] = choices[r];
@@ -253,7 +254,7 @@ class Mugshotter {
  float mMargin = (1 * scaleFactor) + 7;
  
  int shotsPerLine = 6;
- int maxShots = shotsPerLine * 4;
+ int maxShots = shotsPerLine * 4 * 3;
  
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 

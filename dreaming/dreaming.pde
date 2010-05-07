@@ -237,7 +237,7 @@ public void setSettings(String settingsString) {
     if ("showBlobs".equals(key)) {
       showBlobs = value.equals("showBlobs");
     } else if ("cycleBehaviors".equals(key)) {
-      cycleBehaviors = value.equals("showBlobs");
+      cycleBehaviors = value.equals("cycleBehaviors");
     } else if (key.equals("cycleLength") && value != null) {
       framesPerBehavior = Integer.valueOf(value);
     }

@@ -87,7 +87,7 @@ void setup() {
   PFont font = loadFont("Helvetica-Bold-16.vlw");
   textFont(font);
 
-//  frameRate(12);
+  frameRate(25);
   size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
 
   Graphics2D g2 = ((PGraphicsJava2D)g).g2;

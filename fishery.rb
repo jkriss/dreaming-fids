@@ -23,9 +23,11 @@ set :public, Proc.new { File.join(root,'dreaming','mugshots') }
 # set :settings_path, Proc.new { File.join(root,'dreaming','settings.txt') }
 SETTINGS_PATH = 'dreaming/settings.txt'
 
-if File.exists?(SETTINGS_PATH)
-  File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); @@settings[vals.first.intern] = vals[1] if vals.size > 1 }
-  puts "loaded #{@@settings.inspect}"
+def read_settings
+  if File.exists?(SETTINGS_PATH)
+    File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); @@settings[vals.first.intern] = vals[1] if vals.size > 1 }
+    puts "loaded #{@@settings.inspect}"
+  end
 end
 
 def hostname
@@ -70,6 +72,7 @@ configure do
 end
 
 get '/' do
+  read_settings
   @settings = @@settings
   puts "current settings: #{@settings.inspect}"
   haml :index

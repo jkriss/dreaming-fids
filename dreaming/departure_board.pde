@@ -64,7 +64,8 @@ class DepartureBoard extends Behavior {
 //    image(cam,0,0,w,h);
 
     if (b == null) {
-      b = createGraphics(cam.width, cam.height,JAVA2D);
+//      b = createGraphics(cam.width, cam.height,JAVA2D);
+      b = createGraphics(width/2, height, JAVA2D);  
       rowHeight *= b.height;
       rowPadding *= b.height;
       topBorder *= b.height;
@@ -80,16 +81,18 @@ class DepartureBoard extends Behavior {
        }
     }
     
-    b.beginDraw();
-    b.background(0);
+//    b.beginDraw();
+    //background(0);
+        image(cam, 0, 0, w, h);
+
 //    b.background(75);
-    b.noStroke();
-    b.fill(normalColor);
-    b.pushMatrix();
+    noStroke();
+    fill(normalColor);
+    pushMatrix();
     
-    b.translate(leftBorder, topBorder);
+    translate(leftBorder, topBorder);
     for (int colNum=0; colNum<3; colNum++) {
-      b.pushMatrix();
+      pushMatrix();
       int start = screenIndex*nRows;
       for (int i=start; i<nRows+start; i++) {
         Row r = rows[i];
@@ -102,22 +105,22 @@ class DepartureBoard extends Behavior {
         if (r.blinkOn && colNum == 2) continue;
 //        fill(c);
         if (!r.hidden(nextRow)) {
-          b.rect(0,0,r.colWidths[colNum], rowHeight);
+          rect(0,0,r.colWidths[colNum], rowHeight);
         }
-        b.translate(0, rowPadding+rowHeight);
+        translate(0, rowPadding+rowHeight);
       }
-      b.popMatrix();
-      b.translate(maxWidths[colNum] + colPaddings[colNum], 0);
+      popMatrix();
+      translate(maxWidths[colNum] + colPaddings[colNum], 0);
     }
-    b.popMatrix();
-    b.endDraw();
+    popMatrix();
+//    b.endDraw();
     
 //    PImage board = get(w*screenIndex, 0, w, h);
-    PImage board = b.get(0,0,b.width,b.height);
+//    PImage board = b.get(0,0,b.width,b.height);
 //    image(cam, 0, 0, w, h);
 //    PImage scaledCam = get(w*screenIndex, 0, w, h);
-    cam.mask(board);
-    image(board, 0, 0, w, h);
+//    cam.mask(board);
+//    image(board, 0, 0, w, h);
 //    image(cam, 0, 0, w, h);
     
 //    image(board, 0, 0, w, h);

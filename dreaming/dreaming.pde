@@ -68,6 +68,7 @@ RawInput rawInput;
 int framesPerBehavior = 300;
 int behaviorIndex = 0;
 boolean cycleBehaviors = false;
+boolean showFrameRate = false;
 
 Recorder inputRecorder, outputRecorder;
 
@@ -264,6 +265,8 @@ public void setSettings(String settingsString) {
     } 
     else if (key.equals("cycleLength") && value != null) {
       framesPerBehavior = Integer.valueOf(value);
+    } else if (key.equals("showFrameRate")) {
+      showFrameRate = value.equals("showFrameRate");
     }
   }
 }
@@ -288,7 +291,7 @@ void draw() {
   fill(106,161,204);
   hideCursor();
 
-  text(frameRate, 40, 20);
+  if (showFrameRate) text(frameRate, 40, 20);
 
   outputRecorder.record();
 }

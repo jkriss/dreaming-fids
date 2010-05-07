@@ -26,6 +26,7 @@ SETTINGS_PATH = 'dreaming/settings.txt'
 def read_settings
   if File.exists?(SETTINGS_PATH)
     File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); @@settings[vals.first.intern] = vals[1] if vals.size > 1 }
+    @@settings.each_pair { |k,v| @@settings[k] = false if v == 'false' }
     puts "loaded #{@@settings.inspect}"
   end
 end
@@ -147,8 +148,7 @@ end
 
 get '/settings' do
   puts params.inspect
-  params[:showBlobs] ||= false
-  params[:cycleBehaviors] ||= false
+  %w(showBlobs cycleBehaviors showFrameRate).each { |b| params[b.intern] ||= false }
   @@settings = params
   osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'
@@ -249,7 +249,8 @@ __END__
 
     fieldset label {
       width: 100px;
-      line-height: 1.6em;
+      line-height: 1em !important;
+      margin-bottom: 5px;
       display: inline-block;
     }
   </style>
@@ -277,16 +278,21 @@ __END__
   
     %fieldset
       %legend general
-      %label{ :for => 'cycleBehaviors' } Cycle behaviors
+      %label{ :for => 'cycleBehaviors' } cycle behaviors
       %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @@settings[:cycleBehaviors]}
       %br
-      %label{ :for => 'cycleLength' } Cycle length
+      %label{ :for => 'cycleLength' } 
+        cycle length
+        %br
+        (in frames)
       %input{ :type => 'number', :name => 'cycleLength', :value => @@settings[:cycleLength] }
+      %label{ :for => 'showFrameRate' } show framerate
+      %input#showFrameRate{ :type => 'checkbox', :name => 'showFrameRate', :value => 'showFrameRate', :checked => @@settings[:showFrameRate]}
 
     
     %fieldset
       %legend mugshots
-      %label{ :for => 'showBlobs' } Show blobs
+      %label{ :for => 'showBlobs' } show blobs
       %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @@settings[:showBlobs]}
       %br
     %br

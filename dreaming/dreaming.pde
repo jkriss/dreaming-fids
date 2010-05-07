@@ -92,6 +92,7 @@ void setup() {
 
   mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
   zoomingBehavior = new CameraFeedSketch(this, numScreens, border);
+  zoomingBehavior.zooming = true;
   departureBoardBehavior = new DepartureBoard(this, numScreens, border);
   behaviors[0] = mugshotBehavior;
   behaviors[1] = departureBoardBehavior;

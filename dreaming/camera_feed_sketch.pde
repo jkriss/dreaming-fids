@@ -176,15 +176,11 @@ class CameraFeedSketch extends Behavior {
         
         // remember, r.x and r.y are center points, here, so we need to adjust
 //        PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(rw/2), (int)(r.y*hScale)-(int)(rh/2), (int)rw, (int)rh);
-        if (zooming) {
-          PImage mug = get((int)(r.x*wScale)+(w*screenIndex)-(int)(r.width/2), (int)(r.y*hScale)-(int)(r.height/2), (int)r.width, (int)r.height);
-          image(mug,0,0,w,h);
-        }
 //        println("drawing " + r);
         
         strokeWeight(4);
         
-        if (r.contains(fishRect)) {
+        if (r.contains(fishRect) && !zooming) {
 //          fill(255,255,255, 20);
 //          println("caught one!");
           // cam image isn't scaled, so scale rect down to its size
@@ -192,13 +188,22 @@ class CameraFeedSketch extends Behavior {
           scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
           mugshotter.mugshot(scaledCam, r);
         }
-        if (mugshotter.recentMugshot()) {
-//          fill(245,237,12,100);
-          fill(200,0,100); // red
-        } else {
-          noFill();
-        }
         
+        if (zooming) {
+//          PImage mug = get(max(0,(int)(r.x*wScale)+(w*screenIndex)-(int)(r.width/2)), max(0,(int)(r.y*hScale)-(int)(r.height/2)), (int)r.width, (int)r.height);
+          PImage scaledCam = createImage(w,h,ALPHA);
+          scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
+          PImage mug = scaledCam.get(max(0,r.x-r.width/2), max(0,r.y-r.height/2), r.width, r.height);
+          image(mug,0,0,w,h);
+        } else {
+  
+          if (mugshotter.recentMugshot()) {
+  //          fill(245,237,12,100);
+            fill(200,0,100); // red
+          } else {
+            noFill();
+          }
+        }
         if (!zooming)
           rect(r.x, r.y, r.width, r.height);
         

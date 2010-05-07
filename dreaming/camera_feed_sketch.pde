@@ -114,7 +114,7 @@ class CameraFeedSketch extends Behavior {
 //      if (true) {
 //        stroke(245,237,12, score);
 //        stroke(255,255,0); // yellow
-        stroke(200,0,0); // red
+        stroke(255,0,0); // red
         
         rectMode(CENTER);
         
@@ -200,7 +200,8 @@ class CameraFeedSketch extends Behavior {
   
           if (mugshotter.recentMugshot()) {
   //          fill(245,237,12,100);
-            fill(200,0,100); // red
+//            fill(200,0,100); // red
+            fill(255,0,0); // actually red
           } else {
             noFill();
           }

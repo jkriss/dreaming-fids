@@ -3,6 +3,8 @@ class SwitchingCameras extends Behavior {
 
   int[] cameraMappings = { 0, 1, 2, 3 };
   
+  int framesBeforeSwitch = 200;
+  
   SwitchingCameras(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
   }
@@ -11,7 +13,7 @@ class SwitchingCameras extends Behavior {
   }
   
   void draw() {
-    if (frameCount % 80 == 0) resetMappings();
+    if (frameCount % framesBeforeSwitch == 0) resetMappings();
     splitScreens();
   }
     

@@ -254,7 +254,7 @@ class Mugshotter {
  float mMargin = (1 * scaleFactor) + 7;
  
  int shotsPerLine = 6;
- int maxShots = shotsPerLine * 4 * 3;
+ int maxShots = shotsPerLine * 3 * 3;
  
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 

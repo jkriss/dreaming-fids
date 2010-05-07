@@ -47,7 +47,7 @@ class DepartureBoard extends Behavior {
       if (r != null) r.startBlinking();
     }
     if (frameCount % framesPerBlink == 0 ) {
-      callMethod("all", "departureBlink");
+      if (isThing1()) callMethod("all", "departureBlink");
     }
     background(0);
     splitScreens();

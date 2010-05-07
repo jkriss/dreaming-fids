@@ -6,7 +6,8 @@ require 'open-uri'
 
 OscClient = OSC::UDPSocket.new
 
-HOSTS = %w(jklabs-mbp.local thing1.local thing2.local)
+# HOSTS = %w(jklabs-mbp.local thing1.local thing2.local)
+HOSTS = %w(thing1.local thing2.local)
 LAZY_COMPUTER = 'thing2.local'
 # LAZY_COMPUTER = 'jklabs-mbp.local'
 HEARTBEAT_URL = "http://google.com"

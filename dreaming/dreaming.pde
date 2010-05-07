@@ -101,7 +101,8 @@ void setup() {
   behaviors[2] = new RawCameras(this, numScreens, border);
   behaviors[3] = new SwitchingCameras(this, numScreens, border);
 //  behaviors[4] = new RawInput(this, numScreens, border);
-  behaviors[4] = zoomingBehavior;
+//  behaviors[4] = zoomingBehavior;
+  behaviors[4] = mugshotBehavior;
   
   rawInput = new RawInput(this, numScreens, border);
   

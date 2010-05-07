@@ -89,6 +89,13 @@ get '/reboot' do
   `./fishcontrol reboot`
 end
 
+post '/upload' do
+  puts params[:code][:tempfile].path
+  `cd #{File.dirname(__FILE__)} && tar xf #{params[:code][:tempfile].path}`
+  File.delete(params[:code][:tempfile].path)
+  redirect '/'
+end
+
 get '/open' do
   cmd :open
   echo '/open'
@@ -264,3 +271,8 @@ __END__
 
 %p
   %a{ :href => '/reboot'} reboot!
+  
+%p
+  %form{ :action => '/upload', :method => :post, :enctype => 'multipart/form-data' }
+    %input{ :type => 'file', :name => 'code' }
+    %input{ :type => 'submit', :value => 'upload new code' }

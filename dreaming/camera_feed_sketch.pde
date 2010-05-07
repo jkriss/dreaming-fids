@@ -248,7 +248,7 @@ class Mugshotter {
  
  int mWidth = 16 * scaleFactor; 
  int mHeight = 9 * scaleFactor;
- float mMargin = (1 * scaleFactor) + 9;
+ float mMargin = (1 * scaleFactor) + 7;
  
  int shotsPerLine = 6;
  int maxShots = shotsPerLine * 4;

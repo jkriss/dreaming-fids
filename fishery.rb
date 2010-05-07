@@ -124,6 +124,8 @@ end
 
 get '/settings' do
   puts params.inspect
+  params[:showBlobs] ||= false
+  params[:cycleBehaviors] ||= false
   @@settings = params
   osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'

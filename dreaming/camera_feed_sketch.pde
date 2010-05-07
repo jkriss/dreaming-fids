@@ -52,7 +52,6 @@ class CameraFeedSketch extends Behavior {
 //        stroke(200,0,0); // red
         strokeWeight(1);
         stroke(255,255,0); // yellow
-        stroke(255,255,255);
 //        fill(200,0,0,50);
         fill(255,255,0,50);
         for( int i=0; i<mblobs.length; i++ ) {

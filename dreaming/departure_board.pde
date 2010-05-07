@@ -84,6 +84,8 @@ class DepartureBoard extends Behavior {
 //    b.beginDraw();
     //background(0);
         image(cam, 0, 0, w, h);
+    fill(0,0,0,128);
+    rect(0,0,w,h);
 
 //    b.background(75);
     noStroke();

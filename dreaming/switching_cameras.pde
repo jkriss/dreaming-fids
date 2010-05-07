@@ -26,7 +26,7 @@ class SwitchingCameras extends Behavior {
   }
   
   void resetMappings() {
-    int[] choices = {0,1,2,3,4,5};
+    int[] choices = {0,1,2,3};
     for (int i=0; i<cameraMappings.length;) {
       int r = round(random(choices.length-1));
       cameraMappings[i] = choices[r];

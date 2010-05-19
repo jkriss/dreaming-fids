@@ -17,6 +17,16 @@ HEARTBEAT_URL = "http://google.com"
 HEARTBEAT_DELAY = 60 # in seconds
 SERVER_PORT = 4567
 
+START_TIME = Time.now
+MAX_RUNTIME = 60 * 60 * 24 # in seconds
+# MAX_RUNTIME = 60  # in seconds
+
+d = Date.today+1
+SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 3).to_s
+
+# d = Date.today
+# SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 10, 13)
+
 @@settings = {}
 @@hostname = nil
 
@@ -34,7 +44,7 @@ def error_logger
 end
 
 def emergency_tweet(message)
-  `curl -u dreamingfids:dreaming -d status="d jkriss #{message}" http://twitter.com/statuses/update.xml`
+  `curl -u dreamingfids:dreaming -d status="d jkriss #{message} #{hostname}" http://twitter.com/statuses/update.xml`
 end
 
 error do
@@ -56,6 +66,10 @@ def hostname
   @@hostname ||= `hostname`.strip
 end
 
+def uptime
+  Time.now - START_TIME
+end
+
 def other_hosts
   HOSTS.reject{ |h| h == hostname }
 end
@@ -66,7 +80,6 @@ configure do
   @@last_heartbeat = nil
   
   if hostname == LAZY_COMPUTER
-    
   
     logger.info "  - about to start heartbeat thread"
     heartbeat = Thread.new do
@@ -91,6 +104,14 @@ configure do
   
     logger.info "  - registering status listeners"
     
+  end
+end
+
+before do
+  if uptime > MAX_RUNTIME && Time.now > SHUTDOWN_TIME
+    logger.warn "!! restarting after #{uptime.to_i} seconds !!"
+    emergency_tweet("restarting")
+    `./fishcontrol reboot` if HOSTS.include?(hostname)
   end
 end
 
@@ -376,6 +397,14 @@ __END__
 %p
   last heartbeat: 
   = @@last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - @@last_heartbeat.to_f)} seconds ago" : 'none'
+  %br/
+  uptime:
+  = uptime.to_i
+  seconds
+  = "(#{sprintf("%0.2f", uptime/60/60)} hours)"
+  %br/
+  shutdown time:
+  = SHUTDOWN_TIME
 
 %p
   %a{ :href => '/reboot'} reboot!

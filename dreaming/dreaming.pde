@@ -123,16 +123,17 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
-//  localVideo = new Capture(this, camW+40, camH+40, 24);
-//  localVideo.crop(20,20,camW,camH/2);
+  localVideo = new Capture(this, camW+40, camH+40, 24);
+  localVideo.crop(20,20,camW,camH/2);
 
-  movie = new Movie(this, "Fish Comp 3.mov");
+//  movie = new Movie(this, "Fish Comp 3.mov");
   //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
 //  movie = new Movie(this, "input.mov");
 //  movie = new Movie(this, "input2.mov");
-  movie.loop();
-  movieFrame = createImage(camW, camH/2, ALPHA);
+//  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
+//  movie.loop();
+//  movieFrame = createImage(camW, camH/2, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
@@ -467,6 +468,7 @@ class MotionRect {
   float activity;
   float stability;
   boolean active;
+  boolean logging = false;
   Rectangle bounds;
   MotionRect(Rectangle bounds) {
     this.bounds = bounds;
@@ -501,7 +503,7 @@ class MotionRect {
     
     if (thisDist == 0) return;
     
-    if (this == mostInterestingRect)
+    if (this == mostInterestingRect && logging)
       println("linear motion: " + thisDist);
     
     float positionAmt = exponentialEasing(thisDist/maxDist,0.22);
@@ -522,7 +524,7 @@ class MotionRect {
     current.width = interp(current.width, target.width, screenSize[0]/fastFactor);   
     current.height = interp(current.height, target.height, screenSize[1]/fastFactor);   
 
-    if (this == mostInterestingRect)
+    if (this == mostInterestingRect && logging)
       println("   now at " + current.x + "," + current.y + " (" + current.width + "x" + current.height + "), cam " + cameraIndex);
 
     stability += dist(current.x, current.y, target.x, target.y);
@@ -541,7 +543,7 @@ class MotionRect {
 //    float scaledFactor = exponentialEasing(threshholdedMax, 0.22);
     float scaledFactor = exponentialEasing(threshholdedMax, 0.005);
     
-    if (this == mostInterestingRect) {
+    if (this == mostInterestingRect && logging) {
       print("   ");
       if (percentOfMax > threshholdedMax) print("MAX - ");
       println("moving along by " + scaledFactor + " for " + percentOfMax + " (capped at " + threshholdedMax + ")");

@@ -4,7 +4,7 @@ class CameraFeedSketch extends Behavior {
 
   int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
-  boolean zooming = false;
+  boolean zooming = true;
   boolean forceMugshot = false;
   int framesBeforeSwitching = 200;
   
@@ -112,8 +112,8 @@ class CameraFeedSketch extends Behavior {
 //      stroke(245,237,12, map(mostInterestingRect.activity,3000,8000, 0, 255));
       float score = scaledAct+scaledStab;
 //      println("rect score: " + score);
-//      if (score > 180) {
-      if (true) {
+      if (score > 180) {
+//      if (true) {
 //        stroke(245,237,12, score);
 //        stroke(255,255,0); // yellow
         stroke(255,0,0); // red

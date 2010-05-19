@@ -283,8 +283,10 @@ void draw() {
 
   background(0);
   streamVideo();
-  findSuspiciousActivity();
-  activeBehavior.draw();
+  synchronized(this) {
+    findSuspiciousActivity();
+    activeBehavior.draw();
+  }
 
   fill(106,161,204);
   hideCursor();
@@ -410,31 +412,33 @@ void oscEvent(OscMessage m) {
 void receive( byte[] data, String ip, int port ) {
   PImage img = loadPImageFromBytes(data, this);
 
-  cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
-  cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
-  //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
-
-  // for now
-  //  cams[isThing1() ? 3 : 0] = cams[0];
-  //  cams[isThing1() ? 4 : 1] = cams[1];
-  //  cams[isThing1() ? 5 : 2] = cams[2];
-
-  PImage frame = null;
-  if (movieFrame != null) frame = movieFrame;
-  if (localVideo != null) frame = localVideo;
-
-  if (frame != null) {
-    cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
-    cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
-
-    //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
-    //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
-    //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
-  }
-
-  for (int i=0; i<cams.length; i++) {
-    fish[i].blobs = detectors[i].findBlobs(cams[i]);
-    fish[i].activity = detectors[i].activity;
+  synchronized(this) {
+    cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
+    cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
+    //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
+  
+    // for now
+    //  cams[isThing1() ? 3 : 0] = cams[0];
+    //  cams[isThing1() ? 4 : 1] = cams[1];
+    //  cams[isThing1() ? 5 : 2] = cams[2];
+  
+    PImage frame = null;
+    if (movieFrame != null) frame = movieFrame;
+    if (localVideo != null) frame = localVideo;
+  
+    if (frame != null) {
+      cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
+      cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
+  
+      //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
+      //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
+      //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
+    }
+  
+    for (int i=0; i<cams.length; i++) {
+      fish[i].blobs = detectors[i].findBlobs(cams[i]);
+      fish[i].activity = detectors[i].activity;
+    }
   }
 } 
 
@@ -484,31 +488,88 @@ class MotionRect {
     target.height = h+(2*margin);
     this.cameraIndex = cameraIndex;
   }
+  float maxDist = dist(0,0,screenSize[0], screenSize[1]);
   void step() {
     //   float amt = .6;
     //   current.x = interp(current.x, target.x, amt, 0.7);   
     //   current.y = interp(current.y, target.y, amt, 0.7);   
     //   current.width = interp(current.width, target.width, 0.2, 0.3);   
     //   current.height = interp(current.height, target.height, 0.2, 0.3);   
-    float amt = 1;
-    current.x = interp(current.x, target.x, amt, amt);   
-    current.y = interp(current.y, target.y, amt, amt);   
-    current.width = interp(current.width, target.width, amt, amt);   
-    current.height = interp(current.height, target.height, amt, amt);   
+//    float amt = 1;
+    
+    float thisDist = dist(current.x, current.y, target.x, target.y);
+    
+    if (thisDist == 0) return;
+    
+    if (this == mostInterestingRect)
+      println("linear motion: " + thisDist);
+    
+    float positionAmt = exponentialEasing(thisDist/maxDist,0.22);
+    
+    positionAmt = .98;
+    
+    //print("moved from " + current.x + "," + current.y + " to ");
+    
+    float fastFactor = 2.5;
+
+    current.x = interp(current.x, target.x, screenSize[0]/fastFactor);   
+    current.y = interp(current.y, target.y, screenSize[1]/fastFactor);
+
+    
+//    println(current.x + "," + current.y);
+//    println("position shifting by a factor of " + positionAmt);
+
+    current.width = interp(current.width, target.width, screenSize[0]/fastFactor);   
+    current.height = interp(current.height, target.height, screenSize[1]/fastFactor);   
+
+    if (this == mostInterestingRect)
+      println("   now at " + current.x + "," + current.y + " (" + current.width + "x" + current.height + "), cam " + cameraIndex);
+
     stability += dist(current.x, current.y, target.x, target.y);
     activity *= 0.95;
-    stability *= 0.7;
-    //   activity *= 0.99;
-    //   stability *= 0.99;
+    //stability *= 0.7;
+    
+    //activity *= 0.95;
+    stability *= 0.85;
   }
 
-  int interp(int start, int end, float amt, float maxAmt) {
+  int interp(int start, int end, float maxAmt) {
     //   return end;
     int delta = abs(end-start);
+    float percentOfMax = delta/maxAmt;
+    float threshholdedMax = min(1.0, percentOfMax);
+//    float scaledFactor = exponentialEasing(threshholdedMax, 0.22);
+    float scaledFactor = exponentialEasing(threshholdedMax, 0.005);
+    
+    if (this == mostInterestingRect) {
+      print("   ");
+      if (percentOfMax > threshholdedMax) print("MAX - ");
+      println("moving along by " + scaledFactor + " for " + percentOfMax + " (capped at " + threshholdedMax + ")");
+    }
     //   return (int)lerp(start,end,min(maxAmt, amt*screenFactor/delta));
     //return (int)lerp(start,end,min(maxAmt, amt*screenSize[0]*scale*screenSize[1]*scale*768/delta));
-    return (int)lerp(start,end,amt);
+
+    return (int)lerp(start,end,scaledFactor); // most recent
+
     //   return (int)lerp(start,end,min(maxAmt, amt*100/delta));
+  }
+  float exponentialEasing (float x, float a){
+    float epsilon = 0.00001;
+    float min_param_a = 0.0 + epsilon;
+    float max_param_a = 1.0 - epsilon;
+    a = max(min_param_a, min(max_param_a, a));
+    
+    if (a < 0.5){
+      // emphasis
+      a = 2.0*(a);
+      float y = pow(x, a);
+      return y;
+    } else {
+      // de-emphasis
+      a = 2.0*(a-0.5);
+      float y = pow(x, 1.0/(1-a));
+      return y;
+    }
   }
 }
 

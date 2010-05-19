@@ -48,8 +48,8 @@ class Detector {
     }
    
     // find blobs
-    Blob[] blobs = vision.blobs( 100, width*height/2, 100, false);
-//    Blob[] blobs = vision.blobs( 100, (width*height)/20, 100, false);
+    //Blob[] blobs = vision.blobs( 100, width*height/2, 100, false);
+    Blob[] blobs = vision.blobs( 100, width*height/2, 10, false);
     
     // get motion amount for each blob
     MotionBlob[] mblobs = new MotionBlob[blobs.length];

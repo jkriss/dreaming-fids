@@ -3,6 +3,8 @@ require 'sinatra'
 require 'haml'
 require 'osc'
 require 'open-uri'
+require 'logger'
+# require 'exception_handler'
 
 OscClient = OSC::UDPSocket.new
 
@@ -14,20 +16,35 @@ HEARTBEAT_URL = "http://google.com"
 # HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=[id]"
 HEARTBEAT_DELAY = 60 # in seconds
 SERVER_PORT = 4567
-# HEARTBEAT_DELAY = 60 # in seconds
 
 @@settings = {}
 @@hostname = nil
 
 set :public, Proc.new { File.join(root,'dreaming','mugshots') }
+
 # set :settings_path, Proc.new { File.join(root,'dreaming','settings.txt') }
 SETTINGS_PATH = 'dreaming/settings.txt'
+
+def logger
+  @logger ||= Logger.new('dreaming/mugshots/log/sinatra.log', 10, 1024000)
+end
+
+def error_logger
+  @error_logger ||= Logger.new('dreaming/mugshots/log/error.log', 10, 1024000)
+end
+
+error do
+  e = request.env['sinatra.error']
+  error_logger.fatal "#{e.message} :\n #{e.backtrace.collect{ |line| "   #{line}"}.join("\n")}"
+  `curl -u dreamingfids:dreaming -d status="d jkriss #{e.message}" http://twitter.com/statuses/update.xml`
+  "sorry, there was some kind of error. we've been notified."
+end
 
 def read_settings
   if File.exists?(SETTINGS_PATH)
     File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); @@settings[vals.first.intern] = vals[1] if vals.size > 1 }
     @@settings.each_pair { |k,v| @@settings[k] = false if v == 'false' }
-    puts "loaded #{@@settings.inspect}"
+    logger.warn "loaded #{@@settings.inspect}"
   end
 end
 
@@ -47,19 +64,19 @@ configure do
   if hostname == LAZY_COMPUTER
     
   
-    puts "  - about to start heartbeat thread"
+    logger.info "  - about to start heartbeat thread"
     heartbeat = Thread.new do
       while true do
-        puts "pinging #{other_hosts.inspect}"
+        logger.info "pinging #{other_hosts.inspect}"
         other_hosts.each do |h|
           url = "http://#{h}:#{SERVER_PORT}/heartbeat"
-          puts "- about to ping #{url}"
+          logger.info "- about to ping #{url}"
           begin
             open(url)
           rescue Exception => e
-            puts "ERROR: #{e} URL: #{url}"
+            logger.warn "ERROR: #{e} URL: #{url}"
           end
-          puts "- ping #{url} at #{Time.now}"
+          logger.info "- ping #{url} at #{Time.now}"
         end
         sleep(HEARTBEAT_DELAY)
       end
@@ -67,7 +84,7 @@ configure do
     
   else
   
-    puts "  - registering status listeners"
+    logger.info "  - registering status listeners"
     
   end
 end
@@ -75,7 +92,7 @@ end
 get '/' do
   read_settings
   @settings = @@settings
-  puts "current settings: #{@settings.inspect}"
+  logger.info "current settings: #{@settings.inspect}"
   haml :index
 end
 
@@ -85,7 +102,7 @@ end
 
 get '/heartbeat' do
   if hostname != LAZY_COMPUTER
-    puts "got local ping, sending heartbeat to #{HEARTBEAT_URL}"
+    logger.info "got local ping, sending heartbeat to #{HEARTBEAT_URL}"
     @@last_heartbeat = Time.now
     open(HEARTBEAT_URL)
   end
@@ -102,7 +119,6 @@ get '/reboot' do
 end
 
 post '/upload' do
-  puts params[:code][:tempfile].path
   `cd #{File.dirname(__FILE__)} && tar xf #{params[:code][:tempfile].path}`
   File.delete(params[:code][:tempfile].path)
   redirect '/'
@@ -147,7 +163,7 @@ get '/test/input' do
 end
 
 get '/settings' do
-  puts params.inspect
+  logger.info params.inspect
   %w(showBlobs cycleBehaviors showFrameRate).each { |b| params[b.intern] ||= false }
   @@settings = params
   osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
@@ -163,11 +179,11 @@ def echo(request_path)
   return if params[:echo] == 'false'
   other_hosts.each do |h|
     url = "http://#{h}:#{SERVER_PORT}#{request_path}?echo=false"
-    puts "requesting #{url}"
+    logger.debug "requesting #{url}"
     begin
       open url
     rescue Exception => e
-      puts "error loading url: #{e}"
+      logger.warn "error loading url: #{e}"
     end
   end
 end
@@ -180,7 +196,7 @@ end
 
 def osc(method, arg_types='s', value='hi')
   m = OSC::Message.new("/fish/in/#{method}", arg_types, value)
-  puts "sending #{m.inspect}"
+  logger.debug "sending #{m.inspect}"
   OscClient.send m, 0, "230.0.0.1", 7447
 end
 
@@ -275,19 +291,28 @@ __END__
   
 %p
   %form{ :action => '/settings' }
+
+    all durations in frames
+    %br
+    %br
+    
   
     %fieldset
       %legend general
       %label{ :for => 'cycleBehaviors' } cycle behaviors
       %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @@settings[:cycleBehaviors]}
       %br
-      %label{ :for => 'cycleLength' } 
-        cycle length
-        %br
-        (in frames)
+      %label{ :for => 'cycleLength' } cycle length
       %input{ :type => 'number', :name => 'cycleLength', :value => @@settings[:cycleLength] }
       %label{ :for => 'showFrameRate' } show framerate
       %input#showFrameRate{ :type => 'checkbox', :name => 'showFrameRate', :value => 'showFrameRate', :checked => @@settings[:showFrameRate]}
+      /
+        %br
+        %label{ :for => 'brightness' } brightness
+        %input{ :type => 'number', :name => 'brightness', :value => @@settings[:brightness] }
+        %br
+        %label{ :for => 'contrast' } contrast
+        %input{ :type => 'number', :name => 'contrast', :value => @@settings[:contrast] }
 
     
     %fieldset
@@ -295,6 +320,35 @@ __END__
       %label{ :for => 'showBlobs' } show blobs
       %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @@settings[:showBlobs]}
       %br
+      %label{ :for => 'mugshotCameraInterval' } camera interval
+      %input{ :type => 'number', :name => 'mugshotCameraInterval', :value => @@settings[:mugshotCameraInterval], :disabled => true }
+      %br
+      
+    %fieldset
+      %legend departure board
+      %label{ :for => 'departuresCameraInterval' } camera interval
+      %input{ :type => 'number', :name => 'departuresCameraInterval', :value => @@settings[:departuresCameraInterval], :disabled => true }
+      %br
+      %label{ :for => 'departuresBlinkRate' } blink rate
+      %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate], :disabled => true }
+      %br
+      %label{ :for => 'departuresShuffleInterval' } shuffle interval
+      %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => @@settings[:departuresShuffleInterval], :disabled => true }
+      %br
+      %label{ :for => 'departuresShuffleSpeed' } shuffle speed
+      %input{ :type => 'number', :name => 'departuresShuffleSpeed', :value => @@settings[:departuresShuffleSpeed], :disabled => true }
+      %br
+      
+    %fieldset
+      %legend switching cameras
+      %label{ :for => 'switchingCameraInterval' } camera interval
+      %input{ :type => 'number', :name => 'switchingCameraInterval', :value => @@settings[:switchingCameraInterval], :disabled => true }
+      
+    %fieldset
+      %legend zooming
+      %label{ :for => 'zoomCameraInterval' } camera interval
+      %input{ :type => 'number', :name => 'zoomCameraInterval', :value => @@settings[:zoomCameraInterval], :disabled => true }
+      
     %br
     %input{ :type => 'submit', :value => 'apply' }
     

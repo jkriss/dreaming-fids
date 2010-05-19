@@ -33,10 +33,14 @@ def error_logger
   @error_logger ||= Logger.new('dreaming/mugshots/log/error.log', 10, 1024000)
 end
 
+def emergency_tweet(message)
+  `curl -u dreamingfids:dreaming -d status="d jkriss #{message}" http://twitter.com/statuses/update.xml`
+end
+
 error do
   e = request.env['sinatra.error']
   error_logger.fatal "#{e.message} :\n #{e.backtrace.collect{ |line| "   #{line}"}.join("\n")}"
-  `curl -u dreamingfids:dreaming -d status="d jkriss #{e.message}" http://twitter.com/statuses/update.xml`
+  emergency_tweet e.message
   "sorry, there was some kind of error. we've been notified."
 end
 
@@ -75,6 +79,7 @@ configure do
             open(url)
           rescue Exception => e
             logger.warn "ERROR: #{e} URL: #{url}"
+            emergency_tweet "heartbeat error: #{e} #{url}"
           end
           logger.info "- ping #{url} at #{Time.now}"
         end

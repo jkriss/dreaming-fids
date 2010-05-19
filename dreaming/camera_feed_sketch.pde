@@ -5,6 +5,7 @@ class CameraFeedSketch extends Behavior {
   int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
   boolean zooming = false;
+  boolean forceMugshot = false;
   int framesBeforeSwitching = 200;
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
@@ -182,13 +183,14 @@ class CameraFeedSketch extends Behavior {
         
         strokeWeight(4);
         
-        if (r.contains(fishRect) && !zooming) {
+        if ((r.contains(fishRect) && !zooming) || forceMugshot ) {
 //          fill(255,255,255, 20);
 //          println("caught one!");
           // cam image isn't scaled, so scale rect down to its size
           PImage scaledCam = createImage(w,h,ALPHA);
           scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
           mugshotter.mugshot(scaledCam, r);
+          forceMugshot = false;
         }
         
         if (zooming) {

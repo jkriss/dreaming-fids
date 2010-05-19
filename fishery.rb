@@ -157,6 +157,11 @@ get '/fullscreen' do
   redirect '/'
 end
 
+get '/takeMugshot' do
+  osc :takeMugshot
+  redirect '/'
+end
+
 get '/behaviors/:id' do
   osc :behavior, 'i', params[:id].to_i
   redirect '/'
@@ -181,7 +186,7 @@ get '/record' do
 end
 
 def echo(request_path)
-  return if params[:echo] == 'false'
+  return if params[:echo] == 'false' || !HOSTS.include?(hostname)
   other_hosts.each do |h|
     url = "http://#{h}:#{SERVER_PORT}#{request_path}?echo=false"
     logger.debug "requesting #{url}"
@@ -281,6 +286,7 @@ __END__
   %a{ :href => '/run' } run
   %a{ :href => '/stop' } stop
   %a{ :href => '/click' } click
+  %a{ :href => '/takeMugshot' } take mugshot
   %a{ :href => '/fullscreen' } fullscreen
   %a{ :href => '/restart_server' } restart web server
 

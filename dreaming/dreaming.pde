@@ -73,6 +73,8 @@ boolean showFrameRate = false;
 Recorder inputRecorder, outputRecorder;
 
 AutoClicker autoclicker = new AutoClicker();
+OpenCV adjuster;
+int videoBrightness, videoContrast;
 
 void setup() {
 
@@ -121,30 +123,22 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
-  localVideo = new Capture(this, camW+40, camH+40, 24);
-  //  localVideo.crop(20,20,camW,camH);
-  localVideo.crop(20,20,camW,camH/2);
+//  localVideo = new Capture(this, camW+40, camH+40, 24);
+//  localVideo.crop(20,20,camW,camH/2);
 
-  //  movie = new Movie(this, "Fish Comp 3.mov");
+  movie = new Movie(this, "Fish Comp 3.mov");
   //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
-  //  movie.loop();
-  //  movieFrame = createImage(camW, camH, ALPHA);
+//  movie = new Movie(this, "input.mov");
+//  movie = new Movie(this, "input2.mov");
+  movie.loop();
+  movieFrame = createImage(camW, camH/2, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
   udp.listen(true);
 
   println("sending on " + sendIP() + ", receiving on " + receiveIP());
-
-  // set up control panel
-  //  controls = new ControlP5(this);
-  //  controls.setAutoDraw(false);
-  //  controls.setAutoInitialization(true);
-  //  controlWindow = controls.addControlWindow("controlP5window",200,300);
-  //  controlWindow.hideCoordinates();
-  //  slider("threshold", 0, 200, 16);
-  //  slider("maxThreshold", 0, 500, 500);
 
   fs = new SoftFullScreen(this);
   if (hostname().startsWith("thing")) fs.setFullScreen(true);
@@ -267,6 +261,10 @@ public void setSettings(String settingsString) {
       framesPerBehavior = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
+    } else if (key.equals("brightness") && value != null) {
+      videoBrightness = Integer.valueOf(value);
+    } else if (key.equals("contrast") && value != null) {
+      videoContrast = Integer.valueOf(value);
     }
   }
 }
@@ -337,6 +335,22 @@ void streamVideo() {
     if (localVideo.available()) {
       localVideo.read();
       localVideo.loadPixels();
+      
+      // adjust with opencv
+//      if (adjuster == null) {
+//        adjuster = new OpenCV(this);
+//        println("allocating for " + localVideo.width + "x" + localVideo.height);
+//        adjuster.allocate(localVideo.width, localVideo.height);
+//      }
+////      println("copying " + localVideo.width + "x" + localVideo.height);
+//      adjuster.copy(localVideo);
+//      adjuster.convert(GRAY);
+//      adjuster.brightness(videoBrightness);
+//      adjuster.contrast(videoContrast);
+//      println("adjusted image is " + adjuster.image().width + "x" + adjuster.image().height);
+//      streamer.send(adjuster.image());
+      
+      // or not
       streamer.send(localVideo);
       inputRecorder.record(localVideo);
     }
@@ -360,6 +374,10 @@ void callMethod(String target, String method, String message) {
   if (message != null) m.add(message);
   oscP5.send(m);
   println("sent " + method + " : " + message + " to " + target);
+}
+
+void takeMugshot(String m) {
+  mugshotBehavior.forceMugshot = true;
 }
 
 void oscEvent(OscMessage m) {

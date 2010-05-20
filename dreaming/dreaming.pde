@@ -156,6 +156,12 @@ void setup() {
       e.printStackTrace();
     }
     
+    println("-- setting random cycle time to " + randomCycleTime);
+    if (randomCycleTime) {
+      framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
+      println("new frames per behavior: " + framesPerBehavior);
+    }
+    
     //if (!useMovie) 
       initVideo();
   } catch (Exception e) {
@@ -239,7 +245,7 @@ void click(String message) {
 }
 
 void behavior(int index) {
-  println("switching to behavior " + index);
+  //println("switching to behavior " + index);
   mugshotBehavior.resetMugshots();
   behaviorIndex = index;
   activeBehavior = behaviors[behaviorIndex];
@@ -342,6 +348,7 @@ void draw() {
       if (randomCycleTime) framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
       behaviorIndex += 1;
       if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
+      println("switching to behavior " + behaviorIndex + " (" + behaviors[behaviorIndex] + ")");
       callMethod("all","setBehavior", ""+behaviorIndex);
     }
   

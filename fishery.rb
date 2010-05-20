@@ -200,7 +200,7 @@ end
 
 get '/settings' do
   logger.info params.inspect
-  %w(showBlobs cycleBehaviors showFrameRate useMovie).each { |b| params[b.intern] ||= false }
+  %w(showBlobs cycleBehaviors showFrameRate useMovie randomCycleTime).each { |b| params[b.intern] ||= false }
   @@settings = params
   osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'

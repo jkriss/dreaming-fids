@@ -132,14 +132,14 @@ void setup() {
       interestRects[i] = new MotionRect(new Rectangle(camW,camH));
     }
     
-    movie = new Movie(this, "Fish Comp 3.mov");
+    //movie = new Movie(this, "Fish Comp 3.mov");
     //  movie = new Movie(this, "camera test.mov");
     //  movie = new Movie(this, "Fish Comp 1.mov");
   //  movie = new Movie(this, "input.mov");
   //  movie = new Movie(this, "input2.mov");
   //  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
-    movie.loop();
-    movieFrame = createImage(camW, camH/2, ALPHA);
+    //movie.loop();
+    //movieFrame = createImage(camW, camH/2, ALPHA);
   
     streamer = new VideoStreamer(this, sendIP(), 9091);
     udp = new UDP( this, 9091, receiveIP()); // this, port, ip address

@@ -10,7 +10,7 @@ class DepartureBoard extends Behavior {
   int nRows = 10;
   float topBorder = 5/78.0;
   float leftBorder = 6/104.0;
-  int maxBlinks = 20;
+  int maxBlinks = 80;
   int framesPerBlink = 10;
   int framesBeforeShuffle = 200;
   int framesPerNewBlink = 100;
@@ -44,7 +44,9 @@ class DepartureBoard extends Behavior {
     }
     if (frameCount % framesPerNewBlink == 0) {
       Row r = rows[(int)random(rows.length)];
+      
       if (r != null) r.startBlinking();
+//      if (rows[2] != null) rows[2].startBlinking();
     }
     if (frameCount % framesPerBlink == 0 ) {
       if (isThing1()) callMethod("all", "departureBlink");
@@ -98,6 +100,7 @@ class DepartureBoard extends Behavior {
     pushMatrix();
     
     translate(leftBorder, topBorder);
+//    println("frame " + frameCount);
     for (int colNum=0; colNum<3; colNum++) {
       pushMatrix();
       int start = screenIndex*nRows;
@@ -109,10 +112,16 @@ class DepartureBoard extends Behavior {
         }
 //        color c = r.blinkOn && colNum == 2 ? blinkColor : normalColor;
 
-        if (r.blinkOn && colNum == 2) continue;
-//        fill(c);
-        if (!r.hidden(nextRow)) {
-          rect(0,0,r.colWidths[colNum], rowHeight);
+        if (r.blinkOn && colNum == 2) {
+          //println(r + " is blinking");
+//          continue;
+//          fill(0,0,255);
+//          rect(0,0,r.colWidths[colNum], rowHeight);
+        } else {
+//          fill(normalColor);
+          if (!r.hidden(nextRow)) {
+            rect(0,0,r.colWidths[colNum], rowHeight);
+          }
         }
         translate(0, rowPadding+rowHeight);
       }
@@ -134,17 +143,20 @@ class DepartureBoard extends Behavior {
 
   }
 
-  void pop() {
-    arraycopy(rows, 1, rows, 0, rows.length-1);
-    rows[rows.length-1] = new Row(maxWidths);
-  }
+//  void pop() {
+//    arraycopy(rows, 1, rows, 0, rows.length-1);
+////    for (int i=0; i<rows.length-1; i++) {
+////      rows[i] = new Row(maxWidths);//rows[i+1];
+////    }
+//    rows[rows.length-1] = new Row(maxWidths);
+//  }
 
   class Row {
    float[] maxWidths;
    float[] colWidths;
-   boolean blinking;
-   boolean blinkOn;
-   boolean hidden;
+   boolean blinking = false;
+   boolean blinkOn = false;
+   boolean hidden = false;
    int hiddenFrames;
    int blinkCount = 0;
    Row(float[] maxWidths) {
@@ -159,14 +171,19 @@ class DepartureBoard extends Behavior {
    boolean hidden(Row nextHidden) {
      if (!hidden) return false;
      hiddenFrames += 1;
-     boolean done = hiddenFrames > 5;
+     boolean done = hiddenFrames > 4;
      if (done) {
        hidden = false;
        if (nextHidden != null) {
          arrayCopy(nextHidden.colWidths, colWidths);
+         blinking = nextHidden.blinking;
+         blinkOn = nextHidden.blinkOn;
+         blinkCount = nextHidden.blinkCount;
          nextHidden.hide();
        } else {
          randomize();
+         blinking = false;
+         blinkCount = 0;
          // this means we're done updating for this machine
          if (isThing1()) {
            callMethod("thing2", "startDepartureReshuffle");
@@ -180,11 +197,13 @@ class DepartureBoard extends Behavior {
    }
    void blinkIfBlinking() {
      if (blinking) {
+       //println(this + " is blinking");
        blinkCount += 1;
        blinkOn = !blinkOn;
-       if (blinkCount == maxBlinks) {
+       if (blinkCount >= maxBlinks) {
          blinking = false;
          blinkOn = false;
+         blinkCount = 0;
        }
      }
    }

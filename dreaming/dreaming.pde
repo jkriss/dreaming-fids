@@ -26,7 +26,7 @@ NetAddress oscBroadcast;
 
 boolean showBlobs = true;
 
-Behavior[] behaviors = new Behavior[5];
+Behavior[] behaviors = new Behavior[4];
 Behavior activeBehavior;
 //int[] screenSize = {800, 480};
 int[] screenSize = {
@@ -106,18 +106,17 @@ void setup() {
   switchingCamerasBehavior = new SwitchingCameras(this, numScreens, border);
   zoomingBehavior.zooming = true;
   departureBoardBehavior = new DepartureBoard(this, numScreens, border);
-  behaviors[0] = mugshotBehavior;
-  behaviors[1] = departureBoardBehavior;
-  behaviors[2] = new RawCameras(this, numScreens, border);
-  behaviors[3] = switchingCamerasBehavior;
+  behaviors[0] = departureBoardBehavior;
+  behaviors[1] = mugshotBehavior;
+  //behaviors[2] = new RawCameras(this, numScreens, border);
+  behaviors[2] = switchingCamerasBehavior;
   //  behaviors[4] = new RawInput(this, numScreens, border);
   //  behaviors[4] = zoomingBehavior;
-  behaviors[4] = zoomingBehavior;
+  behaviors[3] = zoomingBehavior;
 
   rawInput = new RawInput(this, numScreens, border);
 
-  //  activeBehavior = behaviors[0];
-  activeBehavior = behaviors[4];
+  activeBehavior = behaviors[0];
 
   for (int i=0; i<behaviors.length; i++) {
     if (behaviors[i] != null) behaviors[i].setup(); 

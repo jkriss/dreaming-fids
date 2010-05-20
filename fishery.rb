@@ -317,11 +317,10 @@ __END__
   %a{ :href => '/restart_server' } restart web server
 
 %p
-  %a{ :href => '/behaviors/0'} mugshots
-  %a{ :href => '/behaviors/1'} departures
-  %a{ :href => '/behaviors/2'} cameras
-  %a{ :href => '/behaviors/3'} switching cameras
-  %a{ :href => '/behaviors/4'} zooming
+  %a{ :href => '/behaviors/0'} departures
+  %a{ :href => '/behaviors/1'} mugshots
+  %a{ :href => '/behaviors/2'} switching cameras
+  %a{ :href => '/behaviors/3'} zooming
 
 %p
   %a{ :href => '/test/input'} raw input

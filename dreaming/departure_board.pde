@@ -15,6 +15,7 @@ class DepartureBoard extends Behavior {
   int framesBeforeShuffle = 200;
   int framesPerNewBlink = 100;
   int framesHiddenOnShuffle = 4;
+  int videoOpacity = 127;
   
   color normalColor = 255;
   color blinkColor = 0;
@@ -94,7 +95,7 @@ class DepartureBoard extends Behavior {
 //    b.beginDraw();
     //background(0);
         image(cam, 0, 0, w, h);
-    fill(0,0,0,64);
+    fill(0,0,0,255-videoOpacity);
     rect(0,0,w,h);
 
 //    b.background(75);

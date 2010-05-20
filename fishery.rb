@@ -382,11 +382,20 @@ __END__
       %label{ :for => 'departuresBlinkRate' } blink rate
       %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate] }
       %br
+      %label{ :for => 'departuresBlinkDuration' } # of blinks per
+      %input{ :type => 'number', :name => 'departuresBlinkDuration', :value => @@settings[:departuresBlinkDuration] }
+      %br
+      %label{ :for => 'departuresFramesBeforeNewBlink' } frames before new blink
+      %input{ :type => 'number', :name => 'departuresFramesBeforeNewBlink', :value => @@settings[:departuresFramesBeforeNewBlink] }
+      %br
       %label{ :for => 'departuresShuffleInterval' } shuffle interval
       %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => @@settings[:departuresShuffleInterval] }
       %br
       %label{ :for => 'departuresShuffleSpeed' } shuffle delay
       %input{ :type => 'number', :name => 'departuresShuffleSpeed', :value => @@settings[:departuresShuffleSpeed] }
+      %br
+      %label{ :for => 'departuresVideoOpacity' } video opacity (0-255)
+      %input{ :type => 'number', :name => 'departuresVideoOpacity', :value => @@settings[:departuresVideoOpacity] }
       %br
       
     %fieldset

@@ -280,10 +280,16 @@ public void setSettings(String settingsString) {
       departureBoardBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("departuresBlinkRate") && value != null) {
       departureBoardBehavior.framesPerBlink = Integer.valueOf(value);
+    } else if (key.equals("departuresBlinkDuration") && value != null) {
+      departureBoardBehavior.maxBlinks = Integer.valueOf(value);
+    } else if (key.equals("departuresFramesBeforeNewBlink") && value != null) {
+      departureBoardBehavior.framesPerNewBlink = Integer.valueOf(value);
     } else if (key.equals("departuresShuffleInterval") && value != null) {
       departureBoardBehavior.framesBeforeShuffle = Integer.valueOf(value);
     } else if (key.equals("departuresShuffleSpeed") && value != null) {
       departureBoardBehavior.framesHiddenOnShuffle = Integer.valueOf(value);
+    } else if (key.equals("departuresVideoOpacity") && value != null) {
+      departureBoardBehavior.videoOpacity = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } else if (key.equals("brightness") && value != null) {

@@ -397,7 +397,7 @@ __END__
     %fieldset
       %legend zooming
       %label{ :for => 'zoomCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'zoomCameraInterval', :value => @@settings[:zoomCameraInterval], :disabled => true }
+      %input{ :type => 'number', :name => 'zoomCameraInterval', :value => @@settings[:zoomCameraInterval] }
       
     %br
     %input{ :type => 'submit', :value => 'apply' }

@@ -272,6 +272,8 @@ public void setSettings(String settingsString) {
       maxFramesPerBehavior = Integer.valueOf(value);
     } else if (key.equals("switchingCameraInterval") && value != null) {
       switchingCamerasBehavior.framesBeforeSwitch = Integer.valueOf(value);
+    } else if (key.equals("zoomCameraInterval") && value != null) {
+      zoomingBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("mugshotCameraInterval") && value != null) {
       mugshotBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("departuresCameraInterval") && value != null) {

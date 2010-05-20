@@ -239,7 +239,7 @@ class Mugshotter {
  
  int mWidth = 16 * scaleFactor; 
  int mHeight = 9 * scaleFactor;
- float mMargin = (1 * scaleFactor) + 7;
+ float mMargin = (1 * scaleFactor) + 5;
  
  int shotsPerLine = 6;
  int maxShots = shotsPerLine * 3 * 3;
@@ -281,6 +281,7 @@ class Mugshotter {
 //   while(it.hasNext()) {
    int startAt = isThing1() ? 0 : maxShots / 2;
    int endAt = isThing1() ? min(mugshots.size(), maxShots / 2) : mugshots.size();
+   int localPosition = 1;
    for (int i=startAt; i<endAt; i++) {
 //     PImage mug = (PImage)it.next();
      PImage mug = null;
@@ -296,6 +297,11 @@ class Mugshotter {
        rect(0,0,mWidth,mHeight);
      }
      count++;
+     println("local position: " + localPosition);
+     if ( localPosition % 3 == 0 ) {
+       println("scooting over a bit");
+       translate(mMargin, 0);
+     }
      if (count > 0 && count % shotsPerLine == 0) {
        popMatrix();
        translate(0,mMargin+mHeight);
@@ -304,6 +310,8 @@ class Mugshotter {
      } else {
        translate(mMargin+mWidth, 0);
      }
+     localPosition++;
+
    }
    popMatrix();
  }

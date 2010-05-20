@@ -341,6 +341,19 @@ __END__
       %br
       %label{ :for => 'cycleLength' } cycle length
       %input{ :type => 'number', :name => 'cycleLength', :value => @@settings[:cycleLength] }
+
+      %br
+      %label{ :for => 'randomCycleTime' } randomize cycle time
+      %input#randomCycleTime{ :type => 'checkbox', :name => 'randomCycleTime', :value => 'randomCycleTime', :checked => @@settings[:randomCycleTime]}
+      
+      %br
+      %label{ :for => 'minFramesPerBehavior' } min frames per behavior
+      %input{ :type => 'number', :name => 'minFramesPerBehavior', :value => @@settings[:minFramesPerBehavior] }
+      
+      %br
+      %label{ :for => 'maxFramesPerBehavior' } max frames per behavior
+      %input{ :type => 'number', :name => 'maxFramesPerBehavior', :value => @@settings[:maxFramesPerBehavior] }
+      
       %label{ :for => 'showFrameRate' } show framerate
       %input#showFrameRate{ :type => 'checkbox', :name => 'showFrameRate', :value => 'showFrameRate', :checked => @@settings[:showFrameRate]}
       /

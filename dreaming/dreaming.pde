@@ -66,6 +66,10 @@ DepartureBoard departureBoardBehavior;
 RawInput rawInput;
 
 int framesPerBehavior = 300;
+boolean randomCycleTime = false;
+int minFramesPerBehavior = 100;
+int maxFramesPerBehavior = 1000;
+
 int behaviorIndex = 0;
 boolean cycleBehaviors = false;
 boolean showFrameRate = false;
@@ -254,12 +258,16 @@ public void setSettings(String settingsString) {
 
     if ("showBlobs".equals(key)) {
       showBlobs = value.equals("showBlobs");
-    } 
-    else if ("cycleBehaviors".equals(key)) {
+    } else if ("cycleBehaviors".equals(key)) {
       cycleBehaviors = value.equals("cycleBehaviors");
-    } 
-    else if (key.equals("cycleLength") && value != null) {
+    } else if ("randomCycleTime".equals(key)) {
+      randomCycleTime = value.equals("randomCycleTime");
+    } else if (key.equals("cycleLength") && value != null) {
       framesPerBehavior = Integer.valueOf(value);
+    } else if (key.equals("minFramesPerBehavior") && value != null) {
+      minFramesPerBehavior = Integer.valueOf(value);
+    } else if (key.equals("maxFramesPerBehavior") && value != null) {
+      maxFramesPerBehavior = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } else if (key.equals("brightness") && value != null) {
@@ -277,6 +285,7 @@ void draw() {
   if (frameCount % 1000 == 0) autoclicker.start();
 
   if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
+    if (randomCycleTime) framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
     behaviorIndex += 1;
     if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
     callMethod("all","setBehavior", ""+behaviorIndex);

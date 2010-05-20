@@ -130,12 +130,12 @@ void setup() {
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
   
-//  movie = new Movie(this, "Fish Comp 3.mov");
+  movie = new Movie(this, "Fish Comp 3.mov");
   //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
 //  movie = new Movie(this, "input.mov");
 //  movie = new Movie(this, "input2.mov");
-  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
+//  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
   movie.loop();
   movieFrame = createImage(camW, camH/2, ALPHA);
 
@@ -294,6 +294,9 @@ public void setSettings(String settingsString) {
       switchingCamerasBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("zoomCameraInterval") && value != null) {
       zoomingBehavior.framesBeforeSwitch = Integer.valueOf(value);
+    } else if (key.equals("mugshotRectThreshold") && value != null) {
+      mugshotBehavior.scoreThreshold = Integer.valueOf(value);
+      zoomingBehavior.scoreThreshold = Integer.valueOf(value);
     } else if (key.equals("mugshotCameraInterval") && value != null) {
       mugshotBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("departuresCameraInterval") && value != null) {

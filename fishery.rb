@@ -372,6 +372,9 @@ __END__
       %label{ :for => 'showBlobs' } show blobs
       %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @@settings[:showBlobs]}
       %br
+      %label{ :for => 'mugshotRectThreshold' } score threshold
+      %input{ :type => 'number', :name => 'mugshotRectThreshold', :value => @@settings[:mugshotRectThreshold] }
+      %br
       %label{ :for => 'mugshotCameraInterval' } camera interval
       %input{ :type => 'number', :name => 'mugshotCameraInterval', :value => @@settings[:mugshotCameraInterval] }
       %br

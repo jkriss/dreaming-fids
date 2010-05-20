@@ -35,7 +35,7 @@ class DepartureBoard extends Behavior {
   
   public void startDepartureReshuffle() {
     println("starting departure board reshuffle");
-    rows[0].hide(); 
+    if (rows[0] != null) rows[0].hide(); 
   }
 
   void draw() {

@@ -392,7 +392,7 @@ __END__
     %fieldset
       %legend switching cameras
       %label{ :for => 'switchingCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'switchingCameraInterval', :value => @@settings[:switchingCameraInterval], :disabled => true }
+      %input{ :type => 'number', :name => 'switchingCameraInterval', :value => @@settings[:switchingCameraInterval] }
       
     %fieldset
       %legend zooming

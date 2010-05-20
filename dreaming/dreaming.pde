@@ -63,6 +63,7 @@ boolean cursorHidden;
 
 CameraFeedSketch mugshotBehavior, zoomingBehavior;
 DepartureBoard departureBoardBehavior;
+SwitchingCameras switchingCamerasBehavior;
 RawInput rawInput;
 
 int framesPerBehavior = 300;
@@ -102,12 +103,13 @@ void setup() {
 
   mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
   zoomingBehavior = new CameraFeedSketch(this, numScreens, border);
+  switchingCamerasBehavior = new SwitchingCameras(this, numScreens, border);
   zoomingBehavior.zooming = true;
   departureBoardBehavior = new DepartureBoard(this, numScreens, border);
   behaviors[0] = mugshotBehavior;
   behaviors[1] = departureBoardBehavior;
   behaviors[2] = new RawCameras(this, numScreens, border);
-  behaviors[3] = new SwitchingCameras(this, numScreens, border);
+  behaviors[3] = switchingCamerasBehavior;
   //  behaviors[4] = new RawInput(this, numScreens, border);
   //  behaviors[4] = zoomingBehavior;
   behaviors[4] = mugshotBehavior;
@@ -268,6 +270,8 @@ public void setSettings(String settingsString) {
       minFramesPerBehavior = Integer.valueOf(value);
     } else if (key.equals("maxFramesPerBehavior") && value != null) {
       maxFramesPerBehavior = Integer.valueOf(value);
+    } else if (key.equals("switchingCameraInterval") && value != null) {
+      switchingCamerasBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } else if (key.equals("brightness") && value != null) {

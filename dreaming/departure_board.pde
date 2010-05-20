@@ -38,6 +38,8 @@ class DepartureBoard extends Behavior {
 
   void draw() {
     
+    if (frameCount % framesBeforeSwitch == 0) resetMappings();
+    
     if (isThing1() && frameCount % framesBeforeShuffle == 0) {
       //pop();
       if (rows[0] != null) rows[0].hide();
@@ -65,7 +67,7 @@ class DepartureBoard extends Behavior {
   void drawScreen(int screenIndex) {
     
     
-    PImage cam = cams[screenIndex];
+    PImage cam = cams[cameraMappings[screenIndex]];
 
     if (cam == null) return;
 //    image(cam,0,0,w,h);

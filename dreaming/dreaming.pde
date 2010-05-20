@@ -274,6 +274,8 @@ public void setSettings(String settingsString) {
       switchingCamerasBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("mugshotCameraInterval") && value != null) {
       mugshotBehavior.framesBeforeSwitch = Integer.valueOf(value);
+    } else if (key.equals("departuresCameraInterval") && value != null) {
+      departureBoardBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } else if (key.equals("brightness") && value != null) {
@@ -391,7 +393,7 @@ void callMethod(String target, String method, String message) {
   m.add(target);
   if (message != null) m.add(message);
   oscP5.send(m);
-  println("sent " + method + " : " + message + " to " + target);
+  // println("sent " + method + " : " + message + " to " + target);
 }
 
 void takeMugshot(String m) {
@@ -399,14 +401,14 @@ void takeMugshot(String m) {
 }
 
 void oscEvent(OscMessage m) {
-  println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
+  // println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
   String method = m.addrPattern().substring(1);
   String target = m.get(0).stringValue();
   String value = null;
   if (m.arguments().length > 1) value = m.get(1).stringValue();
   //  println("target : " + target + ", hostname: " + hostname());
   if (hostname().startsWith(target) || target.equals("all")) {
-    println("calling osc method " + method);
+    // println("calling osc method " + method);
     if (method.equals("showMugshot")) {
       mugshotBehavior.showMugshot(value);
     } 

@@ -377,7 +377,7 @@ __END__
     %fieldset
       %legend departure board
       %label{ :for => 'departuresCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'departuresCameraInterval', :value => @@settings[:departuresCameraInterval], :disabled => true }
+      %input{ :type => 'number', :name => 'departuresCameraInterval', :value => @@settings[:departuresCameraInterval] }
       %br
       %label{ :for => 'departuresBlinkRate' } blink rate
       %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate], :disabled => true }

@@ -25,6 +25,7 @@ int SERVER_PORT = 4567;
 NetAddress oscBroadcast;
 
 boolean showBlobs = true;
+boolean useMovie = false;
 
 Behavior[] behaviors = new Behavior[4];
 Behavior activeBehavior;
@@ -128,17 +129,15 @@ void setup() {
     fish[i] = new FishInfo(); 
     interestRects[i] = new MotionRect(new Rectangle(camW,camH));
   }
-  localVideo = new Capture(this, camW+40, camH+40, 24);
-  localVideo.crop(20,20,camW,camH/2);
-
+  
 //  movie = new Movie(this, "Fish Comp 3.mov");
   //  movie = new Movie(this, "camera test.mov");
   //  movie = new Movie(this, "Fish Comp 1.mov");
 //  movie = new Movie(this, "input.mov");
 //  movie = new Movie(this, "input2.mov");
-//  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
-//  movie.loop();
-//  movieFrame = createImage(camW, camH/2, ALPHA);
+  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
+  movie.loop();
+  movieFrame = createImage(camW, camH/2, ALPHA);
 
   streamer = new VideoStreamer(this, sendIP(), 9091);
   udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
@@ -153,6 +152,28 @@ void setup() {
     setSettings(loadStrings("settings.txt")[0]);
   } catch (Exception e) {
     e.printStackTrace();
+  }
+  
+  //if (!useMovie) 
+    initVideo();
+
+}
+
+void initVideo() {
+ if (localVideo == null) {
+   localVideo = new Capture(this, camW+40, camH+40, 24);
+   localVideo.crop(20,20,camW,camH/2);
+ }
+}
+
+void useMovie(boolean b) {
+  println("using movie? " + b);
+  useMovie = b;
+  if (b) {
+    //localVideo.stop();
+    //localVideo = null;
+  } else {
+    initVideo();
   }
 }
 
@@ -295,6 +316,8 @@ public void setSettings(String settingsString) {
       videoBrightness = Integer.valueOf(value);
     } else if (key.equals("contrast") && value != null) {
       videoContrast = Integer.valueOf(value);
+    } else if (key.equals("useMovie") && value != null) {
+      useMovie(value.equals("useMovie"));
     }
   }
 }
@@ -364,7 +387,7 @@ void findSuspiciousActivity() {
 }
 
 void streamVideo() {
-  if (localVideo != null) {
+  if (localVideo != null && !useMovie) {
     if (localVideo.available()) {
       localVideo.read();
       localVideo.loadPixels();
@@ -455,7 +478,7 @@ void receive( byte[] data, String ip, int port ) {
   
     PImage frame = null;
     if (movieFrame != null) frame = movieFrame;
-    if (localVideo != null) frame = localVideo;
+    if (localVideo != null && !useMovie) frame = localVideo;
   
     if (frame != null) {
       cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);

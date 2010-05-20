@@ -200,7 +200,7 @@ end
 
 get '/settings' do
   logger.info params.inspect
-  %w(showBlobs cycleBehaviors showFrameRate).each { |b| params[b.intern] ||= false }
+  %w(showBlobs cycleBehaviors showFrameRate useMovie).each { |b| params[b.intern] ||= false }
   @@settings = params
   osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'
@@ -335,6 +335,9 @@ __END__
   
     %fieldset
       %legend general
+      %label{ :for => 'useMovie' } use movie
+      %input#useMovie{ :type => 'checkbox', :name => 'useMovie', :value => 'useMovie', :checked => @@settings[:useMovie]}
+      %br
       %label{ :for => 'cycleBehaviors' } cycle behaviors
       %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @@settings[:cycleBehaviors]}
       %br

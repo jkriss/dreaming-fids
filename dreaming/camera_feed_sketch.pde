@@ -242,7 +242,7 @@ class Mugshotter {
  float mMargin = (1 * scaleFactor) + 5;
  
  int shotsPerLine = 6;
- int maxShots = shotsPerLine * 3 * 3;
+ int maxShots = shotsPerLine / 2 * 3 * 3;
  
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 
@@ -273,17 +273,11 @@ class Mugshotter {
    return (millis() - lastShot < 300);
  }
  
- void draw() {
-//   Iterator it = mugshots.iterator();
-   pushMatrix();
-   translate(mMargin, mMargin);
-   int count = 0;
-//   while(it.hasNext()) {
-   int startAt = isThing1() ? 0 : maxShots / 2;
-   int endAt = isThing1() ? min(mugshots.size(), maxShots / 2) : mugshots.size();
+ void renderShots(int startAt, int endAt, int count) {
    int localPosition = 1;
    for (int i=startAt; i<endAt; i++) {
 //     PImage mug = (PImage)it.next();
+     if (i >= mugshots.size()) continue;
      PImage mug = null;
      try {
        mug = (PImage)mugshots.get(i);
@@ -297,9 +291,9 @@ class Mugshotter {
        rect(0,0,mWidth,mHeight);
      }
      count++;
-     println("local position: " + localPosition);
+     //println("local position: " + localPosition);
      if ( localPosition % 3 == 0 ) {
-       println("scooting over a bit");
+       //println("scooting over a bit");
        translate(mMargin, 0);
      }
      if (count > 0 && count % shotsPerLine == 0) {
@@ -311,7 +305,27 @@ class Mugshotter {
        translate(mMargin+mWidth, 0);
      }
      localPosition++;
-
+   }  
+ }
+ 
+ void draw() {
+//   Iterator it = mugshots.iterator();
+   pushMatrix();
+   translate(mMargin, mMargin);
+//   while(it.hasNext()) {
+//   int startAt = isThing1() ? 0 : maxShots / 2;
+//   int endAt = isThing1() ? min(mugshots.size(), maxShots / 2) : mugshots.size();
+   int count = 0;
+   
+   //renderShots(startAt, endAt, count);
+   if (isThing1()) {
+     renderShots(0, 6, count);
+     renderShots(9, 15, count);
+     renderShots(18, 24, count);
+   } else {
+     renderShots(6, 9, count);
+     renderShots(15, 18, count);
+     renderShots(24, 27, count);
    }
    popMatrix();
  }

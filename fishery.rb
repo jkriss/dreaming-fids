@@ -371,7 +371,7 @@ __END__
       %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @@settings[:showBlobs]}
       %br
       %label{ :for => 'mugshotCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'mugshotCameraInterval', :value => @@settings[:mugshotCameraInterval], :disabled => true }
+      %input{ :type => 'number', :name => 'mugshotCameraInterval', :value => @@settings[:mugshotCameraInterval] }
       %br
       
     %fieldset

@@ -2,11 +2,9 @@
 
 class CameraFeedSketch extends Behavior {
 
-  int[] cameraMappings = { 0, 1, 2, 3 };
   Mugshotter mugshotter = new Mugshotter();
-  boolean zooming = true;
+  boolean zooming = false;
   boolean forceMugshot = false;
-  int framesBeforeSwitching = 200;
   
   CameraFeedSketch(PApplet parent, int numScreens, int border) {
     super(parent, numScreens, border); 
@@ -25,7 +23,7 @@ class CameraFeedSketch extends Behavior {
   }
   
   void draw() {
-    if (frameCount % framesBeforeSwitching == 0) resetMappings();
+    if (frameCount % framesBeforeSwitch == 0) resetMappings();
     splitScreens();
     spanScreens();
     fill(0,0,0, 10);
@@ -230,18 +228,6 @@ class CameraFeedSketch extends Behavior {
 //    if (camIndex == 1) println(fish[camIndex].activity);
   }
   
-
-      
-  void resetMappings() {
-    int[] choices = {0,1,2,3};
-    for (int i=0; i<cameraMappings.length;) {
-      int r = round(random(choices.length-1));
-      cameraMappings[i] = choices[r];
-      if (choices[r] == -1) continue;
-      choices[r] = -1; 
-      i++;
-    }
-  }
 }
 
 class Mugshotter {

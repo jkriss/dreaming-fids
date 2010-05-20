@@ -112,7 +112,7 @@ void setup() {
   behaviors[3] = switchingCamerasBehavior;
   //  behaviors[4] = new RawInput(this, numScreens, border);
   //  behaviors[4] = zoomingBehavior;
-  behaviors[4] = mugshotBehavior;
+  behaviors[4] = zoomingBehavior;
 
   rawInput = new RawInput(this, numScreens, border);
 
@@ -272,6 +272,8 @@ public void setSettings(String settingsString) {
       maxFramesPerBehavior = Integer.valueOf(value);
     } else if (key.equals("switchingCameraInterval") && value != null) {
       switchingCamerasBehavior.framesBeforeSwitch = Integer.valueOf(value);
+    } else if (key.equals("mugshotCameraInterval") && value != null) {
+      mugshotBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } else if (key.equals("brightness") && value != null) {

@@ -4,6 +4,9 @@ class Behavior {
  int w,h;
  int numScreens;
  int border;
+ 
+ int[] cameraMappings = { 0, 1, 2, 3 };
+ int framesBeforeSwitch = 200;
 
  Behavior(PApplet parent, int numScreens, int border) {
    this.parent = parent;
@@ -55,6 +58,18 @@ class Behavior {
       b.centroid.x *= wScale;
       b.centroid.y *= hScale;
     } 
+  }
+  
+    
+  void resetMappings() {
+    int[] choices = {0,1,2,3};
+    for (int i=0; i<cameraMappings.length;) {
+      int r = round(random(choices.length-1));
+      cameraMappings[i] = choices[r];
+      if (choices[r] == -1) continue;
+      choices[r] = -1; 
+      i++;
+    }
   }
  
 }

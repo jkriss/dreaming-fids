@@ -22,7 +22,7 @@ MAX_RUNTIME = 60 * 60 * 24 # in seconds
 # MAX_RUNTIME = 60  # in seconds
 
 d = Date.today+1
-SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 3).to_s
+SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 3)
 
 # d = Date.today
 # SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 10, 13)
@@ -85,6 +85,7 @@ configure do
     heartbeat = Thread.new do
       while true do
         logger.info "pinging #{other_hosts.inspect}"
+        check_auto_restart
         other_hosts.each do |h|
           url = "http://#{h}:#{SERVER_PORT}/heartbeat"
           logger.info "- about to ping #{url}"
@@ -107,12 +108,16 @@ configure do
   end
 end
 
-before do
-  if uptime > MAX_RUNTIME && Time.now > SHUTDOWN_TIME
+def check_auto_restart
+  if Time.now > SHUTDOWN_TIME
     logger.warn "!! restarting after #{uptime.to_i} seconds !!"
     emergency_tweet("restarting")
     `./fishcontrol reboot` if HOSTS.include?(hostname)
   end
+end
+
+before do
+  check_auto_restart
 end
 
 get '/' do

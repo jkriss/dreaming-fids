@@ -383,10 +383,10 @@ __END__
       %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate] }
       %br
       %label{ :for => 'departuresShuffleInterval' } shuffle interval
-      %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => @@settings[:departuresShuffleInterval], :disabled => true }
+      %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => @@settings[:departuresShuffleInterval] }
       %br
-      %label{ :for => 'departuresShuffleSpeed' } shuffle speed
-      %input{ :type => 'number', :name => 'departuresShuffleSpeed', :value => @@settings[:departuresShuffleSpeed], :disabled => true }
+      %label{ :for => 'departuresShuffleSpeed' } shuffle delay
+      %input{ :type => 'number', :name => 'departuresShuffleSpeed', :value => @@settings[:departuresShuffleSpeed] }
       %br
       
     %fieldset

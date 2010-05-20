@@ -14,6 +14,7 @@ class DepartureBoard extends Behavior {
   int framesPerBlink = 10;
   int framesBeforeShuffle = 200;
   int framesPerNewBlink = 100;
+  int framesHiddenOnShuffle = 4;
   
   color normalColor = 255;
   color blinkColor = 0;
@@ -173,7 +174,7 @@ class DepartureBoard extends Behavior {
    boolean hidden(Row nextHidden) {
      if (!hidden) return false;
      hiddenFrames += 1;
-     boolean done = hiddenFrames > 4;
+     boolean done = hiddenFrames > framesHiddenOnShuffle;
      if (done) {
        hidden = false;
        if (nextHidden != null) {

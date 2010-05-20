@@ -58,7 +58,7 @@ class DepartureBoard extends Behavior {
   }
   
   void blink() {
-    println("remote blink received");
+    // println("remote blink received");
     for (int i=0; i<rows.length; i++) {
       if (rows[i] != null) rows[i].blinkIfBlinking();
     }

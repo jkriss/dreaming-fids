@@ -276,6 +276,8 @@ public void setSettings(String settingsString) {
       mugshotBehavior.framesBeforeSwitch = Integer.valueOf(value);
     } else if (key.equals("departuresCameraInterval") && value != null) {
       departureBoardBehavior.framesBeforeSwitch = Integer.valueOf(value);
+    } else if (key.equals("departuresBlinkRate") && value != null) {
+      departureBoardBehavior.framesPerBlink = Integer.valueOf(value);
     } else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } else if (key.equals("brightness") && value != null) {

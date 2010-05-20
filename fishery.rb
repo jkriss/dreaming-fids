@@ -380,7 +380,7 @@ __END__
       %input{ :type => 'number', :name => 'departuresCameraInterval', :value => @@settings[:departuresCameraInterval] }
       %br
       %label{ :for => 'departuresBlinkRate' } blink rate
-      %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate], :disabled => true }
+      %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate] }
       %br
       %label{ :for => 'departuresShuffleInterval' } shuffle interval
       %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => @@settings[:departuresShuffleInterval], :disabled => true }

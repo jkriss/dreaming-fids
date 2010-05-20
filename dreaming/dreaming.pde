@@ -83,79 +83,84 @@ OpenCV adjuster;
 int videoBrightness, videoContrast;
 
 void setup() {
-
-  smooth();
-
-  inputRecorder = new Recorder(this, "mugshots/input.mov", 10);
-  outputRecorder = new Recorder(this, "mugshots/output.mov", 10);
-
-  osc = new EasyOsc(this, "fish");
-  thisFish = new EasyOsc(this, isThing1() ? "thing1" : "thing2");
-  oscP5 = new OscP5(this, "239.0.0.1", 7777); 
-  oscBroadcast = new NetAddress("230.0.0.1", 7447);
-  PFont font = loadFont("Helvetica-Bold-16.vlw");
-  textFont(font);
-
-  frameRate(25);
-  size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
-
-  Graphics2D g2 = ((PGraphicsJava2D)g).g2;
-  g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-
-  mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
-  zoomingBehavior = new CameraFeedSketch(this, numScreens, border);
-  switchingCamerasBehavior = new SwitchingCameras(this, numScreens, border);
-  zoomingBehavior.zooming = true;
-  departureBoardBehavior = new DepartureBoard(this, numScreens, border);
-  behaviors[0] = departureBoardBehavior;
-  behaviors[1] = mugshotBehavior;
-  //behaviors[2] = new RawCameras(this, numScreens, border);
-  behaviors[2] = switchingCamerasBehavior;
-  //  behaviors[4] = new RawInput(this, numScreens, border);
-  //  behaviors[4] = zoomingBehavior;
-  behaviors[3] = zoomingBehavior;
-
-  rawInput = new RawInput(this, numScreens, border);
-
-  activeBehavior = behaviors[0];
-
-  for (int i=0; i<behaviors.length; i++) {
-    if (behaviors[i] != null) behaviors[i].setup(); 
-  }
-  for (int i=0; i<detectors.length; i++) {
-    detectors[i] = new Detector(this, i); 
-  }
-  for (int i=0; i<fish.length; i++) {
-    fish[i] = new FishInfo(); 
-    interestRects[i] = new MotionRect(new Rectangle(camW,camH));
-  }
   
-  movie = new Movie(this, "Fish Comp 3.mov");
-  //  movie = new Movie(this, "camera test.mov");
-  //  movie = new Movie(this, "Fish Comp 1.mov");
-//  movie = new Movie(this, "input.mov");
-//  movie = new Movie(this, "input2.mov");
-//  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
-  movie.loop();
-  movieFrame = createImage(camW, camH/2, ALPHA);
-
-  streamer = new VideoStreamer(this, sendIP(), 9091);
-  udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
-  udp.listen(true);
-
-  println("sending on " + sendIP() + ", receiving on " + receiveIP());
-
-  fs = new SoftFullScreen(this);
-  if (hostname().startsWith("thing")) fs.setFullScreen(true);
-
   try {
-    setSettings(loadStrings("settings.txt")[0]);
-  } catch (Exception e) {
-    e.printStackTrace();
-  }
+
+    smooth();
   
-  //if (!useMovie) 
-    initVideo();
+    inputRecorder = new Recorder(this, "mugshots/input.mov", 10);
+    outputRecorder = new Recorder(this, "mugshots/output.mov", 10);
+  
+    osc = new EasyOsc(this, "fish");
+    thisFish = new EasyOsc(this, isThing1() ? "thing1" : "thing2");
+    oscP5 = new OscP5(this, "239.0.0.1", 7777); 
+    oscBroadcast = new NetAddress("230.0.0.1", 7447);
+    PFont font = loadFont("Helvetica-Bold-16.vlw");
+    textFont(font);
+  
+    frameRate(25);
+    size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
+  
+    Graphics2D g2 = ((PGraphicsJava2D)g).g2;
+    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+  
+    mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
+    zoomingBehavior = new CameraFeedSketch(this, numScreens, border);
+    switchingCamerasBehavior = new SwitchingCameras(this, numScreens, border);
+    zoomingBehavior.zooming = true;
+    departureBoardBehavior = new DepartureBoard(this, numScreens, border);
+    behaviors[0] = departureBoardBehavior;
+    behaviors[1] = mugshotBehavior;
+    //behaviors[2] = new RawCameras(this, numScreens, border);
+    behaviors[2] = switchingCamerasBehavior;
+    //  behaviors[4] = new RawInput(this, numScreens, border);
+//    behaviors[4] = zoomingBehavior;
+    behaviors[3] = zoomingBehavior;
+  
+    rawInput = new RawInput(this, numScreens, border);
+  
+    activeBehavior = behaviors[0];
+  
+    for (int i=0; i<behaviors.length; i++) {
+      if (behaviors[i] != null) behaviors[i].setup(); 
+    }
+    for (int i=0; i<detectors.length; i++) {
+      detectors[i] = new Detector(this, i); 
+    }
+    for (int i=0; i<fish.length; i++) {
+      fish[i] = new FishInfo(); 
+      interestRects[i] = new MotionRect(new Rectangle(camW,camH));
+    }
+    
+    movie = new Movie(this, "Fish Comp 3.mov");
+    //  movie = new Movie(this, "camera test.mov");
+    //  movie = new Movie(this, "Fish Comp 1.mov");
+  //  movie = new Movie(this, "input.mov");
+  //  movie = new Movie(this, "input2.mov");
+  //  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
+    movie.loop();
+    movieFrame = createImage(camW, camH/2, ALPHA);
+  
+    streamer = new VideoStreamer(this, sendIP(), 9091);
+    udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
+    udp.listen(true);
+  
+    println("sending on " + sendIP() + ", receiving on " + receiveIP());
+  
+    fs = new SoftFullScreen(this);
+    if (hostname().startsWith("thing")) fs.setFullScreen(true);
+  
+    try {
+      setSettings(loadStrings("settings.txt")[0]);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+    //if (!useMovie) 
+      initVideo();
+  } catch (Exception e) {
+    handleError(e);
+  }
 
 }
 
@@ -326,31 +331,46 @@ public void setSettings(String settingsString) {
 }
 
 void draw() {
+  
+  try {
 
-  autoclicker.doClick(); // will only trigger if it's supposed to
-
-  if (frameCount % 1000 == 0) autoclicker.start();
-
-  if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
-    if (randomCycleTime) framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
-    behaviorIndex += 1;
-    if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
-    callMethod("all","setBehavior", ""+behaviorIndex);
+    autoclicker.doClick(); // will only trigger if it's supposed to
+  
+    if (frameCount % 1000 == 0) autoclicker.start();
+  
+    if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
+      if (randomCycleTime) framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
+      behaviorIndex += 1;
+      if (behaviorIndex >= behaviors.length) behaviorIndex = 0;
+      callMethod("all","setBehavior", ""+behaviorIndex);
+    }
+  
+    background(0);
+    streamVideo();
+    synchronized(this) {
+      findSuspiciousActivity();
+      activeBehavior.draw();
+    }
+  
+    fill(106,161,204);
+    hideCursor();
+  
+    if (showFrameRate) text(frameRate, 40, 20);
+  
+    outputRecorder.record();
+  } catch (Exception e) {
+    handleError(e);
   }
+}
 
-  background(0);
-  streamVideo();
-  synchronized(this) {
-    findSuspiciousActivity();
-    activeBehavior.draw();
-  }
-
-  fill(106,161,204);
-  hideCursor();
-
-  if (showFrameRate) text(frameRate, 40, 20);
-
-  outputRecorder.record();
+void handleError(Exception e) {
+  PrintWriter out = new PrintWriter(createOutput("mugshots/log/processing-error.log"), true);
+  e.printStackTrace(out);
+  out.close();
+  String message =  hostname() + ": " + e.toString();
+  println(message);
+  Tweeter.tweet(message);
+  throw new RuntimeException(e);
 }
 
 void findSuspiciousActivity() {
@@ -440,62 +460,70 @@ void takeMugshot(String m) {
 }
 
 void oscEvent(OscMessage m) {
-  // println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
-  String method = m.addrPattern().substring(1);
-  String target = m.get(0).stringValue();
-  String value = null;
-  if (m.arguments().length > 1) value = m.get(1).stringValue();
-  //  println("target : " + target + ", hostname: " + hostname());
-  if (hostname().startsWith(target) || target.equals("all")) {
-    // println("calling osc method " + method);
-    if (method.equals("showMugshot")) {
-      mugshotBehavior.showMugshot(value);
-    } 
-    else if (method.equals("startDepartureReshuffle")) {
-      departureBoardBehavior.startDepartureReshuffle();
-    } 
-    else if (method.equals("resetMugshots")) {
-      mugshotBehavior.resetMugshots();
-    } 
-    else if (method.equals("setBehavior")) {
-      behavior(Integer.valueOf(value));
-    } 
-    else if (method.equals("departureBlink")) {
-      departureBoardBehavior.blink();
+  try {
+    // println("received an osc message at " + m.addrPattern() + " of type " + m.typetag());
+    String method = m.addrPattern().substring(1);
+    String target = m.get(0).stringValue();
+    String value = null;
+    if (m.arguments().length > 1) value = m.get(1).stringValue();
+    //  println("target : " + target + ", hostname: " + hostname());
+    if (hostname().startsWith(target) || target.equals("all")) {
+      // println("calling osc method " + method);
+      if (method.equals("showMugshot")) {
+        mugshotBehavior.showMugshot(value);
+      } 
+      else if (method.equals("startDepartureReshuffle")) {
+        departureBoardBehavior.startDepartureReshuffle();
+      } 
+      else if (method.equals("resetMugshots")) {
+        mugshotBehavior.resetMugshots();
+      } 
+      else if (method.equals("setBehavior")) {
+        behavior(Integer.valueOf(value));
+      } 
+      else if (method.equals("departureBlink")) {
+        departureBoardBehavior.blink();
+      }
     }
+  } catch (Exception e) {
+    handleError(e);
   }
 }
 
 void receive( byte[] data, String ip, int port ) {
-  PImage img = loadPImageFromBytes(data, this);
-
-  synchronized(this) {
-    cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
-    cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
-    //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
+  try {
+    PImage img = loadPImageFromBytes(data, this);
   
-    // for now
-    //  cams[isThing1() ? 3 : 0] = cams[0];
-    //  cams[isThing1() ? 4 : 1] = cams[1];
-    //  cams[isThing1() ? 5 : 2] = cams[2];
-  
-    PImage frame = null;
-    if (movieFrame != null) frame = movieFrame;
-    if (localVideo != null && !useMovie) frame = localVideo;
-  
-    if (frame != null) {
-      cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
-      cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
-  
-      //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
-      //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
-      //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
+    synchronized(this) {
+      cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
+      cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
+      //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
+    
+      // for now
+      //  cams[isThing1() ? 3 : 0] = cams[0];
+      //  cams[isThing1() ? 4 : 1] = cams[1];
+      //  cams[isThing1() ? 5 : 2] = cams[2];
+    
+      PImage frame = null;
+      if (movieFrame != null) frame = movieFrame;
+      if (localVideo != null && !useMovie) frame = localVideo;
+    
+      if (frame != null) {
+        cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
+        cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
+    
+        //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
+        //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
+        //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
+      }
+    
+      for (int i=0; i<cams.length; i++) {
+        fish[i].blobs = detectors[i].findBlobs(cams[i]);
+        fish[i].activity = detectors[i].activity;
+      }
     }
-  
-    for (int i=0; i<cams.length; i++) {
-      fish[i].blobs = detectors[i].findBlobs(cams[i]);
-      fish[i].activity = detectors[i].activity;
-    }
+  } catch (Exception e) {
+    handleError(e);
   }
 } 
 
@@ -710,4 +738,19 @@ class AutoClicker {
   }
 }
 
+static class Tweeter {
+ 
+ static void tweet(String message) {
+   String[] cmd = {"curl", "-u", "dreamingfids:dreaming", "-d", "status=d jkriss " + message, "http://twitter.com/statuses/update.xml"};
+   println("tweeting: " + cmd);
+   try {
+     Process p = Runtime.getRuntime().exec(cmd);
+     try { p.waitFor(); } catch (InterruptedException e) { e.printStackTrace(); }
+     println("tweeted! or something! exit value: " + p.exitValue());
+   } catch (IOException e) { 
+     e.printStackTrace(); 
+   }
+ }
+  
+}
 

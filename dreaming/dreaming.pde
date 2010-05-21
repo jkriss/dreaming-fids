@@ -66,6 +66,7 @@ CameraFeedSketch mugshotBehavior, zoomingBehavior;
 DepartureBoard departureBoardBehavior;
 SwitchingCameras switchingCamerasBehavior;
 RawInput rawInput;
+TestPattern testPattern;
 
 int framesPerBehavior = 300;
 boolean randomCycleTime = false;
@@ -116,7 +117,8 @@ void setup() {
     //  behaviors[4] = new RawInput(this, numScreens, border);
 //    behaviors[4] = zoomingBehavior;
     behaviors[3] = zoomingBehavior;
-  
+    
+    testPattern = new TestPattern(this, numScreens, border);
     rawInput = new RawInput(this, numScreens, border);
   
     activeBehavior = behaviors[0];
@@ -236,6 +238,10 @@ void hideCursor() {
 
 void showRawInput(String s) {
   activeBehavior = rawInput;
+}
+
+void showTestPattern(String s) {
+  activeBehavior = testPattern;
 }
 
 void click(String message) {

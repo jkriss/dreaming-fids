@@ -198,6 +198,11 @@ get '/test/input' do
   redirect '/'
 end
 
+get '/test/pattern' do
+  osc :showTestPattern, 's', 'ptthbt'
+  redirect '/'
+end
+
 get '/settings' do
   logger.info params.inspect
   %w(showBlobs cycleBehaviors showFrameRate useMovie randomCycleTime).each { |b| params[b.intern] ||= false }
@@ -324,6 +329,7 @@ __END__
 
 %p
   %a{ :href => '/test/input'} raw input
+  %a{ :href => '/test/pattern'} test pattern
   
 %p
   %form{ :action => '/settings' }

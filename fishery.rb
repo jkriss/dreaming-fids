@@ -120,6 +120,27 @@ before do
   check_auto_restart
 end
 
+post '/' do
+  puts "status = #{params[:status]}"
+  case params[:status]
+  when 'normal'
+    osc :behavior, 'i', 0 # first behavior
+  when 'test'
+    osc :showRawInput, 's', 'ptthbt'
+  when 'stop'
+    `./fishcontrol stop`
+  when 'restart'
+    `./fishcontrol stop`
+    sleep(3)
+    `./fishcontrol open`
+    sleep(5)
+    `./fishcontrol run`
+  when 'reboot'
+    echo '/reboot'
+    `./fishcontrol reboot`
+  end
+end
+
 get '/' do
   read_settings
   @settings = @@settings
@@ -329,7 +350,7 @@ __END__
 
 %p
   %a{ :href => '/test/input'} raw input
-  %a{ :href => '/test/pattern'} test pattern
+  %a{ :href => '/test/pattern'} test patterns
   
 %p
   %form{ :action => '/settings' }

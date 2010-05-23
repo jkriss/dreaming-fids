@@ -4,7 +4,10 @@ require 'haml'
 require 'osc'
 require 'open-uri'
 require 'logger'
+require 'timeout'
+require 'thin'
 # require 'exception_handler'
+
 
 OscClient = OSC::UDPSocket.new
 
@@ -13,6 +16,7 @@ HOSTS = %w(thing1.local thing2.local)
 LAZY_COMPUTER = 'thing2.local'
 # LAZY_COMPUTER = 'jklabs-mbp.local'
 HEARTBEAT_URL = "http://google.com"
+ART_SERVER = "http://172.16.220.40"
 # HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=[id]"
 HEARTBEAT_DELAY = 60 # in seconds
 SERVER_PORT = 4567
@@ -31,9 +35,11 @@ SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 3)
 @@hostname = nil
 
 set :public, Proc.new { File.join(root,'dreaming','mugshots') }
+set :server, 'thin'
 
 # set :settings_path, Proc.new { File.join(root,'dreaming','settings.txt') }
 SETTINGS_PATH = 'dreaming/settings.txt'
+
 
 def logger
   @logger ||= Logger.new('dreaming/mugshots/log/sinatra.log', 10, 1024000)
@@ -103,8 +109,31 @@ configure do
     
   else
   
-    logger.info "  - registering status listeners"
+    logger.info "registering status listeners"
     
+    begin
+      Timeout::timeout(3) do
+        open "#{ART_SERVER}/status/?register=4567&tests=normal,test,stop,restart,reboot"
+        logger.info "successfully registered status listeners"
+      end
+    rescue Timeout::Error
+      logger.warn "status server not responding"
+    end
+
+  end
+end
+
+def unregister_status_listener
+  unless hostname == LAZY_COMPUTER
+    logger.info "unregistering status listener"
+    begin
+      Timeout::timeout(3) do
+        open "#{ART_SERVER}/status/?unregister=4567"
+        logger.info "successfully unregistered status listeners"
+      end
+    rescue Timeout::Error
+      logger.warn "status server not responding"
+    end
   end
 end
 
@@ -262,6 +291,13 @@ def osc(method, arg_types='s', value='hi')
   OscClient.send m, 0, "230.0.0.1", 7447
 end
 
+class Thin::Server
+  def stop!
+    puts "Stopping Thin..."
+    unregister_status_listener
+    @backend.stop!
+  end
+end
 
 
 __END__

@@ -39,7 +39,7 @@ class SinatraServer
     if File.exist?(pid_path)
       pid = IO.read(pid_path).to_i
       begin
-        Process.kill('TERM', pid)
+        Process.kill('INT', pid)
       rescue Errno::ESRCH
         raise Exception, "Process with PID #{pid} is no longer running"
       ensure

@@ -5,7 +5,7 @@ require 'osc'
 require 'open-uri'
 require 'logger'
 require 'timeout'
-require 'thin'
+require 'mongrel'
 # require 'exception_handler'
 
 
@@ -35,7 +35,7 @@ SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 3)
 @@hostname = nil
 
 set :public, Proc.new { File.join(root,'dreaming','mugshots') }
-set :server, 'thin'
+set :server, 'mongrel'
 
 # set :settings_path, Proc.new { File.join(root,'dreaming','settings.txt') }
 SETTINGS_PATH = 'dreaming/settings.txt'
@@ -291,11 +291,22 @@ def osc(method, arg_types='s', value='hi')
   OscClient.send m, 0, "230.0.0.1", 7447
 end
 
-class Thin::Server
-  def stop!
-    puts "Stopping Thin..."
+# class Thin::Server
+#   def stop!
+#     puts "Stopping Thin..."
+#     unregister_status_listener
+#     @backend.stop!
+#   end
+# end
+
+class Mongrel::HttpServer
+  def stop(synchronous=false)
+    puts "Stopping mongrel..."
     unregister_status_listener
-    @backend.stop!
+    raise AcceptorError, "Server was not started." unless @acceptor
+    @acceptor.raise(Mongrel::StopServer.new)
+    (sleep(0.5) while @acceptor.alive?) if synchronous
+    @acceptor = nil
   end
 end
 

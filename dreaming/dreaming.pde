@@ -84,27 +84,27 @@ OpenCV adjuster;
 int videoBrightness, videoContrast;
 
 void setup() {
-  
+
   try {
 
     smooth();
-  
+
     inputRecorder = new Recorder(this, "mugshots/input.mov", 10);
     outputRecorder = new Recorder(this, "mugshots/output.mov", 10);
-  
+
     osc = new EasyOsc(this, "fish");
     thisFish = new EasyOsc(this, isThing1() ? "thing1" : "thing2");
     oscP5 = new OscP5(this, "239.0.0.1", 7777); 
     oscBroadcast = new NetAddress("230.0.0.1", 7447);
     PFont font = loadFont("Helvetica-Bold-16.vlw");
     textFont(font);
-  
+
     frameRate(25);
     size((border*(numScreens-1)) + (int)(screenSize[0]*numScreens*scale),(int)(screenSize[1]*scale));
-  
+
     Graphics2D g2 = ((PGraphicsJava2D)g).g2;
     g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-  
+
     mugshotBehavior = new CameraFeedSketch(this, numScreens, border);
     zoomingBehavior = new CameraFeedSketch(this, numScreens, border);
     switchingCamerasBehavior = new SwitchingCameras(this, numScreens, border);
@@ -115,14 +115,14 @@ void setup() {
     //behaviors[2] = new RawCameras(this, numScreens, border);
     behaviors[2] = switchingCamerasBehavior;
     //  behaviors[4] = new RawInput(this, numScreens, border);
-//    behaviors[4] = zoomingBehavior;
+    //    behaviors[4] = zoomingBehavior;
     behaviors[3] = zoomingBehavior;
-    
+
     testPattern = new TestPattern(this, numScreens, border);
     rawInput = new RawInput(this, numScreens, border);
-  
+
     activeBehavior = behaviors[0];
-  
+
     for (int i=0; i<behaviors.length; i++) {
       if (behaviors[i] != null) behaviors[i].setup(); 
     }
@@ -133,50 +133,52 @@ void setup() {
       fish[i] = new FishInfo(); 
       interestRects[i] = new MotionRect(new Rectangle(camW,camH));
     }
-    
+
     //movie = new Movie(this, "Fish Comp 3.mov");
     //  movie = new Movie(this, "camera test.mov");
     //  movie = new Movie(this, "Fish Comp 1.mov");
-  //  movie = new Movie(this, "input.mov");
-  //  movie = new Movie(this, "input2.mov");
-  //  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
+    //  movie = new Movie(this, "input.mov");
+    //  movie = new Movie(this, "input2.mov");
+    //  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
     //movie.loop();
     //movieFrame = createImage(camW, camH/2, ALPHA);
-  
+
     streamer = new VideoStreamer(this, sendIP(), 9091);
     udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
     udp.listen(true);
-  
+
     println("sending on " + sendIP() + ", receiving on " + receiveIP());
-  
+
     fs = new SoftFullScreen(this);
     if (hostname().startsWith("thing")) fs.setFullScreen(true);
-  
+
     try {
       setSettings(loadStrings("settings.txt")[0]);
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
       e.printStackTrace();
     }
-    
+
     println("-- setting random cycle time to " + randomCycleTime);
     if (randomCycleTime) {
       framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
       println("new frames per behavior: " + framesPerBehavior);
     }
-    
+
     //if (!useMovie) 
-      initVideo();
-  } catch (Exception e) {
+    initVideo();
+  } 
+  catch (Exception e) {
     handleError(e);
   }
 
 }
 
 void initVideo() {
- if (localVideo == null) {
-   localVideo = new Capture(this, camW+40, camH+40, 24);
-   localVideo.crop(20,20,camW,camH/2);
- }
+  if (localVideo == null) {
+    localVideo = new Capture(this, camW+40, camH+40, 24);
+    localVideo.crop(20,20,camW,camH/2);
+  }
 }
 
 void useMovie(boolean b) {
@@ -185,7 +187,8 @@ void useMovie(boolean b) {
   if (b) {
     //localVideo.stop();
     //localVideo = null;
-  } else {
+  } 
+  else {
     initVideo();
   }
 }
@@ -195,20 +198,19 @@ String sendIP() {
 }
 
 String receiveIP() {
-  return "225.0.0.0"; 
-  //  return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
+  return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
 }
 
 boolean isThing1() {
-  //  return hostname().equals("thing1.local");
-  return !hostname().equals("thing2.local");
+  return hostname().equals("thing1.local");
+  //return !hostname().equals("thing2.local");
 }
 
 String hostname() {
   if (hostname == null) {
     try {
       String[] cmd_elements = {
-        "hostname"            };
+        "hostname"                  };
       Process p = Runtime.getRuntime().exec(cmd_elements);
       hostname = new BufferedReader(new InputStreamReader(p.getInputStream())).readLine();
     } 
@@ -288,7 +290,9 @@ void mousePressed() {
 
 public void setSettings(String settingsString) {
   println("got settings: " + settingsString);
-  saveStrings("settings.txt",new String[]{settingsString});
+  saveStrings("settings.txt",new String[]{
+    settingsString  }
+  );
   String[] settings = settingsString.split("&");
   for (int i=0; i<settings.length; i++) {
     String entry[] = settings[i].split("=");
@@ -297,59 +301,79 @@ public void setSettings(String settingsString) {
 
     if ("showBlobs".equals(key)) {
       showBlobs = value.equals("showBlobs");
-    } else if ("cycleBehaviors".equals(key)) {
+    } 
+    else if ("cycleBehaviors".equals(key)) {
       cycleBehaviors = value.equals("cycleBehaviors");
-    } else if ("randomCycleTime".equals(key)) {
+    } 
+    else if ("randomCycleTime".equals(key)) {
       randomCycleTime = value.equals("randomCycleTime");
-    } else if (key.equals("cycleLength") && value != null) {
+    } 
+    else if (key.equals("cycleLength") && value != null) {
       framesPerBehavior = Integer.valueOf(value);
-    } else if (key.equals("minFramesPerBehavior") && value != null) {
+    } 
+    else if (key.equals("minFramesPerBehavior") && value != null) {
       minFramesPerBehavior = Integer.valueOf(value);
-    } else if (key.equals("maxFramesPerBehavior") && value != null) {
+    } 
+    else if (key.equals("maxFramesPerBehavior") && value != null) {
       maxFramesPerBehavior = Integer.valueOf(value);
-    } else if (key.equals("switchingCameraInterval") && value != null) {
+    } 
+    else if (key.equals("switchingCameraInterval") && value != null) {
       switchingCamerasBehavior.framesBeforeSwitch = Integer.valueOf(value);
-    } else if (key.equals("zoomCameraInterval") && value != null) {
+    } 
+    else if (key.equals("zoomCameraInterval") && value != null) {
       zoomingBehavior.framesBeforeSwitch = Integer.valueOf(value);
-    } else if (key.equals("mugshotRectThreshold") && value != null) {
+    } 
+    else if (key.equals("mugshotRectThreshold") && value != null) {
       mugshotBehavior.scoreThreshold = Integer.valueOf(value);
       zoomingBehavior.scoreThreshold = Integer.valueOf(value);
-    } else if (key.equals("mugshotCameraInterval") && value != null) {
+    } 
+    else if (key.equals("mugshotCameraInterval") && value != null) {
       mugshotBehavior.framesBeforeSwitch = Integer.valueOf(value);
-    } else if (key.equals("departuresCameraInterval") && value != null) {
+    } 
+    else if (key.equals("departuresCameraInterval") && value != null) {
       departureBoardBehavior.framesBeforeSwitch = Integer.valueOf(value);
-    } else if (key.equals("departuresBlinkRate") && value != null) {
+    } 
+    else if (key.equals("departuresBlinkRate") && value != null) {
       departureBoardBehavior.framesPerBlink = Integer.valueOf(value);
-    } else if (key.equals("departuresBlinkDuration") && value != null) {
+    } 
+    else if (key.equals("departuresBlinkDuration") && value != null) {
       departureBoardBehavior.maxBlinks = Integer.valueOf(value);
-    } else if (key.equals("departuresFramesBeforeNewBlink") && value != null) {
+    } 
+    else if (key.equals("departuresFramesBeforeNewBlink") && value != null) {
       departureBoardBehavior.framesPerNewBlink = Integer.valueOf(value);
-    } else if (key.equals("departuresShuffleInterval") && value != null) {
+    } 
+    else if (key.equals("departuresShuffleInterval") && value != null) {
       departureBoardBehavior.framesBeforeShuffle = Integer.valueOf(value);
-    } else if (key.equals("departuresShuffleSpeed") && value != null) {
+    } 
+    else if (key.equals("departuresShuffleSpeed") && value != null) {
       departureBoardBehavior.framesHiddenOnShuffle = Integer.valueOf(value);
-    } else if (key.equals("departuresVideoOpacity") && value != null) {
+    } 
+    else if (key.equals("departuresVideoOpacity") && value != null) {
       departureBoardBehavior.videoOpacity = Integer.valueOf(value);
-    } else if (key.equals("showFrameRate")) {
+    } 
+    else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
-    } else if (key.equals("brightness") && value != null) {
+    } 
+    else if (key.equals("brightness") && value != null) {
       videoBrightness = Integer.valueOf(value);
-    } else if (key.equals("contrast") && value != null) {
+    } 
+    else if (key.equals("contrast") && value != null) {
       videoContrast = Integer.valueOf(value);
-    } else if (key.equals("useMovie") && value != null) {
+    } 
+    else if (key.equals("useMovie") && value != null) {
       useMovie(value.equals("useMovie"));
     }
   }
 }
 
 void draw() {
-  
+
   try {
 
     autoclicker.doClick(); // will only trigger if it's supposed to
-  
+
     if (frameCount % 1000 == 0) autoclicker.start();
-  
+
     if (cycleBehaviors && isThing1() && frameCount % framesPerBehavior == 0) {
       if (randomCycleTime) framesPerBehavior = (int)random(minFramesPerBehavior, maxFramesPerBehavior);
       behaviorIndex += 1;
@@ -357,21 +381,34 @@ void draw() {
       println("switching to behavior " + behaviorIndex + " (" + behaviors[behaviorIndex] + ")");
       callMethod("all","setBehavior", ""+behaviorIndex);
     }
-  
+
     background(0);
+    
+    // set local video directl
+          PImage frame = null;
+      if (movieFrame != null) frame = movieFrame;
+      if (localVideo != null && !useMovie) frame = localVideo;
+
+      if (frame != null) {
+        cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
+        cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
+      }
+
     streamVideo();
+    
     synchronized(this) {
       findSuspiciousActivity();
       activeBehavior.draw();
     }
-  
+
     fill(106,161,204);
     hideCursor();
-  
+
     if (showFrameRate) text(frameRate, 40, 20);
-  
+
     outputRecorder.record();
-  } catch (Exception e) {
+  } 
+  catch (Exception e) {
     handleError(e);
   }
 }
@@ -427,22 +464,23 @@ void streamVideo() {
     if (localVideo.available()) {
       localVideo.read();
       localVideo.loadPixels();
-      
+
       // adjust with opencv
-//      if (adjuster == null) {
-//        adjuster = new OpenCV(this);
-//        println("allocating for " + localVideo.width + "x" + localVideo.height);
-//        adjuster.allocate(localVideo.width, localVideo.height);
-//      }
-////      println("copying " + localVideo.width + "x" + localVideo.height);
-//      adjuster.copy(localVideo);
-//      adjuster.convert(GRAY);
-//      adjuster.brightness(videoBrightness);
-//      adjuster.contrast(videoContrast);
-//      println("adjusted image is " + adjuster.image().width + "x" + adjuster.image().height);
-//      streamer.send(adjuster.image());
-      
+      //      if (adjuster == null) {
+      //        adjuster = new OpenCV(this);
+      //        println("allocating for " + localVideo.width + "x" + localVideo.height);
+      //        adjuster.allocate(localVideo.width, localVideo.height);
+      //      }
+      ////      println("copying " + localVideo.width + "x" + localVideo.height);
+      //      adjuster.copy(localVideo);
+      //      adjuster.convert(GRAY);
+      //      adjuster.brightness(videoBrightness);
+      //      adjuster.contrast(videoContrast);
+      //      println("adjusted image is " + adjuster.image().width + "x" + adjuster.image().height);
+      //      streamer.send(adjuster.image());
+
       // or not
+      
       streamer.send(localVideo);
       inputRecorder.record(localVideo);
     }
@@ -498,7 +536,8 @@ void oscEvent(OscMessage m) {
         departureBoardBehavior.blink();
       }
     }
-  } catch (Exception e) {
+  } 
+  catch (Exception e) {
     handleError(e);
   }
 }
@@ -506,36 +545,29 @@ void oscEvent(OscMessage m) {
 void receive( byte[] data, String ip, int port ) {
   try {
     PImage img = loadPImageFromBytes(data, this);
-  
+
     synchronized(this) {
       cams[isThing1() ? 0 : 2] = img.get(0,0,camW2,camH2);
       cams[isThing1() ? 1 : 3] = img.get(camW2,0,camW2,camH2);
       //  cams[isThing1() ? 2 : 5] = img.get(0,camH2,camW2,camH2);
-    
+
       // for now
       //  cams[isThing1() ? 3 : 0] = cams[0];
       //  cams[isThing1() ? 4 : 1] = cams[1];
       //  cams[isThing1() ? 5 : 2] = cams[2];
-    
-      PImage frame = null;
-      if (movieFrame != null) frame = movieFrame;
-      if (localVideo != null && !useMovie) frame = localVideo;
-    
-      if (frame != null) {
-        cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
-        cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
-    
+
         //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
         //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
         //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
-      }
-    
+      
+
       for (int i=0; i<cams.length; i++) {
         fish[i].blobs = detectors[i].findBlobs(cams[i]);
         fish[i].activity = detectors[i].activity;
       }
     }
-  } catch (Exception e) {
+  } 
+  catch (Exception e) {
     handleError(e);
   }
 } 
@@ -594,29 +626,29 @@ class MotionRect {
     //   current.y = interp(current.y, target.y, amt, 0.7);   
     //   current.width = interp(current.width, target.width, 0.2, 0.3);   
     //   current.height = interp(current.height, target.height, 0.2, 0.3);   
-//    float amt = 1;
-    
+    //    float amt = 1;
+
     float thisDist = dist(current.x, current.y, target.x, target.y);
-    
+
     if (thisDist == 0) return;
-    
+
     if (this == mostInterestingRect && logging)
       println("linear motion: " + thisDist);
-    
+
     float positionAmt = exponentialEasing(thisDist/maxDist,0.22);
-    
+
     positionAmt = .98;
-    
+
     //print("moved from " + current.x + "," + current.y + " to ");
-    
+
     float fastFactor = 2.5;
 
     current.x = interp(current.x, target.x, screenSize[0]/fastFactor);   
     current.y = interp(current.y, target.y, screenSize[1]/fastFactor);
 
-    
-//    println(current.x + "," + current.y);
-//    println("position shifting by a factor of " + positionAmt);
+
+    //    println(current.x + "," + current.y);
+    //    println("position shifting by a factor of " + positionAmt);
 
     current.width = interp(current.width, target.width, screenSize[0]/fastFactor);   
     current.height = interp(current.height, target.height, screenSize[1]/fastFactor);   
@@ -627,7 +659,7 @@ class MotionRect {
     stability += dist(current.x, current.y, target.x, target.y);
     activity *= 0.95;
     //stability *= 0.7;
-    
+
     //activity *= 0.95;
     stability *= 0.85;
   }
@@ -637,9 +669,9 @@ class MotionRect {
     int delta = abs(end-start);
     float percentOfMax = delta/maxAmt;
     float threshholdedMax = min(1.0, percentOfMax);
-//    float scaledFactor = exponentialEasing(threshholdedMax, 0.22);
+    //    float scaledFactor = exponentialEasing(threshholdedMax, 0.22);
     float scaledFactor = exponentialEasing(threshholdedMax, 0.005);
-    
+
     if (this == mostInterestingRect && logging) {
       print("   ");
       if (percentOfMax > threshholdedMax) print("MAX - ");
@@ -657,13 +689,14 @@ class MotionRect {
     float min_param_a = 0.0 + epsilon;
     float max_param_a = 1.0 - epsilon;
     a = max(min_param_a, min(max_param_a, a));
-    
+
     if (a < 0.5){
       // emphasis
       a = 2.0*(a);
       float y = pow(x, a);
       return y;
-    } else {
+    } 
+    else {
       // de-emphasis
       a = 2.0*(a-0.5);
       float y = pow(x, 1.0/(1-a));
@@ -752,18 +785,26 @@ class AutoClicker {
 }
 
 static class Tweeter {
- 
- static void tweet(String message) {
-   String[] cmd = {"curl", "-u", "dreamingfids:dreaming", "-d", "status=d jkriss " + message, "http://twitter.com/statuses/update.xml"};
-   println("tweeting: " + cmd);
-   try {
-     Process p = Runtime.getRuntime().exec(cmd);
-     try { p.waitFor(); } catch (InterruptedException e) { e.printStackTrace(); }
-     println("tweeted! or something! exit value: " + p.exitValue());
-   } catch (IOException e) { 
-     e.printStackTrace(); 
-   }
- }
-  
+
+  static void tweet(String message) {
+    String[] cmd = {
+      "curl", "-u", "dreamingfids:dreaming", "-d", "status=d jkriss " + message, "http://twitter.com/statuses/update.xml"    };
+    println("tweeting: " + cmd);
+    try {
+      Process p = Runtime.getRuntime().exec(cmd);
+      try { 
+        p.waitFor(); 
+      } 
+      catch (InterruptedException e) { 
+        e.printStackTrace(); 
+      }
+      println("tweeted! or something! exit value: " + p.exitValue());
+    } 
+    catch (IOException e) { 
+      e.printStackTrace(); 
+    }
+  }
+
 }
+
 

@@ -15,9 +15,9 @@ OscClient = OSC::UDPSocket.new
 HOSTS = %w(thing1.local thing2.local)
 LAZY_COMPUTER = 'thing2.local'
 # LAZY_COMPUTER = 'jklabs-mbp.local'
-HEARTBEAT_URL = "http://google.com"
+# HEARTBEAT_URL = "http://google.com"
 ART_SERVER = "http://172.16.220.40"
-# HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=3"
+HEARTBEAT_URL = "http://sanjoseartcloud.org/heartbeat/?installation_id=3"
 HEARTBEAT_DELAY = 60 # in seconds
 SERVER_PORT = 4567
 

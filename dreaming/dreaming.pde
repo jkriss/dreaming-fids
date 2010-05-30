@@ -391,7 +391,7 @@ void draw() {
 
       if (frame != null) {
         cams[isThing1() ? 2 : 0] = frame.get(0,0,camW2,camH2);
-        cams[isThing1() ? 3 : 1] = frame.get(0,0,camW2,camH2);
+        cams[isThing1() ? 3 : 1] = frame.get(camW2,0,camW2,camH2);
       }
 
     streamVideo();

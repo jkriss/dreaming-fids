@@ -178,7 +178,7 @@ void initVideo() {
   if (localVideo == null) {
     localVideo = new Capture(this, camW+40, camH+40, 24);
 //    localVideo.crop(20,20,camW,camH/2); // top half
-    localVideo.crop(20,camH/2,camW,camH/2); // bottom half
+    localVideo.crop(20,(camH/2)+40,camW,camH/2); // bottom half
   }
 }
 

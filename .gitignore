@@ -12,3 +12,5 @@ artist-tools.zip
 dreaming/mugshots/*.jpg
 dreaming/settings.txt
 *.log
+*.pcf
+dreaming/data/airport

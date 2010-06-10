@@ -40,8 +40,6 @@ class DepartureBoard extends Behavior {
 
   void draw() {
     
-    if (frameCount % framesBeforeSwitch == 0) resetMappings();
-    
     if (isThing1() && frameCount % framesBeforeShuffle == 0) {
       //pop();
       if (rows[0] != null) rows[0].hide();
@@ -68,12 +66,8 @@ class DepartureBoard extends Behavior {
     
   void drawScreen(int screenIndex) {
     
+    //background(0);
     
-    PImage cam = cams[cameraMappings[screenIndex]];
-
-    if (cam == null) return;
-//    image(cam,0,0,w,h);
-
     if (b == null) {
 //      b = createGraphics(cam.width, cam.height,JAVA2D);
       b = createGraphics(width/2, height, JAVA2D);  
@@ -94,8 +88,7 @@ class DepartureBoard extends Behavior {
     
 //    b.beginDraw();
     //background(0);
-        image(cam, 0, 0, w, h);
-    fill(0,0,0,255-videoOpacity);
+    fill(0);
     rect(0,0,w,h);
 
 //    b.background(75);
@@ -133,27 +126,8 @@ class DepartureBoard extends Behavior {
       translate(maxWidths[colNum] + colPaddings[colNum], 0);
     }
     popMatrix();
-//    b.endDraw();
-    
-//    PImage board = get(w*screenIndex, 0, w, h);
-//    PImage board = b.get(0,0,b.width,b.height);
-//    image(cam, 0, 0, w, h);
-//    PImage scaledCam = get(w*screenIndex, 0, w, h);
-//    cam.mask(board);
-//    image(board, 0, 0, w, h);
-//    image(cam, 0, 0, w, h);
-    
-//    image(board, 0, 0, w, h);
 
   }
-
-//  void pop() {
-//    arraycopy(rows, 1, rows, 0, rows.length-1);
-////    for (int i=0; i<rows.length-1; i++) {
-////      rows[i] = new Row(maxWidths);//rows[i+1];
-////    }
-//    rows[rows.length-1] = new Row(maxWidths);
-//  }
 
   class Row {
    float[] maxWidths;

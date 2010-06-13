@@ -252,13 +252,18 @@ class Mugshotter {
  boolean mugshot(PImage img, Rectangle r) {
    if (millis() - lastShot > 1000) { 
 //     println("taking mugshot");
-     PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
-     String imageName = "mugshot-" + (mugshots.size()+1) + ".jpg";
-     mug.save("mugshots/" + imageName);
-     String mugshotUrl = "http://"+hostname()+":"+SERVER_PORT+"/"+imageName;
-//     showMugshot(mugshotUrl);
-     callMethod("all", "showMugshot", mugshotUrl);
-     return true;
+     try {
+       PImage mug = img.get(r.x-r.width/2, r.y-r.height/2, r.width, r.height);
+       String imageName = "mugshot-" + (mugshots.size()+1) + ".jpg";
+       mug.save("mugshots/" + imageName);
+       String mugshotUrl = "http://"+hostname()+":"+SERVER_PORT+"/"+imageName;
+  //     showMugshot(mugshotUrl);
+       callMethod("all", "showMugshot", mugshotUrl);
+       return true;
+     } catch (NegativeArraySizeException e) {
+       // image too small
+       return false;
+     }
    } else {
      return false;
    }

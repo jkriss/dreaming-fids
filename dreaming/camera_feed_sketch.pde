@@ -196,8 +196,12 @@ class CameraFeedSketch extends Behavior {
 //          PImage mug = get(max(0,(int)(r.x*wScale)+(w*screenIndex)-(int)(r.width/2)), max(0,(int)(r.y*hScale)-(int)(r.height/2)), (int)r.width, (int)r.height);
           PImage scaledCam = createImage(w,h,ALPHA);
           scaledCam.copy(c,0,0,c.width,c.height,0,0,scaledCam.width,scaledCam.height);
-          PImage mug = scaledCam.get(max(0,r.x-r.width/2), max(0,r.y-r.height/2), r.width, r.height);
-          image(mug,0,0,w,h);
+          try {
+            PImage mug = scaledCam.get(max(0,r.x-r.width/2), max(0,r.y-r.height/2), r.width, r.height);
+            image(mug,0,0,w,h);
+          } catch (NegativeArraySizeException e) {
+            // image is too small, skip it
+          }
         } else {
   
           if (mugshotter.recentMugshot()) {

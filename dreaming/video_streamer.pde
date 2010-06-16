@@ -1,5 +1,6 @@
 import hypermedia.net.*;
-import com.sun.image.codec.jpeg.*; 
+import javax.imageio.*;
+import javax.imageio.stream.*;
 
 class VideoStreamer {
   
@@ -44,11 +45,23 @@ class VideoStreamer {
     }catch (Exception e) {}   
     
     try{ 
-      JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out); 
-      JPEGEncodeParam encpar = encoder.getDefaultJPEGEncodeParam(img); 
-      encpar.setQuality(0.7,true); // 0.0-1.0, force baseline 
-      encoder.setJPEGEncodeParam(encpar); 
-      encoder.encode(img); 
+//      JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out); 
+//      JPEGEncodeParam encpar = encoder.getDefaultJPEGEncodeParam(img); 
+//      encpar.setQuality(0.7,true); // 0.0-1.0, force baseline 
+//      encoder.setJPEGEncodeParam(encpar); 
+//      encoder.encode(img); 
+      Iterator iter = ImageIO.getImageWritersByFormatName("jpeg");
+      ImageWriter writer = (ImageWriter)iter.next();
+      ImageWriteParam iwp = writer.getDefaultWriteParam();
+      iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+      iwp.setCompressionQuality(0.7); 
+      MemoryCacheImageOutputStream memOut = new MemoryCacheImageOutputStream(out);
+    
+      writer.setOutput(memOut);
+      IIOImage ioimage = new IIOImage(img, null, null);
+      writer.write(null, ioimage, iwp);
+      writer.dispose();
+
     }catch(FileNotFoundException e){ 
       System.out.println(e); 
     }catch(IOException ioe){ 

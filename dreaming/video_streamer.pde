@@ -31,7 +31,7 @@ class VideoStreamer {
     ByteArrayOutputStream out = new ByteArrayOutputStream(); 
     if (img == null) {
 //      img = (BufferedImage)createImage(srcimg.width, srcimg.height); 
-      img = new BufferedImage(srcimg.width, srcimg.height, BufferedImage.TYPE_INT_ARGB);
+      img = new BufferedImage(srcimg.width, srcimg.height, BufferedImage.TYPE_BYTE_GRAY );
     }
     
     try {  // make sure we can access the buffered image

@@ -99,7 +99,7 @@ configure do
             open(url)
           rescue Exception => e
             logger.warn "ERROR: #{e} URL: #{url}"
-            emergency_tweet "heartbeat error: #{e} #{url}"
+            # emergency_tweet "heartbeat error: #{e} #{url}"
           end
           logger.info "- ping #{url} at #{Time.now}"
         end

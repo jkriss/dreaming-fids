@@ -372,6 +372,9 @@ void draw() {
   try {
 
     autoclicker.doClick(); // will only trigger if it's supposed to
+    
+    if (frameCount % 100 == 0) 
+      println("free ram: " + Runtime.getRuntime().freeMemory()/1024/1024 + "MB");
 
     if (frameCount % 1000 == 0) autoclicker.start();
 

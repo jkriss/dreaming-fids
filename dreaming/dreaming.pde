@@ -8,6 +8,9 @@ import fullscreen.*;
 import oscP5.*;
 import netP5.*;
 
+import java.awt.*;
+import java.awt.image.*;
+
 VideoStreamer streamer;
 PImage[] cams = new PImage[4];
 int camW = 640;

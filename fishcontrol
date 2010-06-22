@@ -8,12 +8,10 @@ command = args.pop
 puts "running #{command}"
 
 case command
-when 'open'
-  `open dreaming/dreaming.pde`
-when 'run'
-  `open #{File.expand_path(File.dirname(__FILE__))}/run_sketch.app`
+when 'start'
+  `launchctl load ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
 when 'stop'
-  `echo "quit application \\"Processing\\"" | osascript`
+  `launchctl unload ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
 when 'reboot'
   `echo "tell application \\"Finder\\" \n restart \n end tell" | osascript`
 when 'server:start'

@@ -138,11 +138,11 @@ def unregister_status_listener
 end
 
 def check_auto_restart
-  if Time.now > SHUTDOWN_TIME
-    logger.warn "!! restarting after #{uptime.to_i} seconds !!"
-    emergency_tweet("restarting")
-    `./fishcontrol reboot` if HOSTS.include?(hostname)
-  end
+  # if Time.now > SHUTDOWN_TIME
+  #   logger.warn "!! restarting after #{uptime.to_i} seconds !!"
+  #   emergency_tweet("restarting")
+  #   `./fishcontrol reboot` if HOSTS.include?(hostname)
+  # end
 end
 
 before do
@@ -205,15 +205,9 @@ post '/upload' do
   redirect '/'
 end
 
-get '/open' do
-  cmd :open
-  echo '/open'
-  redirect '/'
-end
-
-get '/run' do
-  cmd :run
-  echo '/run'
+get '/start' do
+  cmd :start
+  echo '/start'
   redirect '/'
 end
 
@@ -381,8 +375,7 @@ __END__
   </style>
 
 %p
-  %a{ :href => '/open' } open
-  %a{ :href => '/run' } run
+  %a{ :href => '/start' } start
   %a{ :href => '/stop' } stop
   %a{ :href => '/click' } click
   %a{ :href => '/takeMugshot' } take mugshot

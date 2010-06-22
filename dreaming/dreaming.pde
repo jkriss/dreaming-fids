@@ -177,6 +177,14 @@ void setup() {
 
 }
 
+void run() {
+  try {
+   super.run(); 
+  } catch (OutOfMemoryError e) {
+    System.exit(5);
+  }
+}
+
 void initVideo() {
   if (localVideo == null) {
     localVideo = new Capture(this, camW+40, camH+40, 24);

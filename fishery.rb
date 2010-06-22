@@ -215,6 +215,12 @@ get '/stop' do
   redirect '/'
 end
 
+get '/restart' do
+  cmd :restart
+  echo '/restart'
+  redirect '/'
+end
+
 get '/click' do
   osc :click
   redirect '/'
@@ -375,6 +381,7 @@ __END__
 %p
   %a{ :href => '/start' } start
   %a{ :href => '/stop' } stop
+  %a{ :href => '/restart' } restart
   %a{ :href => '/click' } click
   %a{ :href => '/takeMugshot' } take mugshot
   %a{ :href => '/fullscreen' } fullscreen

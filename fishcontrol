@@ -12,6 +12,8 @@ when 'start'
   `launchctl load ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
 when 'stop'
   `launchctl unload ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
+when 'restart'
+  `launchctl stop com.jklabs.Dreaming`
 when 'reboot'
   `launchctl unload ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
   `launchctl unload ~/Library/LaunchAgents/com.jklabs.DreamingServer.plist`

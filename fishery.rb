@@ -379,9 +379,12 @@ __END__
   </style>
 
 %p
+  %a{ :href => '/restart' } restart
+  <-- press this if it looks frozen
+
+%p
   %a{ :href => '/start' } start
   %a{ :href => '/stop' } stop
-  %a{ :href => '/restart' } restart
   %a{ :href => '/click' } click
   %a{ :href => '/takeMugshot' } take mugshot
   %a{ :href => '/fullscreen' } fullscreen

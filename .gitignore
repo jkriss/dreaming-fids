@@ -14,3 +14,4 @@ dreaming/settings.txt
 *.log
 *.pcf
 dreaming/data/airport
+dreaming/application.macosx

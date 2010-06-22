@@ -161,10 +161,7 @@ post '/' do
     `./fishcontrol stop`
   when 'restart'
     `./fishcontrol stop`
-    sleep(3)
-    `./fishcontrol open`
-    sleep(5)
-    `./fishcontrol run`
+    `./fishcontrol start`
   when 'reboot'
     echo '/reboot'
     `./fishcontrol reboot`
@@ -192,7 +189,7 @@ get '/heartbeat' do
 end
 
 get '/restart_server' do
-  `./fishcontrol server:stop && ./fishcontrol server:start`
+  `./fishcontrol server:restart`
 end
 
 get '/reboot' do

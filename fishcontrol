@@ -20,4 +20,6 @@ when 'server:start'
   `launchctl load ~/Library/LaunchAgents/com.jklabs.DreamingServer.plist`
 when 'server:stop'
   `launchctl unload ~/Library/LaunchAgents/com.jklabs.DreamingServer.plist`
+when 'server:restart'
+  `launchctl stop com.jklabs.DreamingServer`
 end

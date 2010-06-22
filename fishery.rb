@@ -139,11 +139,11 @@ def unregister_status_listener
 end
 
 def check_auto_restart
-  # if Time.now > SHUTDOWN_TIME
-  #   logger.warn "!! restarting after #{uptime.to_i} seconds !!"
-  #   emergency_tweet("restarting")
-  #   `./fishcontrol reboot` if HOSTS.include?(hostname)
-  # end
+  if Time.now > SHUTDOWN_TIME
+    logger.warn "!! restarting after #{uptime.to_i} seconds !!"
+    emergency_tweet("restarting")
+    `./fishcontrol restart` if HOSTS.include?(hostname)
+  end
 end
 
 before do
@@ -160,8 +160,7 @@ post '/' do
   when 'stop'
     `./fishcontrol stop`
   when 'restart'
-    `./fishcontrol stop`
-    `./fishcontrol start`
+    `./fishcontrol restart`
   when 'reboot'
     echo '/reboot'
     `./fishcontrol reboot`

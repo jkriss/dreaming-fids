@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WorkingDirectory</key>
+	<string>/Users/jkriss/Documents/jklabs/dreaming-fids/dreaming/</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>CLASSPATH</key>
+		<string>/Applications/dreaming.app/Contents/Resources/Java/dreaming.jar:/Applications/dreaming.app/Contents/Resources/Java/core.jar:/Applications/dreaming.app/Contents/Resources/Java/commons-logging-1.1.1.jar:/Applications/dreaming.app/Contents/Resources/Java/easyosc.jar:/Applications/dreaming.app/Contents/Resources/Java/javaosc.jar:/Applications/dreaming.app/Contents/Resources/Java/maxlink.jar:/Applications/dreaming.app/Contents/Resources/Java/OpenCV.jar:/Applications/dreaming.app/Contents/Resources/Java/video.jar:/Applications/dreaming.app/Contents/Resources/Java/controlP5.jar:/Applications/dreaming.app/Contents/Resources/Java/fullscreen.jar:/Applications/dreaming.app/Contents/Resources/Java/oscP5.jar:/Applications/dreaming.app/Contents/Resources/Java/oscP5.jar:/Applications/dreaming.app/Contents/Resources/Java/udp.jar</string>
+	</dict>
+	<key>KeepAlive</key>
+	<true/>
+	<key>ProgramArguments</key>
+	<array>
+		<string>java</string>
+		<string>-d32</string>
+		<string>-Djava.library.path=/Applications/dreaming.app/Contents/Resources/Java/</string>
+		<string>-Dcom.apple.hwaccel=true</string>
+		<string>-Xms64m</string>
+		<string>-Xmx2000m</string>
+		<string>dreaming</string>
+	</array>
+	<key>Label</key>
+	<string>com.jklabs.Dreaming</string>
+</dict>
+</plist>

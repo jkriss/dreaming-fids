@@ -13,9 +13,11 @@ when 'start'
 when 'stop'
   `launchctl unload ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
 when 'reboot'
+  `launchctl unload ~/Library/LaunchAgents/com.jklabs.Dreaming.plist`
+  `launchctl unload ~/Library/LaunchAgents/com.jklabs.DreamingServer.plist`
   `echo "tell application \\"Finder\\" \n restart \n end tell" | osascript`
 when 'server:start'
-  SinatraServer.new.start
+  `launchctl load ~/Library/LaunchAgents/com.jklabs.DreamingServer.plist`
 when 'server:stop'
-  SinatraServer.new.stop
+  `launchctl unload ~/Library/LaunchAgents/com.jklabs.DreamingServer.plist`
 end

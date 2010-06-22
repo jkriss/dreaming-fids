@@ -8,6 +8,7 @@ require 'timeout'
 require 'mongrel'
 # require 'exception_handler'
 
+Dir.chdir(File.dirname(__FILE__))
 
 OscClient = OSC::UDPSocket.new
 

@@ -411,10 +411,15 @@ void draw() {
 
     streamVideo();
     
-    synchronized(this) {
-      findSuspiciousActivity();
-      activeBehavior.draw();
+    for (int i=0; i<cams.length; i++) {
+      if (cams[i] != null) {
+        fish[i].blobs = detectors[i].findBlobs(cams[i]);
+        fish[i].activity = detectors[i].activity;
+      }
     }
+
+    findSuspiciousActivity();
+    activeBehavior.draw();
 
     fill(106,161,204);
     hideCursor();
@@ -574,12 +579,6 @@ void receive( byte[] data, String ip, int port ) {
         //    cams[isThing1() ? 3 : 0] = frame.get(0,0,camW2,camH2);
         //    cams[isThing1() ? 4 : 1] = frame.get(camW2,0,camW2,camH2);
         //    cams[isThing1() ? 5 : 2] = frame.get(0,camH2,camW2,camH2);
-      
-
-      for (int i=0; i<cams.length; i++) {
-        fish[i].blobs = detectors[i].findBlobs(cams[i]);
-        fish[i].activity = detectors[i].activity;
-      }
     }
   } 
   catch (Exception e) {

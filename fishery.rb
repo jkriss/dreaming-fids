@@ -26,11 +26,15 @@ START_TIME = Time.now
 MAX_RUNTIME = 60 * 60 * 24 # in seconds
 # MAX_RUNTIME = 60  # in seconds
 
-d = Date.today+1
-SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 3)
+def set_shutdown_time
+  d = Date.today+1
+  @@shutdown_time = Time.mktime(d.year, d.month, d.day, 3)
+end
 
 # d = Date.today
 # SHUTDOWN_TIME = Time.mktime(d.year, d.month, d.day, 10, 13)
+
+set_shutdown_time
 
 @@settings = {}
 @@hostname = nil
@@ -139,7 +143,7 @@ def unregister_status_listener
 end
 
 def check_auto_restart
-  if Time.now > SHUTDOWN_TIME
+  if Time.now > @@shutdown_time
     logger.warn "!! restarting after #{uptime.to_i} seconds !!"
     emergency_tweet("restarting")
     `./fishcontrol restart` if HOSTS.include?(hostname)
@@ -510,7 +514,7 @@ __END__
   = "(#{sprintf("%0.2f", uptime/60/60)} hours)"
   %br/
   shutdown time:
-  = SHUTDOWN_TIME
+  = @@shutdown_time
 
 %p
   %a{ :href => '/reboot'} reboot!

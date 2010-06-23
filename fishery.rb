@@ -147,6 +147,7 @@ def check_auto_restart
     logger.warn "!! restarting after #{uptime.to_i} seconds !!"
     emergency_tweet("restarting")
     `./fishcontrol restart` if HOSTS.include?(hostname)
+    set_shutdown_time
   end
 end
 

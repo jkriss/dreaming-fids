@@ -16,6 +16,7 @@ class DepartureBoard extends Behavior {
   int framesPerNewBlink = 100;
   int framesHiddenOnShuffle = 4;
   int videoOpacity = 127;
+  int overlayOpacity = 127;
   
   color normalColor = 255;
   color blinkColor = 0;
@@ -100,7 +101,7 @@ class DepartureBoard extends Behavior {
 
 //    b.background(75);
     noStroke();
-    fill(normalColor);
+    fill(255, 255, 255, overlayOpacity);
     pushMatrix();
     
     translate(leftBorder, topBorder);

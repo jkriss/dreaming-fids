@@ -481,6 +481,9 @@ __END__
       %label{ :for => 'departuresVideoOpacity' } video opacity (0-255)
       %input{ :type => 'number', :name => 'departuresVideoOpacity', :value => @@settings[:departuresVideoOpacity] }
       %br
+      %label{ :for => 'departuresOverlayOpacity' } overlay opacity (0-255)
+      %input{ :type => 'number', :name => 'departuresOverlayOpacity', :value => @@settings[:departuresOverlayOpacity] }
+      %br
       
     %fieldset
       %legend switching cameras

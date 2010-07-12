@@ -363,6 +363,9 @@ public void setSettings(String settingsString) {
     else if (key.equals("departuresVideoOpacity") && value != null) {
       departureBoardBehavior.videoOpacity = Integer.valueOf(value);
     } 
+    else if (key.equals("departuresOverlayOpacity") && value != null) {
+      departureBoardBehavior.overlayOpacity = Integer.valueOf(value);
+    } 
     else if (key.equals("showFrameRate")) {
       showFrameRate = value.equals("showFrameRate");
     } 

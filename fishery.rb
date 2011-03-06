@@ -28,7 +28,7 @@ MAX_RUNTIME = 60 * 60 * 24 # in seconds
 
 def set_shutdown_time
   d = Date.today+1
-  @@shutdown_time = Time.mktime(d.year, d.month, d.day, 3)
+  $shutdown_time = Time.mktime(d.year, d.month, d.day, 3)
 end
 
 # d = Date.today
@@ -36,8 +36,8 @@ end
 
 set_shutdown_time
 
-@@settings = {}
-@@hostname = nil
+$settings = {}
+$hostname = nil
 
 set :public, Proc.new { File.join(root,'dreaming','mugshots') }
 set :server, 'mongrel'
@@ -55,7 +55,7 @@ def error_logger
 end
 
 def emergency_tweet(message)
-  `curl -u dreamingfids:dreaming -d status="d jkriss #{message} #{hostname}" http://twitter.com/statuses/update.xml`
+  `curl -u jklabs:0BeuzxHbyfBu2w -d "from=dreamingfids&to=jkriss&message=#{message} #{hostname}" http://jklabs-notifier.heroku.com/message`
 end
 
 error do
@@ -67,14 +67,14 @@ end
 
 def read_settings
   if File.exists?(SETTINGS_PATH)
-    File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); @@settings[vals.first.intern] = vals[1] if vals.size > 1 }
-    @@settings.each_pair { |k,v| @@settings[k] = false if v == 'false' }
-    logger.warn "loaded #{@@settings.inspect}"
+    File.open(SETTINGS_PATH).read.strip.split('&').each { |line| vals = line.split("="); $settings[vals.first.intern] = vals[1] if vals.size > 1 }
+    $settings.each_pair { |k,v| $settings[k] = false if v == 'false' }
+    logger.warn "loaded #{$settings.inspect}"
   end
 end
 
 def hostname
-  @@hostname ||= `hostname`.strip
+  $hostname ||= `hostname`.strip
 end
 
 def uptime
@@ -88,7 +88,7 @@ end
 # start heartbeat
 configure do
   
-  @@last_heartbeat = nil
+  $last_heartbeat = nil
   
   if hostname == LAZY_COMPUTER
   
@@ -143,7 +143,7 @@ def unregister_status_listener
 end
 
 def check_auto_restart
-  if Time.now > @@shutdown_time
+  if Time.now > $shutdown_time
     logger.warn "!! restarting after #{uptime.to_i} seconds !!"
     emergency_tweet("restarting")
     `./fishcontrol restart` if HOSTS.include?(hostname)
@@ -174,7 +174,7 @@ end
 
 get '/' do
   read_settings
-  @settings = @@settings
+  @settings = $settings
   logger.info "current settings: #{@settings.inspect}"
   haml :index
 end
@@ -186,7 +186,7 @@ end
 get '/heartbeat' do
   if hostname != LAZY_COMPUTER
     logger.info "got local ping, sending heartbeat to #{HEARTBEAT_URL}"
-    @@last_heartbeat = Time.now
+    $last_heartbeat = Time.now
     open(HEARTBEAT_URL)
   end
   redirect '/'
@@ -258,7 +258,7 @@ end
 get '/settings' do
   logger.info params.inspect
   %w(showBlobs cycleBehaviors showFrameRate useMovie randomCycleTime).each { |b| params[b.intern] ||= false }
-  @@settings = params
+  $settings = params
   osc :setSettings, 's', params.keys.collect{ |k| "#{k}=#{params[k]}" }.join("&")
   redirect '/'
 end
@@ -415,85 +415,85 @@ __END__
     %fieldset
       %legend general
       %label{ :for => 'useMovie' } use movie
-      %input#useMovie{ :type => 'checkbox', :name => 'useMovie', :value => 'useMovie', :checked => @@settings[:useMovie]}
+      %input#useMovie{ :type => 'checkbox', :name => 'useMovie', :value => 'useMovie', :checked => $settings[:useMovie]}
       %br
       %label{ :for => 'cycleBehaviors' } cycle behaviors
-      %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => @@settings[:cycleBehaviors]}
+      %input#cycleBehaviors{ :type => 'checkbox', :name => 'cycleBehaviors', :value => 'cycleBehaviors', :checked => $settings[:cycleBehaviors]}
       %br
       %label{ :for => 'cycleLength' } cycle length
-      %input{ :type => 'number', :name => 'cycleLength', :value => @@settings[:cycleLength] }
+      %input{ :type => 'number', :name => 'cycleLength', :value => $settings[:cycleLength] }
 
       %br
       %label{ :for => 'randomCycleTime' } randomize cycle time
-      %input#randomCycleTime{ :type => 'checkbox', :name => 'randomCycleTime', :value => 'randomCycleTime', :checked => @@settings[:randomCycleTime]}
+      %input#randomCycleTime{ :type => 'checkbox', :name => 'randomCycleTime', :value => 'randomCycleTime', :checked => $settings[:randomCycleTime]}
       
       %br
       %label{ :for => 'minFramesPerBehavior' } min frames per behavior
-      %input{ :type => 'number', :name => 'minFramesPerBehavior', :value => @@settings[:minFramesPerBehavior] }
+      %input{ :type => 'number', :name => 'minFramesPerBehavior', :value => $settings[:minFramesPerBehavior] }
       
       %br
       %label{ :for => 'maxFramesPerBehavior' } max frames per behavior
-      %input{ :type => 'number', :name => 'maxFramesPerBehavior', :value => @@settings[:maxFramesPerBehavior] }
+      %input{ :type => 'number', :name => 'maxFramesPerBehavior', :value => $settings[:maxFramesPerBehavior] }
       
       %label{ :for => 'showFrameRate' } show framerate
-      %input#showFrameRate{ :type => 'checkbox', :name => 'showFrameRate', :value => 'showFrameRate', :checked => @@settings[:showFrameRate]}
+      %input#showFrameRate{ :type => 'checkbox', :name => 'showFrameRate', :value => 'showFrameRate', :checked => $settings[:showFrameRate]}
       /
         %br
         %label{ :for => 'brightness' } brightness
-        %input{ :type => 'number', :name => 'brightness', :value => @@settings[:brightness] }
+        %input{ :type => 'number', :name => 'brightness', :value => $settings[:brightness] }
         %br
         %label{ :for => 'contrast' } contrast
-        %input{ :type => 'number', :name => 'contrast', :value => @@settings[:contrast] }
+        %input{ :type => 'number', :name => 'contrast', :value => $settings[:contrast] }
 
     
     %fieldset
       %legend mugshots
       %label{ :for => 'showBlobs' } show blobs
-      %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => @@settings[:showBlobs]}
+      %input#showBlobs{ :type => 'checkbox', :name => 'showBlobs', :value => 'showBlobs', :checked => $settings[:showBlobs]}
       %br
       %label{ :for => 'mugshotRectThreshold' } score threshold
-      %input{ :type => 'number', :name => 'mugshotRectThreshold', :value => @@settings[:mugshotRectThreshold] }
+      %input{ :type => 'number', :name => 'mugshotRectThreshold', :value => $settings[:mugshotRectThreshold] }
       %br
       %label{ :for => 'mugshotCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'mugshotCameraInterval', :value => @@settings[:mugshotCameraInterval] }
+      %input{ :type => 'number', :name => 'mugshotCameraInterval', :value => $settings[:mugshotCameraInterval] }
       %br
       
     %fieldset
       %legend departure board
       %label{ :for => 'departuresCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'departuresCameraInterval', :value => @@settings[:departuresCameraInterval] }
+      %input{ :type => 'number', :name => 'departuresCameraInterval', :value => $settings[:departuresCameraInterval] }
       %br
       %label{ :for => 'departuresBlinkRate' } blink rate
-      %input{ :type => 'number', :name => 'departuresBlinkRate', :value => @@settings[:departuresBlinkRate] }
+      %input{ :type => 'number', :name => 'departuresBlinkRate', :value => $settings[:departuresBlinkRate] }
       %br
       %label{ :for => 'departuresBlinkDuration' } # of blinks per
-      %input{ :type => 'number', :name => 'departuresBlinkDuration', :value => @@settings[:departuresBlinkDuration] }
+      %input{ :type => 'number', :name => 'departuresBlinkDuration', :value => $settings[:departuresBlinkDuration] }
       %br
       %label{ :for => 'departuresFramesBeforeNewBlink' } frames before new blink
-      %input{ :type => 'number', :name => 'departuresFramesBeforeNewBlink', :value => @@settings[:departuresFramesBeforeNewBlink] }
+      %input{ :type => 'number', :name => 'departuresFramesBeforeNewBlink', :value => $settings[:departuresFramesBeforeNewBlink] }
       %br
       %label{ :for => 'departuresShuffleInterval' } shuffle interval
-      %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => @@settings[:departuresShuffleInterval] }
+      %input{ :type => 'number', :name => 'departuresShuffleInterval', :value => $settings[:departuresShuffleInterval] }
       %br
       %label{ :for => 'departuresShuffleSpeed' } shuffle delay
-      %input{ :type => 'number', :name => 'departuresShuffleSpeed', :value => @@settings[:departuresShuffleSpeed] }
+      %input{ :type => 'number', :name => 'departuresShuffleSpeed', :value => $settings[:departuresShuffleSpeed] }
       %br
       %label{ :for => 'departuresVideoOpacity' } video opacity (0-255)
-      %input{ :type => 'number', :name => 'departuresVideoOpacity', :value => @@settings[:departuresVideoOpacity] }
+      %input{ :type => 'number', :name => 'departuresVideoOpacity', :value => $settings[:departuresVideoOpacity] }
       %br
       %label{ :for => 'departuresOverlayOpacity' } overlay opacity (0-255)
-      %input{ :type => 'number', :name => 'departuresOverlayOpacity', :value => @@settings[:departuresOverlayOpacity] }
+      %input{ :type => 'number', :name => 'departuresOverlayOpacity', :value => $settings[:departuresOverlayOpacity] }
       %br
       
     %fieldset
       %legend switching cameras
       %label{ :for => 'switchingCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'switchingCameraInterval', :value => @@settings[:switchingCameraInterval] }
+      %input{ :type => 'number', :name => 'switchingCameraInterval', :value => $settings[:switchingCameraInterval] }
       
     %fieldset
       %legend zooming
       %label{ :for => 'zoomCameraInterval' } camera interval
-      %input{ :type => 'number', :name => 'zoomCameraInterval', :value => @@settings[:zoomCameraInterval] }
+      %input{ :type => 'number', :name => 'zoomCameraInterval', :value => $settings[:zoomCameraInterval] }
       
     %br
     %input{ :type => 'submit', :value => 'apply' }
@@ -510,7 +510,7 @@ __END__
   %a{ :href => 'output.mov' } output.mov
 %p
   last heartbeat: 
-  = @@last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - @@last_heartbeat.to_f)} seconds ago" : 'none'
+  = $last_heartbeat ? "#{sprintf("%0.2f", Time.now.to_f - $last_heartbeat.to_f)} seconds ago" : 'none'
   %br/
   uptime:
   = uptime.to_i
@@ -518,7 +518,7 @@ __END__
   = "(#{sprintf("%0.2f", uptime/60/60)} hours)"
   %br/
   shutdown time:
-  = @@shutdown_time
+  = $shutdown_time
 
 %p
   %a{ :href => '/reboot'} reboot!

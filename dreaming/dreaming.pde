@@ -137,14 +137,14 @@ void setup() {
       interestRects[i] = new MotionRect(new Rectangle(camW,camH));
     }
 
-    //movie = new Movie(this, "Fish Comp 3.mov");
-    //  movie = new Movie(this, "camera test.mov");
-    //  movie = new Movie(this, "Fish Comp 1.mov");
-    //  movie = new Movie(this, "input.mov");
-    //  movie = new Movie(this, "input2.mov");
-    //  movie = new Movie(this, "input-long1-jpeg grayscale.mov");
-    //movie.loop();
-    //movieFrame = createImage(camW, camH/2, ALPHA);
+//    movie = new Movie(this, "Fish Comp 1.mov");
+//      movie = new Movie(this, "camera test.mov");
+//      movie = new Movie(this, "Fish Comp 1.mov");
+//      movie = new Movie(this, "input.mov");
+//      movie = new Movie(this, "input2.mov");
+//      movie = new Movie(this, "input-long1-jpeg grayscale.mov");
+//    movie.loop();
+//    movieFrame = createImage(camW, camH/2, ALPHA);
 
     streamer = new VideoStreamer(this, sendIP(), 9091);
     udp = new UDP( this, 9091, receiveIP()); // this, port, ip address
@@ -187,9 +187,13 @@ void run() {
 
 void initVideo() {
   if (localVideo == null) {
-    localVideo = new Capture(this, camW+40, camH+40, 24);
-//    localVideo.crop(20,20,camW,camH/2); // top half
-    localVideo.crop(20,(camH/2)+40,camW,camH/2); // bottom half
+    try {
+      localVideo = new Capture(this, camW+40, camH+40, 24);
+      //    localVideo.crop(20,20,camW,camH/2); // top half
+      localVideo.crop(20,(camH/2)+40,camW,camH/2); // bottom half
+    } catch (Exception e) {
+      print("error initializing video");
+    }
   }
 }
 
@@ -206,11 +210,13 @@ void useMovie(boolean b) {
 }
 
 String sendIP() {
-  return isThing1() ? "225.0.0.0" : "224.0.0.0";
+  //return isThing1() ? "225.0.0.0" : "224.0.0.0";
+  return isThing1() ? "thing2.local" : "thing1.local";
 }
 
 String receiveIP() {
-  return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
+  //return isThing1() ? "224.0.0.0" : "225.0.0.0"; 
+  return isThing1() ? "thing1.local" : "thing2.local";
 }
 
 boolean isThing1() {
@@ -805,7 +811,8 @@ static class Tweeter {
 
   static void tweet(String message) {
     String[] cmd = {
-      "curl", "-u", "dreamingfids:dreaming", "-d", "status=d jkriss " + message, "http://twitter.com/statuses/update.xml"    };
+      //"curl", "-u", "dreamingfids:dreaming", "-d", "status=d jkriss " + message, "http://twitter.com/statuses/update.xml"    };
+      "curl", "-u", "jklabs:0BeuzxHbyfBu2w", "-d", "to=jkriss&from=dreamingfids&message=" + message, "http://jklabs-notifier.heroku.com/message"    };
     println("tweeting: " + cmd);
     try {
       Process p = Runtime.getRuntime().exec(cmd);
